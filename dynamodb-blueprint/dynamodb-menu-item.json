@@ -1,0 +1,19 @@
+{
+  "TableName": "menu_item",
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  },
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "item_id",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "item_id",
+      "KeyType": "HASH"
+    }
+  ]
+}

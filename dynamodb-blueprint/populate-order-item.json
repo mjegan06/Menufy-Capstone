@@ -1,0 +1,108 @@
+{
+    "order_item": [{
+            "PutRequest": {
+                "Item": {
+                    "order_item_id": {
+                        "S": "4e53920c-505a-4a90-a694-b9300791f0ae"
+                    },
+                    "order_id": {
+                        "S": "test1"
+                    },
+                    "item_id": {
+                        "S": "Evangeline"
+                    },
+                    "oi_quantity": {
+                        "S": "Chimera"
+                    },
+                    "oi_unit_price": {
+                        "N": "12.00"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "order_item_id": {
+                        "S": "2b473002-36f8-4b87-954e-9a377e0ccbec"
+                    },
+                    "order_id": {
+                        "S": "test2"
+                    },
+                    "item_id": {
+                        "S": "Pauly"
+                    },
+                    "oi_quantity": {
+                        "S": "Cyclops"
+                    },
+                    "oi_unit_price": {
+                        "N": "15.00"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "order_item_id": {
+                        "S": "0e37d916-f960-4772-a25a-01b762b5c1bd"
+                    },
+                    "order_id": {
+                        "S": "test3"
+                    },
+                    "item_id": {
+                        "S": "CoCo"
+                    },
+                    "oi_quantity": {
+                        "S": "Dragon"
+                    },
+                    "oi_unit_price": {
+                        "N": "3.00"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "order_item_id": {
+                        "S": "da5303ae-5aba-495c-b5d6-eb5c4a66b941"
+                    },
+                    "order_id": {
+                        "S": "test4"
+                    },
+                    "item_id": {
+                        "S": "Gretta"
+                    },
+                    "oi_quantity": {
+                        "S": "Gorgon"
+                    },
+                    "oi_unit_price": {
+                        "N": "8.00"
+                    }
+                }
+            }
+        },
+        {
+            "PutRequest": {
+                "Item": {
+                    "order_item_id": {
+                        "S": "a901bb08-1985-42f5-bb77-27439ac14300"
+                    },
+                    "order_id": {
+                        "S": "test5"
+                    },
+                    "item_id": {
+                        "S": "Hasla"
+                    },
+                    "oi_quantity": {
+                        "S": "Haetae"
+                    },
+                    "oi_unit_price": {
+                        "N": "7.00"
+                    }
+                }
+            }
+        }
+    ]
+}
