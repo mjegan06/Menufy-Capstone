@@ -2,8 +2,12 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from flask import Flask, render_template
 import json
+import restuarant
+
 
 application = Flask(__name__)
+application.register_blueprint(restuarant.bp)
+
 TABLE_NAME = "customer"
 dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
