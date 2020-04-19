@@ -3,6 +3,7 @@ from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask, render_template
 import json
 import restuarant
+from decimal import Decimal
 
 
 application = Flask(__name__)
@@ -40,9 +41,16 @@ def menuPage():
 	response = table.scan(
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
-	data = json.dumps(response['Items'])
+	data = json.dumps(response['Items'], cls=DecimalEncoder)
 	print(data)
 	return render_template('menu.html', response=data)
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
 
 if __name__ == '__main__':
     application.run(host='127.0.0.1', port=8080, debug=True)
