@@ -5,7 +5,15 @@
             <h2 class="text-center"> Menu </h2>
 
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="locationMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Location</button>
+                {% for each in response %}
+                <div>
+                    each.item_name
+                </div>
+
+
+                {% endfor %}
+
+                <!-- <button class="btn btn-secondary dropdown-toggle" type="button" id="locationMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Location</button>
                 <div class="dropdown-menu" aria-labelledby="locationMenuButton">
                     {% for row in location %}
                     <div class="dropdown-item">
@@ -15,7 +23,7 @@
                         </form>
                     </div>
                     {% endfor %}
-                </div>
+                </div> -->
             </div>
 
         </form>
