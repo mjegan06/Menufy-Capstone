@@ -40,8 +40,9 @@ def menuPage():
 	response = table.scan(
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
-	print(response)
-	return render_template('menu.html', response=response)
+	data = json.dumps(response['Items'])
+	print(data)
+	return render_template('menu.html', response=data)
 
 if __name__ == '__main__':
     application.run(host='127.0.0.1', port=8080, debug=True)
