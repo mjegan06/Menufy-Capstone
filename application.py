@@ -43,10 +43,7 @@ def menuPage():
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
 	data = json.dumps(response['Items'], cls=DecimalEncoder)
-	for i in range(len(data)):
-		print(data[i])
-
-	print(len(data))
+	print(json.dumps(data))
 
 	return render_template('menu.html', response=data)
 
