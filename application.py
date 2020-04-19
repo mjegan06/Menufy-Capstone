@@ -22,7 +22,6 @@ def startPage():
 	)
 	#itemList = json.dumps(response['Items'][0])
 	print(json.dumps(response['Items']))
-	print("test")
 	
 	return (json.dumps(response['Items']))
 
