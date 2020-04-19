@@ -1,30 +1,23 @@
 {% extends "base.html" %} {% block content %}
 <div class="jumbotron rounded=0">
-    <div class="login-form">
-        <form action="/login" method="POST">
-            <h2 class="text-center"> Menu </h2>
-            <!-- <h2 class="text-center" onload="loadData({{ data}})"> Menu </h2> -->
+    <h2 class="text-center"> Menu </h2>
+    <!-- <h2 class="text-center" onload="loadData({{ data}})"> Menu </h2> -->
 
-            <p id="demo"></p>
+    <p id="demo"></p>
 
-            <script type="text/javascript">
-                var response = {
-                    {
-                        data | tojson
-                    }
-                };
-                console.log(response);
-                // function loadData(data)
-                // var text = "";
-                // var response = data
+    <script type="text/javascript">
+        var response = JSON.parse('{{data}}');
+        console.log(response);
+        // function loadData(data)
+        // var text = "";
+        // var response = data
 
-                // console.log(response);
-                // for (i = 0; i < response.length; i++) {
-                //     text += response[i]["item_name"] + "<br>";
-                // }
-                // document.getElementById("demo").innerHTML = text;
-            </script>
-        </form>
-    </div>
+        // console.log(response);
+        // for (i = 0; i < response.length; i++) {
+        //     text += response[i]["item_name"] + "<br>";
+        // }
+        // document.getElementById("demo").innerHTML = text;
+    </script>
 </div>
+
 {% endblock %}
