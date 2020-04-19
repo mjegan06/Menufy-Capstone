@@ -6,18 +6,27 @@
     <p id="demo"></p>
 
     <script type="text/javascript">
-        var response = JSON.parse('{{data}}');
-        console.log(response);
+        var response = JSON.parse('{{data |  safe}}');
+        // var response = '[{&#34;menu_item_id&#34;: &#34;menu_item_5&#34;, &#34;item_name&#34;: &#34;test5&#34;, &#34;item_description&#34;: &#34;Haetae&#34;, &#34;item_quantity_available&#34;: 2.0, &#34;item_unit_price&#34;: 7.0, &#34;menu_id&#34;: &#34;menu_1&#34;, &#34;item_type&#34;: &#34;Hasla&#34;}, {&#34;menu_item_id&#34;: &#34;menu_item_4&#34;, &#34;item_name&#34;: &#34;test4&#34;, &#34;item_description&#34;: &#34;Gorgon&#34;, &#34;item_quantity_available&#34;: 0.0, &#34;item_unit_price&#34;: 8.0, &#34;menu_id&#34;: &#34;menu_1&#34;, &#34;item_type&#34;: &#34;Gretta&#34;}, {&#34;menu_item_id&#34;: &#34;menu_item_2&#34;, &#34;item_name&#34;: &#34;test2&#34;, &#34;item_description&#34;: &#34;Cyclops&#34;, &#34;item_quantity_available&#34;: 50.0, &#34;item_unit_price&#34;: 15.0, &#34;menu_id&#34;: &#34;menu_1&#34;, &#34;item_type&#34;: &#34;Pauly&#34;}, {&#34;menu_item_id&#34;: &#34;menu_item_3&#34;, &#34;item_name&#34;: &#34;test3&#34;, &#34;item_description&#34;: &#34;Dragon&#34;, &#34;item_quantity_available&#34;: 5.0, &#34;item_unit_price&#34;: 3.0, &#34;menu_id&#34;: &#34;menu_1&#34;, &#34;item_type&#34;: &#34;CoCo&#34;}, {&#34;menu_item_id&#34;: &#34;menu_item_1&#34;, &#34;item_name&#34;: &#34;test1&#34;, &#34;item_description&#34;: &#34;Chimera&#34;, &#34;item_quantity_available&#34;: 10.0, &#34;item_unit_price&#34;: 12.0, &#34;menu_id&#34;: &#34;menu_1&#34;, &#34;item_type&#34;: &#34;Evangeline&#34;}]';
+
+        // JSON.parse(response.replace(/&#34;/g, '"'));
+        // res = response.replace(/&#34;/g, "");
+        // console.log(res);
         // function loadData(data)
-        // var text = "";
         // var response = data
 
-        // console.log(response);
-        // for (i = 0; i < response.length; i++) {
-        //     text += response[i]["item_name"] + "<br>";
-        // }
-        // document.getElementById("demo").innerHTML = text;
+        var text = "";
+        console.log(res[0])
+
+        for (i = 0; i < res.length; i++) {
+            text += res[i]["item_name"] + "<br>";
+        }
+        document.getElementById("demo").innerHTML = text;
     </script>
+</div>
+
+<div>
+    {{ data | safe}}
 </div>
 
 {% endblock %}
