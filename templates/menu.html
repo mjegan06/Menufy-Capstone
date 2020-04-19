@@ -4,12 +4,12 @@
         <form action="/login" method="POST">
             <h2 class="text-center"> Menu </h2>
 
-            <tbody>{% for item in data['Items'] %}
-                <tr>
-                    <td>{% item['item_name'] %}</td>
-                </tr>{% endfor %}</tbody>
-
-        </form>
+            <div> {% for item in data['Items'] %}
+                <p>{% item['item_name'] %}</p>
+                {% endfor %}
+            </div>
     </div>
+    </form>
+</div>
 </div>
 {% endblock %}
