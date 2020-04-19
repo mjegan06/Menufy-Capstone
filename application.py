@@ -3,6 +3,7 @@ from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask, render_template
 import json
 import restuarant
+import decimal
 from decimal import Decimal
 
 
