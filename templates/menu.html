@@ -16,10 +16,10 @@
         // var response = data
 
         var text = "";
-        console.log(res[0])
+        console.log(response[0])
 
-        for (i = 0; i < res.length; i++) {
-            text += res[i]["item_name"] + "<br>";
+        for (i = 0; i < response.length; i++) {
+            text += response[i]["item_name"] + "<br>";
         }
         document.getElementById("demo").innerHTML = text;
     </script>
