@@ -45,7 +45,6 @@ def menuPage():
 	data = json.dumps(response['Items'], cls=DecimalEncoder)
 	for each in data:
 		print(json.dumps(each))
-		print(each)
 
 	return render_template('menu.html', response=data)
 
