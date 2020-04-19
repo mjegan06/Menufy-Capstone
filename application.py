@@ -42,8 +42,7 @@ def menuPage():
 	response = table.scan(
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
-	data = json.dumps(response['Items'], default=default)
-	print(data)
+	data = json.dumps(response['Items'], cls=DecimalEncoder)
 
 	return render_template('menu.html', response=data)
 
