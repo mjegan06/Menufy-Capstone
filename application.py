@@ -36,9 +36,12 @@ def loginPage():
 
 @application.route("/menu")
 def menuPage():
-	table = dynamodb.Table('menu_item') # pylint: disable=no-member
-	response = table.query(
-		KeyConditionExpression=Key('menu_id').eq('menu_1')
+	response = dynamodb_client.query(
+		TableName='menu_item',
+		KeyConditionExpression='menu_id = :menu_id',
+		ExpressionAttributeValues={
+			':menu_id': {'S': 'menu_1'}
+		}
 	)
 	return render_template('menu.html', response=response)
 
