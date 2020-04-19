@@ -27,7 +27,7 @@ def startPage():
 		}
 	)
 	#itemList = json.dumps(response['Items'][0])
-	print(json.dumps(response['Items']))
+	# print(json.dumps(response['Items']))
 	
 	return (json.dumps(response['Items']))
 
@@ -43,7 +43,10 @@ def menuPage():
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
 	data = json.dumps(response['Items'], cls=DecimalEncoder)
-	print(data)
+	for i in range(len(data)):
+		print(data[i])
+
+	print(len(data))
 
 	return render_template('menu.html', response=data)
 
