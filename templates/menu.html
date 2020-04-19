@@ -4,9 +4,10 @@
         <form action="/login" method="POST">
             <h2 class="text-center"> Menu </h2>
 
-            <div>
-                {{response[0]}}
-            </div>
+            <tbody>{% for item in data['Items'] %}
+                <tr>
+                    <td>{% item['item_name'] %}</td>
+                </tr>{% endfor %}</tbody>
 
         </form>
     </div>
