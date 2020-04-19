@@ -36,7 +36,11 @@ def loginPage():
 
 @application.route("/menu")
 def menuPage():
-	return render_template('menu.html')
+	table = dynamodb.Table('menu_item') # pylint: disable=no-member
+	response = table.query(
+		KeyConditionExpression=Key('menu_id').eq('Arturus Ardvarkian')
+	)
+	return render_template('menu.html', response=response)
 
 if __name__ == '__main__':
     application.run(host='127.0.0.1', port=8080, debug=True)
