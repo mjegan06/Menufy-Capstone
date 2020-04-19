@@ -117,9 +117,7 @@ def signup(username, user_id):
 
         # Check if username already exists
         result = table.query(
-            ProjectionExpression="#username",
-            ExpressionAttributeValues = {"#username": "username"},
-            KeyConditionExpression=Key('username').eq(username),
+            KeyConditionExpression=Key('username').eq(username)
         )
 
         if result:
@@ -129,16 +127,16 @@ def signup(username, user_id):
         # if valid input, insert into users table in the db
         response = table.put_item(
             Item={
-                'username': {'S': username },
-                'password': {'S': hashed_pw },
-                'customer_fname': {'S': customer_fname },
-                'customer_lname': {'S': customer_lname },
-                'customer_phone_num': {'S': customer_phone_num },
-                'customer_address_1': {'S': customer_address_1 },
-                'customer_address_2': {'S': customer_address_2 },
-                'customer_city': {'S': customer_city },
-                'customer_state': {'S': customer_state },
-                'customer_zip': {'S': customer_zip }
+                'username':{'S':username},
+                'password':{'S':hashed_pw},
+                'customer_fname':{'S':customer_fname},
+                'customer_lname': {'S':customer_lname},
+                'customer_phone_num': {'S':customer_phone_num},
+                'customer_address_1': {'S':customer_address_1},
+                'customer_address_2': {'S':customer_address_2},
+                'customer_city': {'S':customer_city},
+                'customer_state': {'S':customer_state},
+                'customer_zip': {'S':customer_zip}
             }
         )
 
