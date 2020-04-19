@@ -36,11 +36,12 @@ def loginPage():
 
 @application.route("/menu")
 def menuPage():
-	table=dynamodb.Table('menu_id')
+	table=dynamodb.Table('menu_item')
 	response = table.scan(
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
-	return render_template('menu.html', response=response)
+	print(response['items'])
+	return render_template('menu.html', response=response['items'])
 
 if __name__ == '__main__':
     application.run(host='127.0.0.1', port=8080, debug=True)
