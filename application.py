@@ -42,9 +42,10 @@ def menuPage():
 	response = table.scan(
 		FilterExpression=Attr('menu_id').eq('menu_1')
 	)
-	data = json.dumps(response['Items'], cls=DecimalEncoder)
+	data = json.dumps(response['Items'])
+	print(data)
 
-	return render_template('menu.html', response=json.dumps(data))
+	return render_template('menu.html', response=data)
 
 
 class DecimalEncoder(json.JSONEncoder):
