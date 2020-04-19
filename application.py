@@ -44,7 +44,7 @@ def menuPage():
 	)
 	data = json.dumps(response['Items'], cls=DecimalEncoder)
 
-	return render_template('menu.html', response=data)
+	return render_template('menu.html', response=json.dumps(data))
 
 
 class DecimalEncoder(json.JSONEncoder):
