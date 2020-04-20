@@ -120,7 +120,7 @@ def signup(customer_username, customer_id):
         result = table.scan(
             ProjectionExpression="#customer_username",
             ExpressionAttributeValues = {"#customer_username": "customer_username"},
-            KeyConditionExpression=Key('customer_username').eq(customer_username),
+            KeyConditionExpression=Key('customer_username').eq(customer_username)
         )
 
         if result:
