@@ -85,8 +85,8 @@ def login(customer_username, customer_id):
             return render_template('login.html')
 
         # Verify password
-        elif check_password_hash(row['password'], pw):
-            session['customer_id'] = row['customer_id']
+        elif check_password_hash(row['Items'][0]['password'], pw):
+            session['customer_id'] = row['Items'][0]['customer_id']
             session['customer_username'] = customer_username
             return redirect(url_for('index'))
 
