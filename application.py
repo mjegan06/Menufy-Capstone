@@ -22,6 +22,15 @@ dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('customer') # pylint: disable=no-member
 
+# random string generator to encrypt the cookie
+SECRET_KEY = os.urandom(32)
+application.config['SECRET_KEY'] = SECRET_KEY
+
+# Configure session to use filesystem
+application.config["SESSION_PERMANENT"] = False
+application.config["SESSION_TYPE"] = "filesystem"
+Session(application)
+
 
 @application.route("/")
 @application.route("/index")
