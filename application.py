@@ -10,6 +10,7 @@ from flask_session import Session
 from utils import *
 import json
 import restuarant
+import uuid
 import decimal
 from decimal import Decimal
 
@@ -136,9 +137,13 @@ def signup(customer_username, customer_id):
             flash("The username already exists. Please enter another username.", "danger")
             return render_template('signup.html')
 
+        # generate random UUID for customer_id
+        new_customer_id = uuid.uuid4()
+
         # if valid input, insert into users table in the db
         response = table.put_item(
             Item={
+                'customer_id':{'S':new_customer_id},
                 'customer_username':{'S':customer_username},
                 'password':{'S':hashed_pw},
                 'customer_fname':{'S':customer_fname},
