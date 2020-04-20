@@ -131,8 +131,6 @@ def signup(customer_username, customer_id):
             FilterExpression=Attr('customer_username').eq(customer_username)
         )
 
-        print(result)
-
         if result['Count'] != 0:
             flash("The username already exists. Please enter another username.", "danger")
             return render_template('signup.html')
