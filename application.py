@@ -78,7 +78,7 @@ def login(customer_username, customer_id):
         )
 
         # If no such username is found
-        if row['Count'] != 0:
+        if row['Count'] == 0:
             flash("Please Enter a valid username", "danger")
             return render_template('login.html')
 
