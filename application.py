@@ -58,7 +58,7 @@ def login(customer_username, customer_id):
         return redirect(url_for('index'))
 
     if request.method == 'POST':
-        customer_username = request.form['customer_username']
+        customer_username = request.form['username']
         pw = request.form['password']
 
         # Get customer_id and password matching the username entered
@@ -100,7 +100,7 @@ def signup(customer_username, customer_id):
 
     if request.method == 'POST':
         # get user input
-        customer_username = request.form['customer_username']
+        customer_username = request.form['username']
         hashed_pw = generate_password_hash(request.form['password'])
         customer_fname = request.form['customer_fname']
         customer_lname = request.form['customer_lname']
