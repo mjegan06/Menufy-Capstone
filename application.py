@@ -143,17 +143,17 @@ def signup(customer_username, customer_id):
 
         # New customer input info
         item = {
-            'customer_id':{'S':new_customer_id},
-            'customer_username':{'S':customer_username},
-            'password':{'S':hashed_pw},
-            'customer_fname':{'S':customer_fname},
-            'customer_lname': {'S':customer_lname},
-            'customer_phone_num': {'S':customer_phone_num},
-            'customer_address_1': {'S':customer_address_1},
-            'customer_address_2': {'S':customer_address_2},
-            'customer_city': {'S':customer_city},
-            'customer_state': {'S':customer_state},
-            'customer_zip': {'S':customer_zip}
+            'customer_id': new_customer_id,
+            'customer_username': customer_username,
+            'password': hashed_pw,
+            'customer_fname': customer_fname,
+            'customer_lname': customer_lname,
+            'customer_phone_num': customer_phone_num,
+            'customer_address_1': customer_address_1,
+            'customer_address_2': customer_address_2,
+            'customer_city': customer_city,
+            'customer_state': customer_state,
+            'customer_zip': customer_zip
         }
 
         # if valid input, insert into users table in the db
