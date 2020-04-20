@@ -88,7 +88,7 @@ def login(customer_username, customer_id):
         elif check_password_hash(row['Items'][0]['password'], pw):
             session['customer_id'] = row['Items'][0]['customer_id']
             session['customer_username'] = customer_username
-            return redirect(url_for('index'))
+            return redirect(url_for('startPage'))
 
         # If incorrect password
         else:
@@ -172,7 +172,7 @@ def logout():
     """ Route for user logout """
     session.pop('customer_username', None)
     session.pop('customer_id', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('startPage'))
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
