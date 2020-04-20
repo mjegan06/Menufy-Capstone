@@ -51,7 +51,7 @@ def menuPage():
 
 @application.route('/login', methods=['GET', 'POST'])
 @check_user_login
-def login(username, user_id):
+def login(username, customer_id):
     """ Route for users login """
 
     if username:
@@ -61,7 +61,7 @@ def login(username, user_id):
         username = request.form['username']
         pw = request.form['password']
 
-        # Get user_id and password matching the username entered
+        # Get customer_id and password matching the username entered
         table = dynamodb.Table('customer')
         row = table.query(
             ProjectionExpression="#username",
@@ -90,7 +90,7 @@ def login(username, user_id):
 
 @application.route('/signup', methods=['GET', 'POST'])
 @check_user_login
-def signup(username, user_id):
+def signup(username, customer_id):
     """ Route for user registration """
     if username:
         flash("Please logout First", "danger")
@@ -153,7 +153,7 @@ def signup(username, user_id):
 def logout():
     """ Route for user logout """
     session.pop('user', None)
-    session.pop('user_id', None)
+    session.pop('customer_id', None)
     return redirect(url_for('index'))
 
 class DecimalEncoder(json.JSONEncoder):
