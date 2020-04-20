@@ -138,7 +138,8 @@ def signup(customer_username, customer_id):
             return render_template('signup.html')
 
         # generate random UUID for customer_id
-        new_customer_id = uuid.uuid4()
+        new_customer_id_inital = uuid.uuid4()
+        new_customer_id = str(new_customer_id_inital)
 
         # if valid input, insert into users table in the db
         response = table.put_item(
