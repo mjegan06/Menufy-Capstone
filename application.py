@@ -24,6 +24,7 @@ table = dynamodb.Table('customer') # pylint: disable=no-member
 
 
 @application.route("/")
+@application.route("/index")
 def startPage():
     print(dynamodb)
     response = dynamodb_client.query(
@@ -116,8 +117,10 @@ def signup(username, user_id):
             return render_template('signup.html')
 
         # Check if username already exists
-        result = table.query(
-            KeyConditionExpression=Key('username').eq(username)
+        result = table.scan(
+            FilterExpression=Key('username').eq(username),
+            ProjectionExpression="#username",
+            ExpressionAttributeValues={ "#username": "username" }
         )
 
         if result:

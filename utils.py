@@ -11,8 +11,8 @@ def login_required(fn):
     def wrapper(*args, **kwargs):
         if 'user' in session:
             username = session['user']
-            user_id = session['user_id']
-            return fn(username, user_id, *args, **kwargs)
+            customer_id = session['customer_id']
+            return fn(username, customer_id, *args, **kwargs)
         else:
             return redirect(url_for('login'))
 
@@ -28,9 +28,9 @@ def check_user_login(fn):
     def wrapper(*args, **kwargs):
         if 'user' in session:
             username = session['user']
-            user_id = session['user_id']
-            return fn(username, user_id, *args, **kwargs)
+            customer_id = session['customer_id']
+            return fn(username, customer_id, *args, **kwargs)
         else:
-            return fn(username=None, user_id=None, *args, **kwargs)
+            return fn(username=None, customer_id=None, *args, **kwargs)
 
     return wrapper
