@@ -141,21 +141,24 @@ def signup(customer_username, customer_id):
         new_customer_id_inital = uuid.uuid4()
         new_customer_id = str(new_customer_id_inital)
 
+        # New customer input info
+        item = {
+            'customer_id':{'S':new_customer_id},
+            'customer_username':{'S':customer_username},
+            'password':{'S':hashed_pw},
+            'customer_fname':{'S':customer_fname},
+            'customer_lname': {'S':customer_lname},
+            'customer_phone_num': {'S':customer_phone_num},
+            'customer_address_1': {'S':customer_address_1},
+            'customer_address_2': {'S':customer_address_2},
+            'customer_city': {'S':customer_city},
+            'customer_state': {'S':customer_state},
+            'customer_zip': {'S':customer_zip}
+        }
+
         # if valid input, insert into users table in the db
         response = table.put_item(
-            Item={
-                'customer_id':{'S':new_customer_id},
-                'customer_username':{'S':customer_username},
-                'password':{'S':hashed_pw},
-                'customer_fname':{'S':customer_fname},
-                'customer_lname': {'S':customer_lname},
-                'customer_phone_num': {'S':customer_phone_num},
-                'customer_address_1': {'S':customer_address_1},
-                'customer_address_2': {'S':customer_address_2},
-                'customer_city': {'S':customer_city},
-                'customer_state': {'S':customer_state},
-                'customer_zip': {'S':customer_zip}
-            }
+            Item=item
         )
 
         flash("Successfully signed up! Please log in to continue", "success")
