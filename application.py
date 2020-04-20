@@ -118,9 +118,7 @@ def signup(customer_username, customer_id):
 
         # Check if username already exists
         result = table.scan(
-            ProjectionExpression="#customer_username",
-            ExpressionAttributeValues = {"#customer_username": "customer_username"},
-            KeyConditionExpression=Key('customer_username').eq(customer_username)
+            FilterExpression=Attr('customer_username').eq(customer_username)
         )
 
         if result:
