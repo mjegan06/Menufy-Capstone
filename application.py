@@ -112,7 +112,7 @@ def signup(customer_username, customer_id):
         customer_zip = request.form['customer_zip']
 
         # validate user input
-        if not username or not hashed_pw:
+        if not customer_username or not hashed_pw:
             flash("Please enter a valid username and password", "danger")
             return render_template('signup.html')
 
