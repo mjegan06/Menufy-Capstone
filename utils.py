@@ -10,7 +10,7 @@ def login_required(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         if 'user' in session:
-            username = session['user']
+            customer_username = session['user']
             customer_id = session['customer_id']
             return fn(username, customer_id, *args, **kwargs)
         else:
@@ -27,10 +27,10 @@ def check_user_login(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         if 'user' in session:
-            username = session['user']
+            customer_username = session['user']
             customer_id = session['customer_id']
-            return fn(username, customer_id, *args, **kwargs)
+            return fn(customer_username, customer_id, *args, **kwargs)
         else:
-            return fn(username=None, customer_id=None, *args, **kwargs)
+            return fn(customer_username=None, customer_id=None, *args, **kwargs)
 
     return wrapper

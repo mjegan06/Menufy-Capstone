@@ -51,22 +51,22 @@ def menuPage():
 
 @application.route('/login', methods=['GET', 'POST'])
 @check_user_login
-def login(username, customer_id):
+def login(customer_username, customer_id):
     """ Route for users login """
 
-    if username:
+    if customer_username:
         return redirect(url_for('index'))
 
     if request.method == 'POST':
-        username = request.form['username']
+        customer_username = request.form['customer_username']
         pw = request.form['password']
 
         # Get customer_id and password matching the username entered
         table = dynamodb.Table('customer')
         row = table.query(
-            ProjectionExpression="#username",
-            ExpressionAttributeValues = {"#username": "username"},
-            KeyConditionExpression=Key('username').eq(username),
+            ProjectionExpression="#customer_username",
+            ExpressionAttributeValues = {"#customer_username": "customer_username"},
+            KeyConditionExpression=Key('customer_username').eq(customer_username),
         )
 
         # If no such username is found
@@ -77,7 +77,7 @@ def login(username, customer_id):
         # Verify password
         elif check_password_hash(row['password'], pw):
             session['customer_id'] = row['customer_id']
-            session['user'] = username
+            session['customer_username'] = customer_username
             return redirect(url_for('index'))
 
         # If incorrect password
@@ -90,9 +90,9 @@ def login(username, customer_id):
 
 @application.route('/signup', methods=['GET', 'POST'])
 @check_user_login
-def signup(username, customer_id):
+def signup(customer_username, customer_id):
     """ Route for user registration """
-    if username:
+    if customer_username:
         flash("Please logout First", "danger")
         return render_template('signup.html')
 
@@ -100,7 +100,7 @@ def signup(username, customer_id):
 
     if request.method == 'POST':
         # get user input
-        username = request.form['username']
+        customer_username = request.form['customer_username']
         hashed_pw = generate_password_hash(request.form['password'])
         customer_fname = request.form['customer_fname']
         customer_lname = request.form['customer_lname']
@@ -118,9 +118,9 @@ def signup(username, customer_id):
 
         # Check if username already exists
         result = table.scan(
-            FilterExpression=Key('username').eq(username),
-            ProjectionExpression="#username",
-            ExpressionAttributeValues={ "#username": "username" }
+            FilterExpression=Key('customer_username').eq(customer_username),
+            ProjectionExpression="#customer_username",
+            ExpressionAttributeValues={ "#customer_username": "customer_username" }
         )
 
         if result:
@@ -130,7 +130,7 @@ def signup(username, customer_id):
         # if valid input, insert into users table in the db
         response = table.put_item(
             Item={
-                'username':{'S':username},
+                'customer_username':{'S':customer_username},
                 'password':{'S':hashed_pw},
                 'customer_fname':{'S':customer_fname},
                 'customer_lname': {'S':customer_lname},
@@ -146,13 +146,13 @@ def signup(username, customer_id):
         flash("Successfully signed up! Please log in to continue", "success")
         return redirect(url_for('login'))
 
-    return render_template('signup.html', username=None)
+    return render_template('signup.html', customer_username=None)
 
 
 @application.route('/logout')
 def logout():
     """ Route for user logout """
-    session.pop('user', None)
+    session.pop('customer_username', None)
     session.pop('customer_id', None)
     return redirect(url_for('index'))
 
