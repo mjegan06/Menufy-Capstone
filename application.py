@@ -73,14 +73,12 @@ def login(customer_username, customer_id):
 
         # Get customer_id and password matching the username entered
         table = dynamodb.Table('customer')
-        row = table.query(
-            ProjectionExpression="#customer_username",
-            ExpressionAttributeValues = {"#customer_username": "customer_username"},
-            KeyConditionExpression=Key('customer_username').eq(customer_username),
+        row = table.scan(
+            FilterExpression=Attr('customer_username').eq(customer_username)
         )
 
         # If no such username is found
-        if not row:
+        if row['Count'] != 0:
             flash("Please Enter a valid username", "danger")
             return render_template('login.html')
 
