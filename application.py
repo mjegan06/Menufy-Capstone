@@ -74,16 +74,18 @@ def login(customer_username, customer_id):
             FilterExpression=Attr('customer_username').eq(customer_username)
         )
 
+        print(row)
+
         # If no such username is found
-        if row['Count'] != 0:
+        if row['Count'] == 0:
             flash("Please Enter a valid username", "danger")
             return render_template('login.html')
 
         # Verify password
-        elif check_password_hash(row['password'], pw):
-            session['customer_id'] = row['customer_id']
+        elif check_password_hash(row['Items'][0]['password'], pw):
+            session['customer_id'] = row['Items'][0]['customer_id']
             session['customer_username'] = customer_username
-            return redirect(url_for('index'))
+            return redirect(url_for('startPage'))
 
         # If incorrect password
         else:
@@ -126,8 +128,6 @@ def signup(customer_username, customer_id):
             FilterExpression=Attr('customer_username').eq(customer_username)
         )
 
-        print(result)
-
         if result['Count'] != 0:
             flash("The username already exists. Please enter another username.", "danger")
             return render_template('signup.html')
@@ -167,7 +167,7 @@ def logout():
     """ Route for user logout """
     session.pop('customer_username', None)
     session.pop('customer_id', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('startPage'))
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o): # pylint: disable=method-hidden
