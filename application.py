@@ -21,7 +21,6 @@ application.register_blueprint(restuarant.bp)
 TABLE_NAME = "customer"
 dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
-table = dynamodb.Table('customer') # pylint: disable=no-member
 
 # random string generator to encrypt the cookie
 SECRET_KEY = os.urandom(32)
@@ -44,14 +43,12 @@ def startPage():
             ':customer_id': {'S': '0e37d916-f960-4772-a25a-01b762b5c1bd'}
         }
     )
-    #itemList = json.dumps(response['Items'][0])
-    # print(json.dumps(response['Items']))
     
     return (json.dumps(response['Items']))
 
 @application.route("/menu")
 def menuPage():
-    table=dynamodb.Table('menu_item')
+    table=dynamodb.Table('menu_item') # pylint: disable=no-member
     response = table.scan(
         FilterExpression=Attr('menu_id').eq('menu_1')
     )
@@ -72,7 +69,7 @@ def login(customer_username, customer_id):
         pw = request.form['password']
 
         # Get customer_id and password matching the username entered
-        table = dynamodb.Table('customer')
+        table = dynamodb.Table('customer') # pylint: disable=no-member
         row = table.scan(
             FilterExpression=Attr('customer_username').eq(customer_username)
         )
@@ -104,7 +101,7 @@ def signup(customer_username, customer_id):
         flash("Please logout First", "danger")
         return render_template('signup.html')
 
-    table = dynamodb.Table('customer')
+    table = dynamodb.Table('customer') # pylint: disable=no-member
 
     if request.method == 'POST':
         # get user input
@@ -173,7 +170,7 @@ def logout():
     return redirect(url_for('index'))
 
 class DecimalEncoder(json.JSONEncoder):
-    def default(self, o):
+    def default(self, o): # pylint: disable=method-hidden
         if isinstance(o, decimal.Decimal):
             return float(o)
         return super(DecimalEncoder, self).default(o)
