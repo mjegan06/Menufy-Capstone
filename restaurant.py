@@ -32,7 +32,7 @@ def create_restaurant():
 	# generate random UUID for restaurant_id
 	new_restaurant_id = str(uuid.uuid4())
 
-	response_item = table.put_item(
+	response = table.put_item(
             Item={
 				'restaurant_id': new_restaurant_id,
 				'restaurant_name': content['restaurant_name'],
