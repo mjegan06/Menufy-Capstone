@@ -41,7 +41,7 @@ def startPage(customer_username, customer_id):
     )
     print(response)
     
-    return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response)
+    return render_template('index.html', customer_username=customer_username, customer_id=customer_id)
 
 @application.route("/menu")
 def menuPage():
