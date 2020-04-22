@@ -34,14 +34,14 @@ Session(application)
 
 @application.route("/")
 @application.route("/index")
-def startPage(username, customer_id):
+def startPage(customer_username, customer_id):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     response = table.scan(
         ProjectionExpresion= {"rest_id","rest_name"} 
     )
     print(response)
     
-    return render_template('index.html', username=username, customer_id=customer_id, restaurant=response)
+    return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response)
 
 @application.route("/menu")
 def menuPage():
