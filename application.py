@@ -38,7 +38,7 @@ Session(application)
 def index(customer_username, customer_id):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     response = table.scan(
-        ProjectionExpresion= {"rest_id","rest_name"} 
+        ProjectionExpression= {"rest_id","rest_name"} 
     )
     print(response)
     
