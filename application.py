@@ -34,7 +34,8 @@ Session(application)
 
 @application.route("/")
 @application.route("/index")
-def startPage(customer_username, customer_id):
+@check_user_login
+def index(customer_username, customer_id):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     response = table.scan(
         ProjectionExpresion= {"rest_id","rest_name"} 
@@ -93,7 +94,7 @@ def login(customer_username, customer_id):
         elif check_password_hash(row['Items'][0]['password'], pw):
             session['customer_id'] = row['Items'][0]['customer_id']
             session['customer_username'] = customer_username
-            return redirect(url_for('startPage'))
+            return redirect(url_for('index'))
 
         # If incorrect password
         else:
@@ -175,7 +176,7 @@ def logout():
     """ Route for user logout """
     session.pop('customer_username', None)
     session.pop('customer_id', None)
-    return redirect(url_for('startPage'))
+    return redirect(url_for('index'))
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o): # pylint: disable=method-hidden
