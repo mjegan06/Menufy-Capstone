@@ -26,7 +26,7 @@ def check_user_login(fn):
 
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if 'user' in session:
+        if 'customer_username' in session:
             customer_username = session['customer_username']
             customer_id = session['customer_id']
             return fn(customer_username, customer_id, *args, **kwargs)

@@ -82,8 +82,6 @@ def login(customer_username, customer_id):
             FilterExpression=Attr('customer_username').eq(customer_username)
         )
 
-        print(row)
-
         # If no such username is found
         if row['Count'] == 0:
             flash("Please Enter a valid username", "danger")
