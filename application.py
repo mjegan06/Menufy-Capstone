@@ -40,9 +40,11 @@ def index(customer_username, customer_id):
     response = table.scan(
         ProjectionExpression='restaurant_id, restaurant_name'
     )
-    print(response)
+
+    for item in response['Items']:
+        print(item)
     
-    return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response)
+    return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response['Items'])
 
 @application.route("/menu")
 def menuPage():
