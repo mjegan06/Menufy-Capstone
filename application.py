@@ -38,11 +38,11 @@ Session(application)
 def index(customer_username, customer_id):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     response = table.scan(
-        ProjectionExpression='rest_id, rest_name' 
+        ProjectionExpression='restaurant_id, restaurant_name'
     )
     print(response)
     
-    return render_template('index.html', customer_username=customer_username, customer_id=customer_id)
+    return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response)
 
 @application.route("/menu")
 def menuPage():
