@@ -53,7 +53,7 @@ def menuPage():
 
     return render_template('menu.html', data=data)
 
-@application.route('/restaurant/<rest_id>', methods=['POST'])
+@application.route('/restaurant/<restaurant_id>', methods=['POST'])
 @check_user_login
 def restaurantViews(customer_username, customer_id, restaurant_id):
     """ Route for restaurant views page """
