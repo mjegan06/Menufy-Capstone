@@ -41,9 +41,6 @@ def index(customer_username, customer_id):
         ProjectionExpression='restaurant_id, restaurant_name'
     )
 
-    for item in response['Items']:
-        print(item)
-    
     return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response['Items'])
 
 @application.route("/menu")
@@ -58,13 +55,13 @@ def menuPage():
 
 @application.route('/restaurant/<rest_id>', methods=['POST'])
 @check_user_login
-def restaurantViews(username, customer_id, rest_id):
+def restaurantViews(customer_username, customer_id, restaurant_id):
     """ Route for restaurant views page """
 
-    rest_id = request.form['rest_id']
-    print(rest_id)
+    restaurant_id = request.form['restaurant_id']
+    print(restaurant_id)
 
-    return render_view(username, rest_id)
+    return render_view(customer_username, restaurant_id)
 
 
 @application.route('/login', methods=['GET', 'POST'])
