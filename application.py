@@ -61,7 +61,7 @@ def restaurantViews(customer_username, customer_id, restaurant_id):
     restaurant_id = request.form['restaurant_id']
     print(restaurant_id)
 
-    return render_view(customer_username, restaurant_id)
+    return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id)
 
 
 @application.route('/login', methods=['GET', 'POST'])
