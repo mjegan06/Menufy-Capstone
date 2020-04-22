@@ -34,17 +34,14 @@ Session(application)
 
 @application.route("/")
 @application.route("/index")
-def startPage():
-    print(dynamodb)
-    response = dynamodb_client.query(
-        TableName='customer',
-        KeyConditionExpression='customer_id = :customer_id',
-        ExpressionAttributeValues = {
-            ':customer_id': {'S': '0e37d916-f960-4772-a25a-01b762b5c1bd'}
-        }
+def startPage(username, customer_id):
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+    response = table.scan(
+        ProjectionExpresion= {"rest_id","rest_name"} 
     )
+    print(response)
     
-    return (json.dumps(response['Items']))
+    return render_template('index.html', username=username, customer_id=customer_id, restaurant=response)
 
 @application.route("/menu")
 def menuPage():
@@ -55,6 +52,17 @@ def menuPage():
     data = json.dumps(response['Items'], cls=DecimalEncoder)
 
     return render_template('menu.html', data=data)
+
+@app.route('/restaurant/<rest_id>', methods=['POST'])
+@check_user_login
+def restaurantViews(username, customer_id, rest_id):
+    """ Route for restaurant views page """
+
+    rest_id = request.form['rest_id']
+    print(rest_id)
+
+    return render_view(username, rest_id)
+
 
 @application.route('/login', methods=['GET', 'POST'])
 @check_user_login
