@@ -12,7 +12,7 @@
                 <div class="dropdown-menu" aria-labelledby="restaurantListButton">
                     {% for row in restaurant %}
                     <div class="dropdown-item">
-                        <form id="rest_form{{row.restaurant_id}}" method="post" action="/restaurant/{{row.restaurant_id_id}}">
+                        <form id="rest_form{{row.restaurant_id}}" method="post" action="/restaurant/{{row.restaurant_id}}">
                             <input type="hidden" id="restaurant_id" name="restaurant_id" value="{{row.restaurant_id}}">
                             <a class="btn btn-link" onclick="document.getElementById('rest_form{{row.restaurant_id}}').submit();" role="menuitem" tabindex="-1">{{row.restaurant_name}}</a>
                         </form>
