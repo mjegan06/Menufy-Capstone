@@ -24,16 +24,12 @@
     </table>
 
     <script>
-        $(document).ready(function() {
-
-            var data = '{{ data |  safe }}';
-            //while running this code the template will be appended in your div with json data
-            $("#menu").jPut({
-                jsonData: data,
-                //ajax_url:"youfile.json",  if you want to call from a json file
-                name: "tbody_template",
-            });
-
+        var data = '{{ data |  safe }}';
+        //while running this code the template will be appended in your div with json data
+        $("#menu").jPut({
+            jsonData: data,
+            //ajax_url:"youfile.json",  if you want to call from a json file
+            name: "tbody_template",
         });
     </script>
 
