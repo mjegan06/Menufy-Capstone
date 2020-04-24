@@ -16,8 +16,8 @@
         var text = "<tr>";
         var headers = ['Menu Item', 'Description', 'Unit Price', ]
 
-        for (each in headers) {
-            text += '<td>' + each + '</td>';
+        for (i = 0; i < headers.length; i++) {
+            text += '<td>' + headers[i] + '</td>';
         }
 
         // add column for add column
