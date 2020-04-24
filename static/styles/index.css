@@ -62,6 +62,10 @@
     font-size: 18px;
 }
 
+#menu {
+    margin-left: 30px;
+}
+
 #map {
     top: 10%;
     bottom: 0;

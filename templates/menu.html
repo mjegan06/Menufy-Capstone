@@ -6,12 +6,39 @@
 </div>
 
 <div>
-    <p id="demo">
-        item_name item_unit_price
-        <br>
-    </p>
+    <!-- <p id="menu">
+    </p> -->
 
-    <script type="text/javascript">
+    <table jput="t_template">
+        <tbody jput="tbody_template">
+            <tr>
+                <td>{{ item_name }}</td>
+                <td>{{ item_unit_price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody id="menu">
+        </tbody>
+    </table>
+
+    <script>
+        $(document).ready(function() {
+
+            var data = JSON.parse('{{ data |  safe }}');
+            //while running this code the template will be appended in your div with json data
+            $("#menu").jPut({
+                jsonData: data,
+                //ajax_url:"youfile.json",  if you want to call from a json file
+                name: "tbody_template",
+            });
+
+        });
+    </script>
+
+
+    <!-- <script type="text/javascript">
         var response = JSON.parse('{{ data |  safe }}');
         var text = "";
         console.log(response[0])
@@ -19,8 +46,8 @@
         for (i = 0; i < response.length; i++) {
             text += response[i]["item_name"] + response[i]["item_unit_price"] + "<br>";
         }
-        document.getElementById("demo").innerHTML = text;
-    </script>
+        document.getElementById("menu").innerHTML = text;
+    </script> -->
 </div>
 
 {% endblock %}
