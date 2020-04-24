@@ -62,8 +62,9 @@
     font-size: 18px;
 }
 
-#menu {
-    margin: 30px;
+.menu-table {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #map {
