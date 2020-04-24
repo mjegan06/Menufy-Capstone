@@ -43,15 +43,18 @@ def index(customer_username, customer_id):
 
     return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response['Items'])
 
-@application.route("/menu")
+@application.route("/menu", methods=['GET', 'POST'])
 def menuPage():
     table=dynamodb.Table('menu_item') # pylint: disable=no-member
     response = table.scan(
         FilterExpression=Attr('menu_id').eq('menu_1')
     )
     data = json.dumps(response['Items'], cls=DecimalEncoder)
-
-    return render_template('menu.html', data=data)
+    if request.method == 'GET':
+        return render_template('menu.html', data=data)
+        
+    if request.method == 'POST':
+        return {post}
 
 @application.route('/restaurant/<restaurant_id>', methods=['POST'])
 @check_user_login
