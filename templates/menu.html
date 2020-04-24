@@ -14,17 +14,21 @@
     <script type="text/javascript">
         var response = JSON.parse('{{ data |  safe }}');
         var text = "<tr>";
+        var headers = ['Menu Item', 'Description', 'Unit Price', ]
 
-        for (key in response[0]) {
-            text += '<td>' + key + '</td>';
+        for (each in headers) {
+            text += '<td>' + each + '</td>';
         }
+
+        // add column for add column
+        text += '<td></td>';
 
         text += "</tr>";
 
         for (i = 0; i < response.length; i++) {
             text += "<tr>";
             for (key in response[i]) {
-                if (key != "menu_item_id")
+                if (key == "item_name" || key == 'item_description' || key == 'item_unit_price')
                     text += "<td>" + response[i][key] + "</td>";
             }
             text += "<td>" + '<form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
