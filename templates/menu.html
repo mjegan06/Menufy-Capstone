@@ -21,17 +21,23 @@
 
     <script type="text/javascript">
         var response = JSON.parse('{{ data |  safe }}');
-        var text = "";
+        var text = "<table><tr>";
+
+        for (key in response[0]) {
+            document.write('<td>' + key + '</td>');
+        }
+
+        text += "</tr>";
 
         for (i = 0; i < response.length; i++) {
             text += "<tr>";
             console.log(response[i])
-            for (j = 0; i < response[i].length; j++) {
-                text += "<td>" + response[i][j] + "</td>";
+            for (key in response[i]) {
+                text += "<td>" + response[i][key] + "</td>";
             }
             text += "</tr>";
-
         }
+        text += "</table>";
         document.getElementById("menu").innerHTML = text;
     </script>
 
