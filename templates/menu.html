@@ -16,27 +16,6 @@
         </tbody>
     </table>
 
-    <script>
-        var data = '{{ data |  safe }}';
-        var transform = {
-            "tag": "table",
-            "children": [{
-                "tag": "tbody",
-                "children": [{
-                    "tag": "tr",
-                    "children": [{
-                        "tag": "td",
-                        "html": "${item_name}"
-                    }, {
-                        "tag": "td",
-                        "html": "${item_description}"
-                    }]
-                }]
-            }]
-        };
-        jQuery('#menu').html(json2html.transform(data, transform));
-    </script>
-
 
     <!-- <script type="text/javascript">
         var response = JSON.parse('{{ data |  safe }}');
@@ -48,6 +27,27 @@
         }
         document.getElementById("menu").innerHTML = text;
     </script> -->
+
+    <script type="text/javascript">
+        var data = '{{ data |  safe }}';
+        var transform = {
+            " tag ": "table ",
+            "children ": [{
+                "tag ": "tbody ",
+                "children ": [{
+                    "tag ": "tr ",
+                    "children ": [{
+                        "tag ": "td ",
+                        "html ": "${item_name} "
+                    }, {
+                        "tag ": "td ",
+                        "html ": "${item_description} "
+                    }]
+                }]
+            }]
+        };
+        $('#menu').html(json2html.transform(data, transform));
+    </script>
 </div>
 
 {% endblock %}
