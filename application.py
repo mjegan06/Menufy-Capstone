@@ -52,9 +52,11 @@ def menuPage():
     data = json.dumps(response['Items'], cls=DecimalEncoder)
     if request.method == 'GET':
         return render_template('menu.html', data=data)
-        
+
     if request.method == 'POST':
-        return {post}
+        menu_item_id = request.form['menu_item_id']
+        flash(menu_item_id)
+        return render_template('menu.html', data=data)
 
 @application.route('/restaurant/<restaurant_id>', methods=['POST'])
 @check_user_login

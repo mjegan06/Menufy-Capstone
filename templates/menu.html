@@ -28,7 +28,7 @@
                 if (key != "menu_item_id")
                     text += "<td>" + response[i][key] + "</td>";
             }
-            text += "<td>" + "<button> Add </button>" + "</td>";
+            text += "<td>" + '<form action="" method="post"><button name="menu_item_id"> Add </button>"</form>' + "</td>";
             text += "</tr>";
         }
         document.getElementById("menu").innerHTML = text;
