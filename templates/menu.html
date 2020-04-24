@@ -3,13 +3,16 @@
     <h2 class="text-center"> Menu </h2>
     <!-- <h2 class="text-center" onload="loadData({{ data}})"> Menu </h2> -->
 
+</div>
+
+<div>
     <p id="demo">
         item_name item_unit_price
         <br>
     </p>
 
     <script type="text/javascript">
-        var response = JSON.parse('{{data |  safe}}');
+        var response = JSON.parse('{{ data |  safe }}');
         var text = "";
         console.log(response[0])
 
@@ -18,10 +21,6 @@
         }
         document.getElementById("demo").innerHTML = text;
     </script>
-</div>
-
-<div>
-    {{ data | safe}}
 </div>
 
 {% endblock %}
