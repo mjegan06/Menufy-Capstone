@@ -16,7 +16,7 @@
         </tbody>
     </table> -->
 
-    <table id="menu" class="menu-table">
+    <table id="menu">
     </table>
 
 
@@ -34,8 +34,10 @@
             text += "<tr>";
             console.log(response[i])
             for (key in response[i]) {
-                text += "<td>" + response[i][key] + "</td>";
+                if (key != "menu_item_id")
+                    text += "<td>" + response[i][key] + "</td>";
             }
+            text += "<td>" + "<button> Add </button>" + "</td>";
             text += "</tr>";
         }
         document.getElementById("menu").innerHTML = text;
