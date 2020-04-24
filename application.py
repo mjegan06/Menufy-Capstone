@@ -55,7 +55,7 @@ def menuPage():
 
     if request.method == 'POST':
         menu_item_id = request.form['menu_item_id']
-        flash(menu_item_id)
+        print(menu_item_id)
         return render_template('menu.html', data=data)
 
 @application.route('/restaurant/<restaurant_id>', methods=['POST'])

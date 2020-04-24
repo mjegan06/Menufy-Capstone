@@ -23,12 +23,11 @@
 
         for (i = 0; i < response.length; i++) {
             text += "<tr>";
-            console.log(response[i])
             for (key in response[i]) {
                 if (key != "menu_item_id")
                     text += "<td>" + response[i][key] + "</td>";
             }
-            text += "<td>" + '<form action="" method="post"><button name="menu_item_id"> Add </button>"</form>' + "</td>";
+            text += "<td>" + '<form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
             text += "</tr>";
         }
         document.getElementById("menu").innerHTML = text;
