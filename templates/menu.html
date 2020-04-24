@@ -9,28 +9,32 @@
     <!-- <p id="menu">
     </p> -->
 
-    <table jput="t_template">
-        <tbody jput="tbody_template">
-            <tr>
-                <td>{{ item_name }}</td>
-                <td>{{ item_unit_price }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <p>{{ data | safe }}</p>
 
-    <table>
-        <tbody id="menu">
+    <table id="menu">
+        <tbody>
         </tbody>
     </table>
 
     <script>
         var data = '{{ data |  safe }}';
-        //while running this code the template will be appended in your div with json data
-        $("#menu").jPut({
-            jsonData: data,
-            //ajax_url:"youfile.json",  if you want to call from a json file
-            name: "tbody_template",
-        });
+        var transform = {
+            "tag": "table",
+            "children": [{
+                "tag": "tbody",
+                "children": [{
+                    "tag": "tr",
+                    "children": [{
+                        "tag": "td",
+                        "html": "${item_name}"
+                    }, {
+                        "tag": "td",
+                        "html": "${item_description}"
+                    }]
+                }]
+            }]
+        };
+        $('#menu').html(json2html.transform(data, transform));
     </script>
 
 
