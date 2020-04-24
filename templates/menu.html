@@ -16,15 +16,16 @@
         </tbody>
     </table> -->
 
-    <p id="menu"></p>
+    <table id="menu">
+    </table>
 
 
     <script type="text/javascript">
         var response = JSON.parse('{{ data |  safe }}');
-        var text = "<table><tr>";
+        var text = "<tr>";
 
         for (key in response[0]) {
-            document.write('<td>' + key + '</td>');
+            text += '<td>' + key + '</td>';
         }
 
         text += "</tr>";
@@ -37,7 +38,6 @@
             }
             text += "</tr>";
         }
-        text += "</table>";
         document.getElementById("menu").innerHTML = text;
     </script>
 
