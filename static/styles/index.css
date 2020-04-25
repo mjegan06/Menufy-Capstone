@@ -72,3 +72,12 @@
 #add-fact-form {
     display: none;
 }
+
+td {
+    padding: 10px;
+}
+
+table {
+    border-spacing: 10px 2px;
+    border-collapse: separate;
+}
