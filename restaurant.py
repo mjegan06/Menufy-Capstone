@@ -1,6 +1,12 @@
+import os
+import sys
+import io
+import csv
 import boto3
-from boto3.dynamodb.conditions import Key
-from flask import Blueprint, request, make_response, flash
+from boto3.dynamodb.conditions import Key, Attr
+from flask import Flask, Blueprint, request, make_response, flash, Response, render_template,  session, redirect, url_for
+from flask_session import Session
+from utils import *
 import json
 import decimal
 import uuid
@@ -51,11 +57,42 @@ def create_restaurant():
 
 
 
-@bp.route('/<rid>', methods=['GET'])
-def get_restaurant(rid):
-	response = table.get_item(
-		Key={'restaurant_id': rid}
-	)
+@bp.route('/<rid>', methods=['GET','POST'])
+@check_user_login
+def get_restaurant(customer_username, customer_id, restaurant_id):
+	# get restaurant name
+    restaurant_table=dynamodb.Table('restaurant') 
+    restaurant_data = restaurant_table.scan(
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+    )
+    restaurant_name = restaurant_data['Items'][0]['restaurant_name']
+
+    # get menu id
+    menu_table=dynamodb.Table('menu') 
+    response = menu_table.scan(
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+    )
+    menu_id = response['Items'][0]['menu_id']
+
+    # get menu items
+    menu_item_table=dynamodb.Table('menu_item')
+    response = menu_item_table.scan(
+        FilterExpression=Attr('menu_id').eq(menu_id)
+    )
+    
+    menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+    if request.method == 'GET':
+
+        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
+
+    if request.method == 'POST':
+
+        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
+
+	# response = table.get_item(
+	# 	Key={'restaurant_id': rid}
+	# )
 
 	# return (json.dumps(response['Item'], cls=DecimalEncoder), 200, {'Content-Type': 'application/json'})
 
