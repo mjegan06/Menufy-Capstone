@@ -44,20 +44,20 @@ def index(customer_username, customer_id):
     return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response['Items'])
 
 
-@application.route("/menu", methods=['GET', 'POST'])
-def menuPage():
-    table = dynamodb.Table('menu')
-    response = table.scan(
-        FilterExpression=Attr('menu_id').eq('menu_1')
-    )
-    data = json.dumps(response['Items'], cls=DecimalEncoder)
-    if request.method == 'GET':
-        return render_template('menu.html', data=data)
+# @application.route("/menu", methods=['GET', 'POST'])
+# def menuPage():
+#     table = dynamodb.Table('menu')
+#     response = table.scan(
+#         FilterExpression=Attr('menu_id').eq('menu_1')
+#     )
+#     data = json.dumps(response['Items'], cls=DecimalEncoder)
+#     if request.method == 'GET':
+#         return render_template('menu.html', data=data)
 
-    if request.method == 'POST':
-        menu_item_id = request.form['menu_item_id']
-        print(menu_item_id)
-        return render_template('menu.html', data=data)
+#     if request.method == 'POST':
+#         menu_item_id = request.form['menu_item_id']
+#         print(menu_item_id)
+#         return render_template('menu.html', data=data)
 
 
 # @application.route('/restaurant/<restaurant_id>', methods=['POST'])
@@ -98,7 +98,6 @@ def menuPage():
 #         restaurant_id = request.form['restaurant_id']
 
 #         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
-
 
 
 @application.route('/login', methods=['GET', 'POST'])
