@@ -3,18 +3,18 @@
     <div class="container text-center">
         <div id="jumbo-text">
             <h1 class="display-4">Menufy</h1>
-            <p class="lead">You made it to {{restaurant_id}} Page!!!</p>
+            <p class="lead">Welcome to {{restaurant_id}}</p>
         </div>
     </div>
 </div>
 
 <div>
-    <table class="table table-dark" id="menu" align="center">
+    <table class="table table-dark" id="menu">
     </table>
 
 
     <script type="text/javascript">
-        var response = JSON.parse('{{ data |  safe }}');
+        var menu_data = JSON.parse('{{ menu_data |  safe }}');
         var text = "<tr>";
         var headers = ['Menu Item', 'Description', 'Unit Price', ]
 
@@ -27,13 +27,13 @@
 
         text += "</tr>";
 
-        for (i = 0; i < response.length; i++) {
+        for (i = 0; i < menu_data.length; i++) {
             text += "<tr>";
-            for (key in response[i]) {
+            for (key in menu_data[i]) {
                 if (key == "item_name" || key == 'item_description' || key == 'item_unit_price')
-                    text += '<td scope="row">' + response[i][key] + "</td>";
+                    text += '<td scope="row">' + menu_data[i][key] + "</td>";
             }
-            text += '<td class="menu"> <form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
+            text += '<td class="menu"> <form action="" method="post"><button name="menu_item_id" value=' + menu_data[i]["menu_item_id"] + '> Add </button></form></td>';
             text += "</tr>";
         }
         document.getElementById("menu").innerHTML = text;

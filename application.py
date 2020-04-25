@@ -9,14 +9,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from utils import *
 import json
-# import restaurant
+import restaurant
 import uuid
 import decimal
 from decimal import Decimal
 
 
 application = Flask(__name__)
-# application.register_blueprint(restaurant.bp)
+application.register_blueprint(restaurant.bp)
 
 TABLE_NAME = "customer"
 dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
@@ -62,26 +62,34 @@ def menuPage():
 @application.route('/restaurant/<restaurant_id>', methods=['POST'])
 @check_user_login
 def restaurantViews(customer_username, customer_id, restaurant_id):
+
+    # get restaurant name
+    restaurant_table=dynamodb.Table('restaurant') 
+    restaurant_data = restaurant_table.scan(
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+    )
+    restaurant_name = restaurant_data['Items'][0]['restaurant_name']
+
+    # get menu id
     menu_table=dynamodb.Table('menu') 
     response = menu_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
     menu_id = response['Items'][0]['menu_id']
 
-    print('menu id found is ' + menu_id)
-
+    # get menu items
     menu_item_table=dynamodb.Table('menu_item')
     response = menu_item_table.scan(
         FilterExpression=Attr('menu_id').eq(menu_id)
     )
     
-    data = json.dumps(response['Items'], cls=DecimalEncoder)
+    menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
     
     """ Route for restaurant views page """
     restaurant_id = request.form['restaurant_id']
     # print(restaurant_id)
 
-    return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, data=data)
+    return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
 
 
