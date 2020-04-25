@@ -8,9 +8,8 @@
     </div>
 </div>
 
-<div class='menu'>
-
-    <table id="menu" align="center">
+<div>
+    <table class="table table-dark" id="menu" align="center">
     </table>
 
 
@@ -20,11 +19,11 @@
         var headers = ['Menu Item', 'Description', 'Unit Price', ]
 
         for (i = 0; i < headers.length; i++) {
-            text += '<td class="menu_items">' + headers[i] + '</td>';
+            text += '<th scope="col">' + headers[i] + '</th>';
         }
 
         // add column for add column
-        text += '<td class="menu_items"></td>';
+        text += '<td scope="col"></td>';
 
         text += "</tr>";
 
@@ -32,7 +31,7 @@
             text += "<tr>";
             for (key in response[i]) {
                 if (key == "item_name" || key == 'item_description' || key == 'item_unit_price')
-                    text += '<td class="menu_items">' + response[i][key] + "</td>";
+                    text += '<td scope="row">' + response[i][key] + "</td>";
             }
             text += '<td class="menu"> <form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
             text += "</tr>";
