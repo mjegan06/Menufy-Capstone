@@ -60,44 +60,44 @@ def menuPage():
         return render_template('menu.html', data=data)
 
 
-@application.route('/restaurant/<restaurant_id>', methods=['POST'])
-@check_user_login
-def restaurantViews(customer_username, customer_id, restaurant_id):
-    # get restaurant name
-    restaurant_table=dynamodb.Table('restaurant') 
-    restaurant_data = restaurant_table.scan(
-        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
-    )
-    restaurant_name = restaurant_data['Items'][0]['restaurant_name']
+# @application.route('/restaurant/<restaurant_id>', methods=['POST'])
+# @check_user_login
+# def restaurantViews(customer_username, customer_id, restaurant_id):
+#     # get restaurant name
+#     restaurant_table=dynamodb.Table('restaurant') 
+#     restaurant_data = restaurant_table.scan(
+#         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+#     )
+#     restaurant_name = restaurant_data['Items'][0]['restaurant_name']
 
-    # get menu id
-    menu_table=dynamodb.Table('menu') 
-    response = menu_table.scan(
-        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
-    )
-    menu_id = response['Items'][0]['menu_id']
+#     # get menu id
+#     menu_table=dynamodb.Table('menu') 
+#     response = menu_table.scan(
+#         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+#     )
+#     menu_id = response['Items'][0]['menu_id']
 
-    # get menu items
-    menu_item_table=dynamodb.Table('menu_item')
-    response = menu_item_table.scan(
-        FilterExpression=Attr('menu_id').eq(menu_id)
-    )
+#     # get menu items
+#     menu_item_table=dynamodb.Table('menu_item')
+#     response = menu_item_table.scan(
+#         FilterExpression=Attr('menu_id').eq(menu_id)
+#     )
     
-    menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+#     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
 
-    if request.method == 'GET':
-        """ Route for restaurant views page """
-        restaurant_id = request.form['restaurant_id']
+#     if request.method == 'GET':
+#         """ Route for restaurant views page """
+#         restaurant_id = request.form['restaurant_id']
 
-        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
+#         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
-    if request.method == 'POST':
+#     if request.method == 'POST':
 
         
-        """ Route for restaurant views page """
-        restaurant_id = request.form['restaurant_id']
+#         """ Route for restaurant views page """
+#         restaurant_id = request.form['restaurant_id']
 
-        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
+#         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
 
 
