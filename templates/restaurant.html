@@ -10,7 +10,7 @@
 
 <div>
 
-    <table id="menu" align="center">
+    <table class="menu" align="center">
     </table>
 
 
@@ -24,7 +24,7 @@
         }
 
         // add column for add column
-        text += '<td></td>';
+        text += '<td class="menu"></td>';
 
         text += "</tr>";
 
@@ -34,7 +34,7 @@
                 if (key == "item_name" || key == 'item_description' || key == 'item_unit_price')
                     text += "<td>" + response[i][key] + "</td>";
             }
-            text += "<td>" + '<form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
+            text += '<td class="menu"> <form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
             text += "</tr>";
         }
         document.getElementById("menu").innerHTML = text;
