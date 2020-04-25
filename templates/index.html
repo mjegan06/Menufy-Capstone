@@ -1,18 +1,16 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <div class="jumbotron rounded-0">
-        <div class="container text-center">
-            <div id="jumbo-text">
-                <h1 class="display-4">Menufy</h1>
-                <p class="lead">A list of Restaurants to Order From</p>
+{% extends "base.html" %} {% block content %}
+<div class="jumbotron rounded-0">
+    <div class="container text-center">
+        <div id="jumbo-text">
+            <h1 class="display-4">Menufy</h1>
+            <p class="lead">A list of Restaurants to Order From</p>
 
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="restaurantListButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select Restaurant</button>
                 <div class="dropdown-menu" aria-labelledby="restaurantListButton">
                     {% for row in restaurant %}
                     <div class="dropdown-item">
-                        <form id="restaurant_form{{row.restaurant_id}}" method="post" action="/restaurant/{{row.restaurant_id}}">
+                        <form id="restaurant_form{{row.restaurant_id}}" method="get" action="/restaurant/{{row.restaurant_id}}">
                             <input type="hidden" id="restaurant_id" name="restaurant_id" value="{{row.restaurant_id}}">
                             <a class="btn btn-link" onclick="document.getElementById('restaurant_form{{row.restaurant_id}}').submit();" role="menuitem" tabindex="-1">{{row.restaurant_name}}</a>
                         </form>
@@ -20,7 +18,7 @@
                     {% endfor %}
                 </div>
             </div>
-            </div>
         </div>
     </div>
+</div>
 {% endblock %}

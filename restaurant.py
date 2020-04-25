@@ -57,7 +57,7 @@ def get_restaurant(rid):
 		Key={'restaurant_id': rid}
 	)
 
-	return (json.dumps(response['Item'], cls=DecimalEncoder), 200, {'Content-Type': 'application/json'})
+	# return (json.dumps(response['Item'], cls=DecimalEncoder), 200, {'Content-Type': 'application/json'})
 
 @bp.route('/<rid>', methods=['DELETE'])
 def delete_restaurant(rid):
