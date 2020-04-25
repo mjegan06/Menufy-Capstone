@@ -63,11 +63,12 @@ def menuPage():
 @check_user_login
 def restaurantViews(customer_username, customer_id, restaurant_id):
     menu_table=dynamodb.Table('menu') 
-    menu_id = menu_table.scan(
+    response = menu_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
+    menu_id = response['Items']['menu_id']
 
-    print(menu_id)
+    print('menu id found is' + menu_id)
 
     menu_item_table=dynamodb.Table('menu_item')
     response = menu_item_table.scan(
