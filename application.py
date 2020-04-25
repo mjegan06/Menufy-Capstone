@@ -36,16 +36,17 @@ Session(application)
 @application.route("/index")
 @check_user_login
 def index(customer_username, customer_id):
-    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+    table = dynamodb.Table('restaurant')  # pylint: disable=no-member
     response = table.scan(
         ProjectionExpression='restaurant_id, restaurant_name'
     )
 
     return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response['Items'])
 
+
 @application.route("/menu", methods=['GET', 'POST'])
 def menuPage():
-    table=dynamodb.Table('menu')
+    table = dynamodb.Table('menu')
     response = table.scan(
         FilterExpression=Attr('menu_id').eq('menu_1')
     )
@@ -64,30 +65,36 @@ def menuPage():
 def restaurantViews(customer_username, customer_id, restaurant_id):
 
     # get restaurant name
-    restaurant_table=dynamodb.Table('restaurant') 
+    restaurant_table = dynamodb.Table('restaurant')
     restaurant_data = restaurant_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
     restaurant_name = restaurant_data['Items'][0]['restaurant_name']
 
     # get menu id
-    menu_table=dynamodb.Table('menu') 
+    menu_table = dynamodb.Table('menu')
     response = menu_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
     menu_id = response['Items'][0]['menu_id']
 
     # get menu items
-    menu_item_table=dynamodb.Table('menu_item')
+    menu_item_table = dynamodb.Table('menu_item')
     response = menu_item_table.scan(
         FilterExpression=Attr('menu_id').eq(menu_id)
     )
-    
+
     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+    added = []
+    if request.method == 'POST':
+        added.append(request.form['menu_item_id'])
     
+    print(added)
+
+
     """ Route for restaurant views page """
     restaurant_id = request.form['restaurant_id']
-    # print(restaurant_id)
 
     return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
