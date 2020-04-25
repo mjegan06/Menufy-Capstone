@@ -68,19 +68,20 @@ def restaurantViews(customer_username, customer_id, restaurant_id):
     )
     menu_id = response['Items'][0]['menu_id']
 
-    print('menu id found is' + menu_id)
+    print('menu id found is ' + menu_id)
 
     menu_item_table=dynamodb.Table('menu_item')
     response = menu_item_table.scan(
         FilterExpression=Attr('menu_id').eq(menu_id)
     )
-    print(response)
+    
+    data = json.dumps(response['Items'], cls=DecimalEncoder)
     
     """ Route for restaurant views page """
     restaurant_id = request.form['restaurant_id']
     # print(restaurant_id)
 
-    return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id)
+    return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, data=data)
 
 
 

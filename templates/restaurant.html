@@ -7,4 +7,37 @@
         </div>
     </div>
 </div>
+
+<div>
+
+    <table id="menu" align="center">
+    </table>
+
+
+    <script type="text/javascript">
+        var response = JSON.parse('{{ data |  safe }}');
+        var text = "<tr>";
+        var headers = ['Menu Item', 'Description', 'Unit Price', ]
+
+        for (i = 0; i < headers.length; i++) {
+            text += '<td>' + headers[i] + '</td>';
+        }
+
+        // add column for add column
+        text += '<td></td>';
+
+        text += "</tr>";
+
+        for (i = 0; i < response.length; i++) {
+            text += "<tr>";
+            for (key in response[i]) {
+                if (key == "item_name" || key == 'item_description' || key == 'item_unit_price')
+                    text += "<td>" + response[i][key] + "</td>";
+            }
+            text += "<td>" + '<form action="" method="post"><button name="menu_item_id" value=' + response[i]["menu_item_id"] + '> Add </button></form></td>';
+            text += "</tr>";
+        }
+        document.getElementById("menu").innerHTML = text;
+    </script>
+</div>
 {% endblock %}
