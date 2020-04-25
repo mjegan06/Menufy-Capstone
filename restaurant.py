@@ -57,7 +57,7 @@ def create_restaurant():
 
 
 
-@bp.route('/<rid>', methods=['GET','POST'])
+@bp.route('/<restaurant_id>', methods=['GET','POST'])
 @check_user_login
 def get_restaurant(customer_username, customer_id, restaurant_id):
 	# get restaurant name
@@ -91,15 +91,15 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
 	# response = table.get_item(
-	# 	Key={'restaurant_id': rid}
+	# 	Key={'restaurant_id': restaurant_id}
 	# )
 
 	# return (json.dumps(response['Item'], cls=DecimalEncoder), 200, {'Content-Type': 'application/json'})
 
-@bp.route('/<rid>', methods=['DELETE'])
-def delete_restaurant(rid):
+@bp.route('/<restaurant_id>', methods=['DELETE'])
+def delete_restaurant(restaurant_id):
 	response = table.delete_item(
-		Key={'restaurant_id': rid}
+		Key={'restaurant_id': restaurant_id}
 	)
 
 	return ("", 204)
