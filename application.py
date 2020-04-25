@@ -45,7 +45,7 @@ def index(customer_username, customer_id):
 
 @application.route("/menu", methods=['GET', 'POST'])
 def menuPage():
-    table=dynamodb.Table('menu_item') # pylint: disable=no-member
+    table=dynamodb.Table('menu')
     response = table.scan(
         FilterExpression=Attr('menu_id').eq('menu_1')
     )
@@ -58,15 +58,29 @@ def menuPage():
         print(menu_item_id)
         return render_template('menu.html', data=data)
 
+
 @application.route('/restaurant/<restaurant_id>', methods=['POST'])
 @check_user_login
 def restaurantViews(customer_username, customer_id, restaurant_id):
-    """ Route for restaurant views page """
+    menu_table=dynamodb.Table('menu') 
+    menu_id = menu_table.scan(
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+    )
 
+    print(menu_id)
+
+    menu_item_table=dynamodb.Table('menu_item')
+    response = menu_item_table.scan(
+        FilterExpression=Attr('menu_id').eq(menu_id)
+    )
+    print(response)
+    
+    """ Route for restaurant views page """
     restaurant_id = request.form['restaurant_id']
-    print(restaurant_id)
+    # print(restaurant_id)
 
     return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id)
+
 
 
 @application.route('/login', methods=['GET', 'POST'])
