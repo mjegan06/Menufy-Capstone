@@ -73,11 +73,11 @@
     display: none;
 }
 
-.menu td {
+#menu_items {
     padding: 10px;
 }
 
-.menu table {
+#menu {
     border-spacing: 10px 2px;
     border-collapse: separate;
 }
