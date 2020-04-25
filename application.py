@@ -66,7 +66,7 @@ def restaurantViews(customer_username, customer_id, restaurant_id):
     response = menu_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
-    menu_id = response['Items']['menu_id']
+    menu_id = response['Items'][0]['menu_id']
 
     print('menu id found is' + menu_id)
 
