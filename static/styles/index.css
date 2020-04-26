@@ -40,10 +40,16 @@
     margin: 0 0 15px;
 }
 
-.form-control,
 .btn {
     min-height: 40px;
     border-radius: 2px;
+    margin-bottom: 50px;
+    float: right;
+}
+
+.form-control {
+    min-height: 40px;
+    border: none;
     margin-bottom: 50px;
     float: right;
 }
