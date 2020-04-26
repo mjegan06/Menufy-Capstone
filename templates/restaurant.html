@@ -15,6 +15,14 @@
         </tbody>
     </table>
 
+
+    <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}/{{customer_id}}">
+        <input type="hidden" id="restaurant_id" name="restaurant_id" value="Post sent from {{restaurant_id}} menu!">
+        <a class="btn btn-link" onclick="document.getElementById('order_form{{restaurant_id}}').submit();" role="menuitem" tabindex="-1">Proceed to Checkout</a>
+    </form>
+
+
+
     <script type="text/javascript">
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
 
@@ -33,19 +41,23 @@
             }, {
                 "<>": "td",
                 "children": [{
-                    '<>': 'button',
-                    'id': 'sub',
-                    'class': 'sub',
-                    'html': '-'
-                }, {
-                    '<>': 'input',
-                    'type': 'text',
-                    'value': '0'
-                }, {
-                    '<>': 'button',
-                    'id': 'add',
-                    'class': 'add',
-                    'html': '+'
+                    "<>": "form",
+                    "children": [{
+                        '<>': 'button',
+                        'id': 'sub',
+                        'class': 'sub',
+                        'html': '-'
+                    }, {
+                        '<>': 'input',
+                        'id': '${menu_item_id}',
+                        'type': 'text',
+                        'value': '0'
+                    }, {
+                        '<>': 'button',
+                        'id': 'add',
+                        'class': 'add',
+                        'html': '+'
+                    }]
                 }]
             }]
         };
