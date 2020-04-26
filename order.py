@@ -23,7 +23,7 @@ class DecimalEncoder(json.JSONEncoder):
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
-@bp.route('/<restaurant_id>/<customer_id>', methods=['GET','POST'])
+@bp.route('/<restaurant_id>', methods=['GET','POST'])
 @check_user_login
 def get_order(customer_username, customer_id, restaurant_id):
     
