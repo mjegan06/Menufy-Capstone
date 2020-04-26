@@ -44,6 +44,8 @@
 .btn {
     min-height: 38px;
     border-radius: 2px;
+    margin-bottom: 50px;
+    float: right;
 }
 
 .login-btn {
@@ -67,7 +69,6 @@
 }
 
 input {
-    text-align: center;
     width: 40px;
     padding: 0px;
 }
