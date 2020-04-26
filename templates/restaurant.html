@@ -22,6 +22,7 @@
                 "tag": "tbody",
                 "children": [{
                     "tag": "tr",
+                    'id': '${menu_item_id}',
                     "children": [{
                         "tag": "td",
                         "html": "${item_name}"
@@ -31,6 +32,24 @@
                     }, {
                         "tag": "td",
                         "html": "${item_unit_price}"
+                    }, {
+                        "tag": "td",
+                        "html": "${item_unit_price}"
+                    }, {
+                        '<>': 'button',
+                        'id': 'sub',
+                        'class': 'sub',
+                        'html': '-'
+                    }, {
+                        '<>': 'input',
+                        'id': '${menu_item_id}',
+                        'class': 'item_qty',
+                        'value': '0'
+                    }, {
+                        '<>': 'button',
+                        'id': 'add',
+                        'class': 'add',
+                        'html': '+'
                     }]
                 }]
             }]
@@ -63,12 +82,12 @@
         // }
         // document.getElementById("menu").innerHTML = text;
 
-        // $('.add').click(function() {
-        //     $(this).prev().val(+$(this).prev().val() + 1);
-        // });
-        // $('.sub').click(function() {
-        //     if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
-        // });
+        $('.add').click(function() {
+            $(this).prev().val(+$(this).prev().val() + 1);
+        });
+        $('.sub').click(function() {
+            if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
+        });
     </script>
 </div>
 {% endblock %}
