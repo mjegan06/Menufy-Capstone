@@ -66,6 +66,13 @@
     width: 40px;
 }
 
+input {
+    text-align: center;
+    width: 40px;
+    margin: 4px;
+    color: salmon;
+}
+
 
 /* #map {
     top: 10%;
