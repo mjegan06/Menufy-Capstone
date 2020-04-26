@@ -34,22 +34,31 @@
                         "html": "${item_unit_price}"
                     }, {
                         "tag": "td",
-                        '<>': 'button',
-                        'id': 'sub',
-                        'class': 'sub',
-                        'html': '-'
+                        "children": [{
+                            '<>': 'button',
+                            'id': 'sub',
+                            'class': 'sub',
+                            'html': '-'
+                        }]
+
                     }, {
                         "tag": "td",
-                        '<>': 'input',
-                        'id': '${menu_item_id}',
-                        'class': 'input-group input-group-sm mb-3',
-                        'value': '0'
+                        "children": [{
+                            '<>': 'input',
+                            'id': '${menu_item_id}',
+                            'class': 'input-group input-group-sm mb-3',
+                            'value': '0'
+                        }]
+
                     }, {
                         "tag": "td",
-                        '<>': 'button',
-                        'id': 'add',
-                        'class': 'add',
-                        'html': '+'
+                        "children": [{
+                            '<>': 'button',
+                            'id': 'add',
+                            'class': 'add',
+                            'html': '+'
+                        }]
+
                     }]
                 }]
             }]
