@@ -9,14 +9,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_session import Session
 from utils import *
 import json
-import restaurant
 import uuid
 import decimal
 from decimal import Decimal
+import restaurant
+import order
 
 
 application = Flask(__name__)
 application.register_blueprint(restaurant.bp)
+application.register_blueprint(order.bp)
 
 TABLE_NAME = "customer"
 dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
