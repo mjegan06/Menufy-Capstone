@@ -82,18 +82,13 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
     
     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
 
-    order_list = []
-
     if request.method == 'GET':
 
         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
     if request.method == 'POST':
         menu_item_id = request.form['menu_item_id']
-        order_list.append(menu_item_id)
-        print('Detected add: ' + menu_item_id)
-        print('Current order list: '.join(str(x) for x in order_list))
-        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
+        # return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
     # response = table.get_item(
     # 	Key={'restaurant_id': restaurant_id}
