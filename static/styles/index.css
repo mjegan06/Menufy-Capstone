@@ -62,7 +62,12 @@
     font-size: 18px;
 }
 
-#map {
+.form-group {
+    width: 10px;
+}
+
+
+/* #map {
     top: 10%;
     bottom: 0;
     width: 100%;
@@ -71,13 +76,4 @@
 
 #add-fact-form {
     display: none;
-}
-
-.menu_items {
-    padding: 10px;
-}
-
-.menu {
-    border-spacing: 10px 2px;
-    border-collapse: separate;
-}
+} */
