@@ -9,53 +9,53 @@
 </div>
 
 <div>
-    <table id="menu" class="table table-hover table-striped table-dark ml-3 mr-3">
+    <table class="table table-hover table-striped table-dark ml-3 mr-3">
+        <tbody id="menu">
+
+        </tbody>
     </table>
 
     <script type="text/javascript">
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
 
         var transform = {
-            "<>": "tbody",
+            "<>": "tr",
+            'id': '${menu_item_id}',
             "children": [{
-                "<>": "tr",
-                'id': '${menu_item_id}',
+                "<>": "td",
+                "html": "${item_name}"
+            }, {
+                "<>": "td",
+                "html": "${item_description}"
+            }, {
+                "<>": "td",
+                "html": "${item_unit_price}"
+            }, {
+                "<>": "td",
                 "children": [{
-                    "<>": "tr",
-                    "scope": "row",
-                    "html": "${item_name}"
-                }, {
-                    "<>": "td",
-                    "html": "${item_description}"
-                }, {
-                    "<>": "td",
-                    "html": "${item_unit_price}"
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'id': 'sub',
-                        'class': 'sub',
-                        'html': '-'
-                    }]
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'input',
-                        'id': '${menu_item_id}',
-                        'class': 'input-group input-group-sm readonly',
-                        'value': '0'
-                    }]
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'id': 'add',
-                        'class': 'add',
-                        'html': '+'
-                    }]
+                    '<>': 'button',
+                    'id': 'sub',
+                    'class': 'sub',
+                    'html': '-'
+                }]
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'input',
+                    'id': '${menu_item_id}',
+                    'class': 'input-group input-group-sm readonly',
+                    'value': '0'
+                }]
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'id': 'add',
+                    'class': 'add',
+                    'html': '+'
                 }]
             }]
+
         };
 
         $('#menu').html(json2html.transform(menu_data, transform));
