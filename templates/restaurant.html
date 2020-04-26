@@ -17,7 +17,7 @@
 
 
     <form class="form-control" id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
-        <input type="hidden" id="restaurant_id" name="restaurant_id" value="Post sent from {{restaurant_id}} menu!">
+        <input type="hidden" id="proceed_checkout" name="proceed_checkout" value="Post sent from {{restaurant_id}} menu!">
         <a class="btn btn-warning" onclick="document.getElementById('order_form{{restaurant_id}}').submit();" role="menuitem" tabindex="-1">Proceed to Checkout</a>
     </form>
 
