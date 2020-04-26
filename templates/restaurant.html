@@ -16,46 +16,43 @@
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
 
         var transform = {
-            "tag": "table",
+            "<>": "tbody",
             "children": [{
-                "tag": "tbody",
+                "<>": "tr",
+                'id': '${menu_item_id}',
                 "children": [{
-                    "tag": "tr",
-                    'id': '${menu_item_id}',
+                    "<>": "tr",
+                    "scope": "row",
+                    "html": "${item_name}"
+                }, {
+                    "<>": "td",
+                    "html": "${item_description}"
+                }, {
+                    "<>": "td",
+                    "html": "${item_unit_price}"
+                }, {
+                    "<>": "td",
                     "children": [{
-                        "tag": "th",
-                        "scope": "row",
-                        "html": "${item_name}"
-                    }, {
-                        "tag": "td",
-                        "html": "${item_description}"
-                    }, {
-                        "tag": "td",
-                        "html": "${item_unit_price}"
-                    }, {
-                        "tag": "td",
-                        "children": [{
-                            '<>': 'button',
-                            'id': 'sub',
-                            'class': 'sub',
-                            'html': '-'
-                        }]
-                    }, {
-                        "tag": "td",
-                        "children": [{
-                            '<>': 'input',
-                            'id': '${menu_item_id}',
-                            'class': 'input-group input-group-sm readonly',
-                            'value': '0'
-                        }]
-                    }, {
-                        "tag": "td",
-                        "children": [{
-                            '<>': 'button',
-                            'id': 'add',
-                            'class': 'add',
-                            'html': '+'
-                        }]
+                        '<>': 'button',
+                        'id': 'sub',
+                        'class': 'sub',
+                        'html': '-'
+                    }]
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'input',
+                        'id': '${menu_item_id}',
+                        'class': 'input-group input-group-sm readonly',
+                        'value': '0'
+                    }]
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'id': 'add',
+                        'class': 'add',
+                        'html': '+'
                     }]
                 }]
             }]
