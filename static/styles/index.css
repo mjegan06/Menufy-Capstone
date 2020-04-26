@@ -19,14 +19,6 @@
     border-radius: 10px;
 }
 
-.bg-dark {
-    max-height: 70px;
-}
-
-.navbar-nav .navbar-inner {
-    text-align: center;
-}
-
 .dropdown button {
     border: 1px solid orange;
     margin-top: 5%;
