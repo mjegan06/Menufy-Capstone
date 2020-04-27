@@ -9,18 +9,23 @@
 </div>
 
 <div>
-    <table class="table table-hover table-striped table-dark">
-        <tbody id="menu">
+    <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+        <table class="table table-hover table-striped table-dark">
+            <tbody id="menu">
 
-        </tbody>
-    </table>
-
-
+            </tbody>
+        </table>
+        <div class="form-group">
+            <button type="submit" class="btn btn-warning">Proceed to checkout</button>
+        </div>
+    </form>
+    <!--
     <form class="form-control" id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
-        <input type="hidden" id="proceed_checkout" name="proceed_checkout" value="Post sent from {{restaurant_id}} menu!">
+        <input type="hidden" id="document.getElementById('menu')" name="proceed_checkout" value="Post sent from {{restaurant_id}} menu!"
+        
         <a class="btn btn-warning" onclick="document.getElementById('order_form{{restaurant_id}}').submit();" role="menuitem" tabindex="-1">Proceed to Checkout</a>
     </form>
-
+    -->
 
 
     <script type="text/javascript">
@@ -42,6 +47,7 @@
                 "<>": "td",
                 "children": [{
                     '<>': 'button',
+                    'type': 'button',
                     'id': 'sub',
                     'class': 'sub',
                     'html': '-'
@@ -49,9 +55,11 @@
                     '<>': 'input',
                     'id': '${menu_item_id}',
                     'type': 'text',
+                    'name': 'menu_item',
                     'value': '0'
                 }, {
                     '<>': 'button',
+                    'type': 'button',
                     'id': 'add',
                     'class': 'add',
                     'html': '+'

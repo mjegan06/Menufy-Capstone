@@ -26,8 +26,11 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 @bp.route('/<restaurant_id>', methods=['GET','POST'])
 @check_user_login
 def get_order(customer_username, customer_id, restaurant_id):
+
+    #content = request.
+    #print(content)
     
-    order = request.form["proceed_checkout"]
+    order = request.form.getlist('menu_item')
     print(order)
 
     return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=order)

@@ -61,21 +61,21 @@ def create_restaurant():
 @check_user_login
 def get_restaurant(customer_username, customer_id, restaurant_id):
     # get restaurant name
-    restaurant_table=dynamodb.Table('restaurant') 
+    restaurant_table=dynamodb.Table('restaurant') # pylint: disable=no-member
     restaurant_data = restaurant_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
     restaurant_name = restaurant_data['Items'][0]['restaurant_name']
 
     # get menu id
-    menu_table=dynamodb.Table('menu') 
+    menu_table=dynamodb.Table('menu') # pylint: disable=no-member
     response = menu_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
     menu_id = response['Items'][0]['menu_id']
 
     # get menu items
-    menu_item_table=dynamodb.Table('menu_item')
+    menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
     response = menu_item_table.scan(
         FilterExpression=Attr('menu_id').eq(menu_id)
     )
