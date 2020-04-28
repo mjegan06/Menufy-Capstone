@@ -29,6 +29,7 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 @check_user_login
 def get_order(customer_username, customer_id, restaurant_id):
 
+    # generate order_id
     order_id = str(uuid.uuid4())
     
     menu_items = request.form.getlist('menu_item_id')
@@ -49,15 +50,23 @@ def get_order(customer_username, customer_id, restaurant_id):
             del res[key]
     print(res)
 
-    res['order_time'] = time_string
-    res['order_id'] = order_id
-    print(res)
+    order = dict(menu_items=res)
+
+    order['order_time'] = time_string
+    order['order_id'] = order_id
+    order['order_type'] = None
+    order['order_fulfilled_time'] = None
+    order['order_status'] = None
+    order['customer_id'] = customer_id
+    order['restaurant_id'] = restaurant_id
+    order['table_id'] = None
+    print(order)
 
     #convert the string back into time
     #string_to_time = time.strptime(time_string, "%m/%d/%Y, %H:%M:%S")
     #print(string_to_time)
 
-    return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=res)
+    return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=order)
     
     # # get restaurant name
     # restaurant_table=dynamodb.Table('restaurant') 
