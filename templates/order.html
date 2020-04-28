@@ -6,7 +6,9 @@
 </div>
 
 <div>
-    {{ order }}
+    {% for key, value in order.items() %}
+        <p><b>{{ key }}: </b>{{ value }}</p>
+    {% endfor %}
 </div>
 
 {% endblock %}
