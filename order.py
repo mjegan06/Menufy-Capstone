@@ -7,6 +7,7 @@ from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask, Blueprint, request, make_response, flash, Response, render_template,  session, redirect, url_for
 from flask_session import Session
 from utils import *
+import time
 import json
 import decimal
 import uuid
@@ -37,6 +38,9 @@ def get_order(customer_username, customer_id, restaurant_id):
     item_quantity = list(map(int, request.form.getlist('menu_item')))
     print("List of item quantities: " + str(item_quantity))
 
+    #get the current time and convert it into a string
+    named_tuple = time.localtime() # get struct_time
+    time_string = time.strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
 
     res = dict(zip(menu_items, item_quantity))
     print(res)
@@ -45,7 +49,14 @@ def get_order(customer_username, customer_id, restaurant_id):
             del res[key]
     print(res)
 
-    
+    res['order_time'] = time_string
+    res['order_id'] = order_id
+    print(res)
+
+    #convert the string back into time
+    #string_to_time = time.strptime(time_string, "%m/%d/%Y, %H:%M:%S")
+    #print(string_to_time)
+
     return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=res)
     
     # # get restaurant name
