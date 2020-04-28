@@ -35,8 +35,17 @@
             "<>": "tr",
             'id': '${menu_item_id}',
             "children": [{
+                "<>": "input",
+                "type": "hidden",
+                'id': '${menu_item_id}',
+                "name": "menu_item_id",
+                "value": '${menu_item_id}'
+            },
+                {
                 "<>": "td",
-                "html": "${item_name}"
+                'name': 'item_name',
+                "html": "${item_name}",
+                "value": "item_name"
             }, {
                 "<>": "td",
                 "html": "${item_description}"
