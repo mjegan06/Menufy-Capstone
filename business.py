@@ -1,0 +1,30 @@
+import os
+import sys
+import io
+import csv
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
+from flask import Flask, Blueprint, request, make_response, flash, Response, render_template,  session, redirect, url_for
+from flask_session import Session
+from utils import *
+import time
+import json
+import decimal
+import uuid
+
+dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
+table = dynamodb.Table('restaurant') # pylint: disable=no-member
+
+# Helper class to convert a DynamoDB item to JSON.
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):  # pylint: disable=method-hidden
+        if isinstance(o, decimal.Decimal):
+            return str(o)
+        return super(DecimalEncoder, self).default(o)
+
+bp = Blueprint('business', __name__, url_prefix='/business')
+
+@bp.route('', methods=['GET'])
+def business_login():
+    # return (json.dumps(response['Items'], cls=DecimalEncoder))
+    return render_template('business_login.html')

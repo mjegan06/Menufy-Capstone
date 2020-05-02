@@ -19,14 +19,6 @@
             <button type="submit" class="btn btn-warning">Proceed to checkout</button>
         </div>
     </form>
-    <!--
-    <form class="form-control" id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
-        <input type="hidden" id="document.getElementById('menu')" name="proceed_checkout" value="Post sent from {{restaurant_id}} menu!"
-        
-        <a class="btn btn-warning" onclick="document.getElementById('order_form{{restaurant_id}}').submit();" role="menuitem" tabindex="-1">Proceed to Checkout</a>
-    </form>
-    -->
-
 
     <script type="text/javascript">
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
@@ -40,8 +32,7 @@
                 'id': '${menu_item_id}',
                 "name": "menu_item_id",
                 "value": '${menu_item_id}'
-            },
-                {
+            }, {
                 "<>": "td",
                 'name': 'item_name',
                 "html": "${item_name}",
@@ -84,30 +75,6 @@
         $('.sub').click(function() {
             if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         });
-
-        // var text = "<tr>";
-        // var headers = ['Menu Item', 'Description', 'Unit Price', ]
-
-        // for (i = 0; i < headers.length; i++) {
-        //     text += '<th scope="col">' + headers[i] + '</th>';
-        // }
-
-        // // add column for add column
-        // text += '<td scope="col"></td>';
-
-        // text += "</tr>";
-
-        // for (i = 0; i < menu_data.length; i++) {
-        //     text += "<tr>";
-        //     for (key in menu_data[i]) {
-        //         if (key == "item_name" || key == 'item_description' || key == 'item_unit_price')
-        //             text += '<td scope="row">' + menu_data[i][key] + "</td>";
-        //     }
-        //     // text += '<td class="menu"> <form action="" method="post"><button name="menu_item_id" value=' + menu_data[i]["menu_item_id"] + '> Add </button></form></td>';
-        //     text += '<td><button type="button" id="sub" class="sub">-</button> <input type="text" class="input-group input-group-sm mb-3" id=' + menu_data[i]["menu_item_id"] + 'value="0" class="field" readonly /><button type="button" id="add" class="add">+</button></td>';
-        //     text += "</tr>";
-        // }
-        // document.getElementById("menu").innerHTML = text;
     </script>
 </div>
 {% endblock %}
