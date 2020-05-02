@@ -24,7 +24,15 @@ class DecimalEncoder(json.JSONEncoder):
 
 bp = Blueprint('business', __name__, url_prefix='/business')
 
-@bp.route('', methods=['GET'])
-def business_login():
-    # return (json.dumps(response['Items'], cls=DecimalEncoder))
-    return render_template('business_login.html')
+
+@bp.route('/home', methods=['GET'])
+@business_check_user_login
+def business_home(restaurant_username, restaurant_id):
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+    row = table.scan(
+        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+    )
+
+    restaurant_name = row['Items'][0]['restaurant_name']
+
+    return render_template('business_home.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username)

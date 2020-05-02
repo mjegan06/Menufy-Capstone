@@ -92,7 +92,7 @@ def login(customer_username, customer_id):
 def signup(customer_username, customer_id):
     """ Route for user registration """
     if customer_username:
-        flash("Please logout First", "danger")
+        flash("Please logout first", "danger")
         return render_template('signup.html')
 
     table = dynamodb.Table('customer') # pylint: disable=no-member
@@ -176,7 +176,7 @@ def business_login(restaurant_username, restaurant_id):
     """ Route for business login """
 
     if restaurant_username:
-        return render_template('business.html')
+        return redirect(url_for('business.business_home'))
 
     if request.method == 'POST':
         restaurant_username = request.form['username']
@@ -197,7 +197,7 @@ def business_login(restaurant_username, restaurant_id):
         elif check_password_hash(row['Items'][0]['password'], pw):
             session['restaurant_id'] = row['Items'][0]['restaurant_id']
             session['restaurant_username'] = restaurant_username
-            return redirect(url_for('index'))
+            return redirect(url_for('business.business_home'))
 
         # If incorrect password
         else:
@@ -212,8 +212,8 @@ def business_login(restaurant_username, restaurant_id):
 def business_signup(restaurant_username, restaurant_id):
     """ Route for user registration """
     if restaurant_username:
-        flash("Please logout First", "danger")
-        return render_template('signup.html')
+        flash("Please logout first", "danger")
+        return render_template('business_signup.html')
 
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
 
@@ -275,8 +275,8 @@ def business_signup(restaurant_username, restaurant_id):
 @application.route('/business_logout')
 def business_logout():
     """ Route for business logout """
-    session.pop('bsuiness_username', None)
-    session.pop('bsuiness_id', None)
+    session.pop('restaurant_username', None)
+    session.pop('restaurant_id', None)
     return redirect(url_for('index'))
 
 

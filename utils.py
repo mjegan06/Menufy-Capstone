@@ -49,7 +49,7 @@ def business_login_required(fn):
             restaurant_id = session['restaurant_id']
             return fn(restaurant_username, restaurant_id, *args, **kwargs)
         else:
-            return redirect(url_for('login'))
+            return redirect(url_for('business_login'))
 
     return business_wrapper
 
