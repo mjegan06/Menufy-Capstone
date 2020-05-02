@@ -66,7 +66,7 @@
           {% for order in orders['Items'] %}
           <tr>
               <td style="display:none"> {{order.restaurant_id}}</td>
-              <td scope="row">{{order.restaurant_id}}</td>
+              <td scope="row">{{order.restaurant_name}}</td>
               <th scope="row">{{order.order_id}}</th>
               <td scope="row">{{order.order_time}}</td>
               <td scope="row">{{order.order_fulfilled_time}}</td>
