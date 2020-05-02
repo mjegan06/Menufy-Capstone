@@ -89,21 +89,18 @@ def get_order_history(customer_username, customer_id, restaurant_id):
         end_time = request.form['end_time'] if request.form['end_time'] else None
 
         if order_date and end_date:
+            order_date_time=""
+            end_date_time=""
 
-            order_date_string = order_date
-            end_date_string = end_date
             if order_time:
-                order_time_string = order_time+str(":00")
+                order_date_time = "%s, %s" % (order_date, order_time)
             else:
-                order_time_string = "00:00:00"
+                order_date_time = "%s, %s" % (order_time, "00:00:00")
             
             if end_time:
-                end_time_string = end_time+str(":00")
+                end_date_time = "%s, %s" % (end_date, end_time)
             else:
-                end_time_string = "00:00:00"
-            
-            order_date_time = "%s, %s" % (order_date_string, order_time_string)
-            end_date_time = "%s, %s" % (end_date_string, end_time_string)
+                end_date_time = "%s, %s" % (end_date, "00:00:00")
 
             order_data = order_table.scan(
                 FilterExpression=Key('restaurant_id').eq(restaurant_id) & Attr('order_time').between(order_date_time, end_date_time)
@@ -115,14 +112,12 @@ def get_order_history(customer_username, customer_id, restaurant_id):
             return render_template('order_history.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, orders=order_data)
 
         elif order_date and not end_date:
-            order_date_string = order_date
-            
+            order_date_time=""
+
             if order_time:
-                order_time_string = order_time+str(":00")
+                order_date_time = "%s, %s" % (order_date, order_time)
             else:
-                order_time_string = "00:00:00"
-            
-            order_date_time = "%s, %s" % (order_date_string, order_time_string)
+                order_date_time = "%s, %s" % (order_time, "00:00:00")
 
             order_data = order_table.scan(
                 FilterExpression=Attr('restaurant_id').eq(restaurant_id) & Attr('order_time').gte(order_date_time)
@@ -134,14 +129,12 @@ def get_order_history(customer_username, customer_id, restaurant_id):
             return render_template('order_history.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, orders=order_data)
 
         elif not order_date and end_date:
-            end_date_string = end_date
+            end_date_time=""
             
             if end_time:
-                end_time_string = end_time+str(":00")
+                end_date_time = "%s, %s" % (end_date, end_time)
             else:
-                end_time_string = "00:00:00"
-
-            end_date_time = "%s, %s" % (end_date_string, end_time_string)
+                end_date_time = "%s, %s" % (end_date, "00:00:00")
 
             order_data = order_table.scan(
                 FilterExpression=Attr('restaurant_id').eq(restaurant_id) & Attr('order_time').lte(end_date_time)
