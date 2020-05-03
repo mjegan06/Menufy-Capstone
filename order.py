@@ -43,7 +43,7 @@ def get_order(customer_username, customer_id, restaurant_id):
 
     #get the current time and convert it into a string
     named_tuple = time.localtime() # get struct_time
-    time_string = time.strftime("%Y/%m/%d, %H:%M:%S", named_tuple)
+    time_string = time.strftime("%Y-%m-%d, %H:%M:%S", named_tuple)
 
     res = dict(zip(menu_items, item_quantity))
     for key in list(res):
