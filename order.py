@@ -31,30 +31,28 @@ def get_order(customer_username, customer_id, restaurant_id):
     oiTable = dynamodb.Table('order_item') # pylint: disable=no-member
     menuTable = dynamodb.Table('menu_item') # pylint: disable=no-member
     orderTable = dynamodb.Table('order') # pylint: disable=no-member
+    restTable = dynamodb.Table('restaurant') # pylint: disable=no-member
 
     # generate order_id
     order_id = str(uuid.uuid4())
     
     menu_items = request.form.getlist('menu_item_id')
-    print("List of menu items: " + str(menu_items))
 
 
     item_quantity = list(map(int, request.form.getlist('menu_item')))
-    print("List of item quantities: " + str(item_quantity))
 
     #get the current time and convert it into a string
     named_tuple = time.localtime() # get struct_time
     time_string = time.strftime("%Y/%m/%d, %H:%M:%S", named_tuple)
 
     res = dict(zip(menu_items, item_quantity))
-    print(res)
     for key in list(res):
         if res[key] == 0:
             del res[key]
-    print(res)
 
     orderSubtotal = 0
     orderIdList = []
+    itemDetails = []
     for key in res:
         orderItemId = str(uuid.uuid4())
         response = menuTable.get_item(
@@ -69,13 +67,24 @@ def get_order(customer_username, customer_id, restaurant_id):
                 'item_id': key
             }
         )
+        itemDetails.append({
+            'item_name': response['Item']['item_name'],
+            'quantity': res[key], 
+            'item_subtotal': response['Item']['item_unit_price'] * res[key]
+        })
+        #orderDetails.update(item_details)
         orderSubtotal = orderSubtotal + response['Item']['item_unit_price'] * res[key]
         orderIdList.append(orderItemId)
-    print (orderSubtotal)
-    print (orderIdList)
+
+    response = restTable.get_item(
+            Key={'restaurant_id': restaurant_id}
+        )
+    restName = response['Item']['restaurant_name']
+    orderDetails = dict(username = customer_username, orderSubtotal = orderSubtotal, restName = restName)
         
 
-    order = dict(menu_items=res)
+    #order = dict(menu_items=res)
+    order = dict()
 
     order['order_time'] = time_string
     order['order_id'] = order_id
@@ -87,7 +96,6 @@ def get_order(customer_username, customer_id, restaurant_id):
     order['restaurant_id'] = restaurant_id
     order['table_id'] = None
     order['order_total'] = orderSubtotal
-    print(order)
 
     createOrder = orderTable.put_item(
         Item = order
@@ -97,7 +105,7 @@ def get_order(customer_username, customer_id, restaurant_id):
     #string_to_time = time.strptime(time_string, "%m/%d/%Y, %H:%M:%S")
     #print(string_to_time)
 
-    return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=order)
+    return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, itemDetails=itemDetails)
 
 
 
