@@ -176,7 +176,7 @@ def business_login(restaurant_username, restaurant_id):
     """ Route for business login """
 
     if restaurant_username:
-        return redirect(url_for('business.business_home'))
+        return redirect(url_for('business.business_home', rid = restaurant_id))
 
     if request.method == 'POST':
         restaurant_username = request.form['username']
@@ -281,5 +281,5 @@ def business_logout():
 
 
 if __name__ == '__main__':
-    port = 5959 #random.randint(5000,8999)
+    port = random.randint(5000,8999)
     application.run(host='127.0.0.1', port=port, debug=True)

@@ -79,6 +79,13 @@ input {
     padding: 0px;
 }
 
+.list-group-item {
+    border: none;
+    text-decoration: none !important;
+    background-color: #343a40 !important;
+    color: #fff;
+}
+
 
 /* #map {
     top: 10%;

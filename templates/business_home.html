@@ -7,5 +7,13 @@
         </div>
     </div>
 </div>
+{% if restaurant_username %}
+<div class="list-group">
 
-{% endblock %}
+    <a class="list-group-item  list-group-item-active" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>
+
+    <a class="list-group-item list-group-item-active" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/inventory"> Inventory Levels</a>
+
+
+</div>
+{% endif %} {% endblock %}

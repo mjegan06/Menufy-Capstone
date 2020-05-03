@@ -1,0 +1,76 @@
+{% extends "base.html" %} {% block content %}
+<div class="jumbotron rounded-0">
+    <div class="container text-center">
+        <div id="jumbo-text">
+            <h1 class="display-4">Menufy</h1>
+            <p class="lead">{{restaurant_name}} Current Orders</p>
+        </div>
+    </div>
+</div>
+
+<div>
+    <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+        <table class="table table-hover table-striped table-dark">
+            <tbody id="menu">
+            </tbody>
+        </table>
+    </form>
+
+    <script type="text/javascript">
+        var menu_data = JSON.parse('{{ menu_data |  safe }}');
+
+        var transform = {
+            "<>": "tr",
+            'id': '${menu_item_id}',
+            "children": [{
+                "<>": "input",
+                "type": "hidden",
+                'id': '${menu_item_id}',
+                "name": "menu_item_id",
+                "value": '${menu_item_id}'
+            }, {
+                "<>": "td",
+                'name': 'item_name',
+                "html": "${item_name}",
+                "value": "item_name"
+            }, {
+                "<>": "td",
+                "html": "${item_description}"
+            }, {
+                "<>": "td",
+                "html": "$ ${item_unit_price}"
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'id': 'sub',
+                    'class': 'sub',
+                    'html': '-'
+                }, {
+                    '<>': 'input',
+                    'id': '${menu_item_id}',
+                    'type': 'text',
+                    'name': 'menu_item',
+                    'value': '0'
+                }, {
+                    '<>': 'button',
+                    'type': 'button',
+                    'id': 'add',
+                    'class': 'add',
+                    'html': '+'
+                }]
+            }]
+        };
+
+        $('#menu').html(json2html.transform(menu_data, transform));
+
+        $('.add').click(function() {
+            $(this).prev().val(+$(this).prev().val() + 1);
+        });
+        $('.sub').click(function() {
+            if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
+        });
+    </script>
+</div>
+{% endblock %}
