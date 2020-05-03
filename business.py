@@ -25,9 +25,9 @@ class DecimalEncoder(json.JSONEncoder):
 bp = Blueprint('business', __name__, url_prefix='/business')
 
 
-@bp.route('/home', methods=['GET'])
+@bp.route('/<rid>/home', methods=['GET'])
 @business_check_user_login
-def business_home(restaurant_username, restaurant_id):
+def business_home(restaurant_username, restaurant_id, rid):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     row = table.scan(
         FilterExpression=Attr('restaurant_username').eq(restaurant_username)
@@ -35,4 +35,29 @@ def business_home(restaurant_username, restaurant_id):
 
     restaurant_name = row['Items'][0]['restaurant_name']
 
-    return render_template('business_home.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username)
+    return render_template('business_home.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id)
+
+
+@bp.route('/<rid>/orders', methods=['GET'])
+@business_check_user_login
+def business_orders(restaurant_username, restaurant_id, rid):
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+    row = table.scan(
+        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+    )
+
+    restaurant_name = row['Items'][0]['restaurant_name']
+
+    return render_template('business_orders.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id)
+
+@bp.route('/<rid>/inventory', methods=['GET'])
+@business_check_user_login
+def business_inventory(restaurant_username, restaurant_id, rid):
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+    row = table.scan(
+        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+    )
+
+    restaurant_name = row['Items'][0]['restaurant_name']
+
+    return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id)
