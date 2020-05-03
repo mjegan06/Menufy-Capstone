@@ -58,6 +58,7 @@ def get_order(customer_username, customer_id, restaurant_id):
         response = menuTable.get_item(
             Key={'menu_item_id': key}
         )
+        #create new order_item with menu item and price
         newOrderItem = oiTable.put_item(
             Item={
                 'order_id': order_id,
@@ -72,7 +73,6 @@ def get_order(customer_username, customer_id, restaurant_id):
             'quantity': res[key], 
             'item_subtotal': response['Item']['item_unit_price'] * res[key]
         })
-        #orderDetails.update(item_details)
         orderSubtotal = orderSubtotal + response['Item']['item_unit_price'] * res[key]
         orderIdList.append(orderItemId)
 
@@ -83,7 +83,6 @@ def get_order(customer_username, customer_id, restaurant_id):
     orderDetails = dict(username = customer_username, orderSubtotal = orderSubtotal, restName = restName)
         
 
-    #order = dict(menu_items=res)
     order = dict()
 
     order['order_time'] = time_string
