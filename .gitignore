@@ -1,2 +1,4 @@
 __pycache__
 flask_session
+AWSCLIV2.pkg
+env/*

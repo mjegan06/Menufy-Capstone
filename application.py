@@ -15,11 +15,14 @@ import decimal
 from decimal import Decimal
 import restaurant
 import order
+import random
+import business
 
 
 application = Flask(__name__)
 application.register_blueprint(restaurant.bp)
 application.register_blueprint(order.bp)
+application.register_blueprint(business.bp)
 
 TABLE_NAME = "customer"
 dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
@@ -45,62 +48,6 @@ def index(customer_username, customer_id):
     )
 
     return render_template('index.html', customer_username=customer_username, customer_id=customer_id, restaurant=response['Items'])
-
-
-# @application.route("/menu", methods=['GET', 'POST'])
-# def menuPage():
-#     table = dynamodb.Table('menu')
-#     response = table.scan(
-#         FilterExpression=Attr('menu_id').eq('menu_1')
-#     )
-#     data = json.dumps(response['Items'], cls=DecimalEncoder)
-#     if request.method == 'GET':
-#         return render_template('menu.html', data=data)
-
-#     if request.method == 'POST':
-#         menu_item_id = request.form['menu_item_id']
-#         print(menu_item_id)
-#         return render_template('menu.html', data=data)
-
-
-# @application.route('/restaurant/<restaurant_id>', methods=['POST'])
-# @check_user_login
-# def restaurantViews(customer_username, customer_id, restaurant_id):
-#     # get restaurant name
-#     restaurant_table=dynamodb.Table('restaurant') 
-#     restaurant_data = restaurant_table.scan(
-#         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
-#     )
-#     restaurant_name = restaurant_data['Items'][0]['restaurant_name']
-
-#     # get menu id
-#     menu_table=dynamodb.Table('menu') 
-#     response = menu_table.scan(
-#         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
-#     )
-#     menu_id = response['Items'][0]['menu_id']
-
-#     # get menu items
-#     menu_item_table=dynamodb.Table('menu_item')
-#     response = menu_item_table.scan(
-#         FilterExpression=Attr('menu_id').eq(menu_id)
-#     )
-    
-#     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
-
-#     if request.method == 'GET':
-#         """ Route for restaurant views page """
-#         restaurant_id = request.form['restaurant_id']
-
-#         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
-
-#     if request.method == 'POST':
-
-        
-#         """ Route for restaurant views page """
-#         restaurant_id = request.form['restaurant_id']
-
-#         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
 
 @application.route('/login', methods=['GET', 'POST'])
@@ -145,7 +92,7 @@ def login(customer_username, customer_id):
 def signup(customer_username, customer_id):
     """ Route for user registration """
     if customer_username:
-        flash("Please logout First", "danger")
+        flash("Please logout first", "danger")
         return render_template('signup.html')
 
     table = dynamodb.Table('customer') # pylint: disable=no-member
@@ -220,5 +167,119 @@ class DecimalEncoder(json.JSONEncoder):
             return float(o)
         return super(DecimalEncoder, self).default(o)
 
+
+##########################        business login routes        #######################
+
+@application.route('/business_login', methods=['GET', 'POST'])
+@business_check_user_login
+def business_login(restaurant_username, restaurant_id):
+    """ Route for business login """
+
+    if restaurant_username:
+        return redirect(url_for('business.business_home'))
+
+    if request.method == 'POST':
+        restaurant_username = request.form['username']
+        pw = request.form['password']
+
+        # Get restaurant_id and password matching the username entered
+        table = dynamodb.Table('restaurant') # pylint: disable=no-member
+        row = table.scan(
+            FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+        )
+
+        # If no such username is found
+        if row['Count'] == 0:
+            flash("Please Enter a valid username", "danger")
+            return render_template('business_login.html')
+
+        # Verify password
+        elif check_password_hash(row['Items'][0]['password'], pw):
+            session['restaurant_id'] = row['Items'][0]['restaurant_id']
+            session['restaurant_username'] = restaurant_username
+            return redirect(url_for('business.business_home'))
+
+        # If incorrect password
+        else:
+            flash("Please Enter a valid password", "danger")
+            return render_template('business_login.html')
+
+    return render_template('business_login.html')
+
+
+@application.route('/business_signup', methods=['GET', 'POST'])
+@business_check_user_login
+def business_signup(restaurant_username, restaurant_id):
+    """ Route for user registration """
+    if restaurant_username:
+        flash("Please logout first", "danger")
+        return render_template('business_signup.html')
+
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+
+    if request.method == 'POST':
+        # get user input
+        restaurant_username = request.form['username']
+        hashed_pw = generate_password_hash(request.form['password'])
+        restaurant_name = request.form['restaurant_name']
+        restaurant_phone_num = request.form['restaurant_phone_num']
+        restaurant_address_1 = request.form['restaurant_address_1']
+        restaurant_address_2 = request.form['restaurant_address_2']
+        restaurant_city = request.form['restaurant_city']
+        restaurant_state = request.form['restaurant_state']
+        restaurant_zip = request.form['restaurant_zip']
+
+        # validate user input
+        if not restaurant_username or not hashed_pw:
+            flash("Please enter a valid username and password", "danger")
+            return render_template('business_signup.html')
+
+        # Check if username already exists
+        result = table.scan(
+            FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+        )
+
+        if result['Count'] != 0:
+            flash("The username already exists. Please enter another username.", "danger")
+            return render_template('business_signup.html')
+
+        # generate random UUID for restaurant_id
+        new_restaurant_id_inital = uuid.uuid4()
+        new_restaurant_id = str(new_restaurant_id_inital)
+
+        # New customer input info
+        item = {
+            'restaurant_id': new_restaurant_id,
+            'restaurant_username': restaurant_username,
+            'password': hashed_pw,
+            'restaurant_name': restaurant_name,
+            'restaurant_phone_num': restaurant_phone_num,
+            'restaurant_address_1': restaurant_address_1,
+            'restaurant_address_2': restaurant_address_2,
+            'restaurant_city': restaurant_city,
+            'restaurant_state': restaurant_state,
+            'restaurant_zip': restaurant_zip
+        }
+
+        # if valid input, insert into users table in the db
+        table.put_item(
+            Item=item
+        )
+
+        flash("Successfully signed up! Please log in to continue", "success")
+        return redirect(url_for('business_login'))
+
+    return render_template('business_signup.html', restaurant_username=None)
+
+
+@application.route('/business_logout')
+def business_logout():
+    """ Route for business logout """
+    session.pop('restaurant_username', None)
+    session.pop('restaurant_id', None)
+    return redirect(url_for('index'))
+
+
 if __name__ == '__main__':
-    application.run(host='127.0.0.1', port=8080, debug=True)
+    port = 5959 #random.randint(5000,8999)
+    application.run(host='127.0.0.1', port=port, debug=True)
