@@ -28,6 +28,9 @@ bp = Blueprint('order', __name__, url_prefix='/order')
 @bp.route('/<restaurant_id>', methods=['GET','POST'])
 @check_user_login
 def get_order(customer_username, customer_id, restaurant_id):
+    oiTable = dynamodb.Table('order_item') # pylint: disable=no-member
+    menuTable = dynamodb.Table('menu_item') # pylint: disable=no-member
+    orderTable = dynamodb.Table('order') # pylint: disable=no-member
 
     # generate order_id
     order_id = str(uuid.uuid4())
@@ -50,6 +53,28 @@ def get_order(customer_username, customer_id, restaurant_id):
             del res[key]
     print(res)
 
+    orderSubtotal = 0
+    orderIdList = []
+    for key in res:
+        orderItemId = str(uuid.uuid4())
+        response = menuTable.get_item(
+            Key={'menu_item_id': key}
+        )
+        newOrderItem = oiTable.put_item(
+            Item={
+                'order_id': order_id,
+                'order_item_id': orderItemId,
+                'oi_quantity': res[key],
+                'oi_unit_price': response['Item']['item_unit_price'] * res[key],
+                'item_id': key
+            }
+        )
+        orderSubtotal = orderSubtotal + response['Item']['item_unit_price'] * res[key]
+        orderIdList.append(orderItemId)
+    print (orderSubtotal)
+    print (orderIdList)
+        
+
     order = dict(menu_items=res)
 
     order['order_time'] = time_string
@@ -58,9 +83,15 @@ def get_order(customer_username, customer_id, restaurant_id):
     order['order_fulfilled_time'] = None
     order['order_status'] = None
     order['customer_id'] = customer_id
+    order['oi_id'] = orderIdList
     order['restaurant_id'] = restaurant_id
     order['table_id'] = None
+    order['order_total'] = orderSubtotal
     print(order)
+
+    createOrder = orderTable.put_item(
+        Item = order
+    )
 
     #convert the string back into time
     #string_to_time = time.strptime(time_string, "%m/%d/%Y, %H:%M:%S")
