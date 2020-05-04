@@ -9,68 +9,52 @@
 </div>
 
 <div>
-    <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+    <form id="business_orders_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
         <table class="table table-hover table-striped table-dark">
-            <tbody id="menu">
+            <tbody id="order">
             </tbody>
         </table>
     </form>
 
     <script type="text/javascript">
-        var menu_data = JSON.parse('{{ menu_data |  safe }}');
+        var order_data = JSON.parse('{{ order_data |  safe }}');
 
         var transform = {
             "<>": "tr",
-            'id': '${menu_item_id}',
+            'id': '${order_id}',
             "children": [{
-                "<>": "input",
-                "type": "hidden",
-                'id': '${menu_item_id}',
-                "name": "menu_item_id",
-                "value": '${menu_item_id}'
+                "<>": "td",
+                'id': '${order_id}',
+                "name": "order_id",
+                "value": '${order_id}'
             }, {
                 "<>": "td",
-                'name': 'item_name',
-                "html": "${item_name}",
-                "value": "item_name"
+                'name': 'order_status',
+                "html": "${order_status}",
+                "value": "order_status"
             }, {
                 "<>": "td",
-                "html": "${item_description}"
+                "html": "${order_time}"
             }, {
                 "<>": "td",
-                "html": "$ ${item_unit_price}"
+                "html": "${order_type}"
             }, {
                 "<>": "td",
                 "children": [{
                     '<>': 'button',
                     'type': 'button',
-                    'id': 'sub',
-                    'class': 'sub',
-                    'html': '-'
-                }, {
-                    '<>': 'input',
-                    'id': '${menu_item_id}',
-                    'type': 'text',
-                    'name': 'menu_item',
-                    'value': '0'
-                }, {
-                    '<>': 'button',
-                    'type': 'button',
-                    'id': 'add',
-                    'class': 'add',
-                    'html': '+'
+                    'id': 'completed',
+                    'class': 'completed',
+                    'html': 'Order completed'
                 }]
             }]
         };
 
-        $('#menu').html(json2html.transform(menu_data, transform));
+        $('#order').html(json2html.transform(order_data, transform));
 
-        $('.add').click(function() {
-            $(this).prev().val(+$(this).prev().val() + 1);
-        });
-        $('.sub').click(function() {
-            if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
-        });
+        // $('.sub').click(function() {
+        //     if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
+        // });
     </script>
 </div>
 {% endblock %}

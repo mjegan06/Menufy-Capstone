@@ -41,14 +41,19 @@ def business_home(restaurant_username, restaurant_id, rid):
 @bp.route('/<rid>/orders', methods=['GET'])
 @business_check_user_login
 def business_orders(restaurant_username, restaurant_id, rid):
-    table = dynamodb.Table('restaurant') # pylint: disable=no-member
-    row = table.scan(
-        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+    restaurant_table=dynamodb.Table('restaurant')
+    order_table=dynamodb.Table('order')
+
+    restaurant_data = restaurant_table.query(
+        KeyConditionExpression=Key('restaurant_id').eq(restaurant_id)
     )
+    restaurant_name = restaurant_data['Items'][0]['restaurant_name']
 
-    restaurant_name = row['Items'][0]['restaurant_name']
+    orders = order_table.scan( FilterExpression=Key('restaurant_id').eq(restaurant_id))
 
-    return render_template('business_orders.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id)
+    order_data = json.dumps(orders['Items'], cls=DecimalEncoder)
+
+    return render_template('business_orders.html', restaurant_name = restaurant_name, order_data = order_data)
 
 @bp.route('/<rid>/inventory', methods=['GET'])
 @business_check_user_login
