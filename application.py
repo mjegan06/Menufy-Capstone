@@ -196,8 +196,9 @@ def business_login(restaurant_username, restaurant_id):
         # Verify password
         elif check_password_hash(row['Items'][0]['password'], pw):
             session['restaurant_id'] = row['Items'][0]['restaurant_id']
+            restaurant_id =  row['Items'][0]['restaurant_id']
             session['restaurant_username'] = restaurant_username
-            return redirect(url_for('business.business_home'))
+            return redirect(url_for('business.business_home', rid = restaurant_id))
 
         # If incorrect password
         else:

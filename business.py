@@ -65,4 +65,19 @@ def business_inventory(restaurant_username, restaurant_id, rid):
 
     restaurant_name = row['Items'][0]['restaurant_name']
 
-    return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id)
+     # get menu id
+    menu_table=dynamodb.Table('menu') # pylint: disable=no-member
+    response = menu_table.scan(
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+    )
+    menu_id = response['Items'][0]['menu_id']
+
+    # get menu items
+    menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+    response = menu_item_table.scan(
+        FilterExpression=Attr('menu_id').eq(menu_id)
+    )
+    
+    menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+    return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)

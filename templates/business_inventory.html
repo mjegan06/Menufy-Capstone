@@ -41,33 +41,22 @@
                 "html": "$ ${item_unit_price}"
             }, {
                 "<>": "td",
+                "html": "${item_quantity_available}"
+            }, {
+                "<>": "td",
                 "children": [{
                     '<>': 'button',
                     'type': 'button',
-                    'id': 'sub',
-                    'class': 'sub',
-                    'html': '-'
-                }, {
-                    '<>': 'input',
-                    'id': '${menu_item_id}',
-                    'type': 'text',
-                    'name': 'menu_item',
-                    'value': '0'
-                }, {
-                    '<>': 'button',
-                    'type': 'button',
-                    'id': 'add',
-                    'class': 'add',
-                    'html': '+'
+                    'id': 'reorder',
+                    'class': 'reorder',
+                    'html': 'Reorder'
                 }]
             }]
         };
 
         $('#menu').html(json2html.transform(menu_data, transform));
 
-        $('.add').click(function() {
-            $(this).prev().val(+$(this).prev().val() + 1);
-        });
+
         $('.sub').click(function() {
             if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         });
