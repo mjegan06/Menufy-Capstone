@@ -133,7 +133,7 @@ def get_order_history(customer_username, customer_id, restaurant_id):
             if order_time:
                 order_date_time = "%s, %s" % (order_date, order_time)
             else:
-                order_date_time = "%s, %s" % (order_time, "00:00:00")
+                order_date_time = "%s, %s" % (order_date, "00:00:00")
             
             if end_time:
                 end_date_time = "%s, %s" % (end_date, end_time)
@@ -155,7 +155,7 @@ def get_order_history(customer_username, customer_id, restaurant_id):
             if order_time:
                 order_date_time = "%s, %s" % (order_date, order_time)
             else:
-                order_date_time = "%s, %s" % (order_time, "00:00:00")
+                order_date_time = "%s, %s" % (order_date, "00:00:00")
 
             order_data = order_table.scan(
                 FilterExpression=Attr('restaurant_id').eq(restaurant_id) & Attr('order_time').gte(order_date_time)

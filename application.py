@@ -17,12 +17,14 @@ import restaurant
 import order
 import random
 import business
+import customer
 
 
 application = Flask(__name__)
 application.register_blueprint(restaurant.bp)
 application.register_blueprint(order.bp)
 application.register_blueprint(business.bp)
+application.register_blueprint(customer.bp)
 
 TABLE_NAME = "customer"
 dynamodb_client = boto3.client('dynamodb', region_name="us-west-2")
