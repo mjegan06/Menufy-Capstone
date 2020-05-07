@@ -31,6 +31,8 @@ bp = Blueprint('customer', __name__, url_prefix='/customer')
 def customer_dashboard(customer_username, customer_id, cid):
 
     if cid != customer_id:
+        error = "Unable to look at another customer's dashboard, please sign in if you haven't done so already"
+        flash(u'Unable to access dashboard, please login to your account', 'error')
         return redirect(url_for('login'))
 
     customer_table=dynamodb.Table('customer')
