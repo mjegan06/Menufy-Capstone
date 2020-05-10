@@ -29,18 +29,45 @@ bp = Blueprint('business', __name__, url_prefix='/business')
 @business_check_user_login
 def business_home(restaurant_username, restaurant_id, rid):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
-    row = table.scan(
+    restaurant = table.scan(
         FilterExpression=Attr('restaurant_username').eq(restaurant_username)
     )
 
-    restaurant_name = row['Items'][0]['restaurant_name']
+    restaurant_name = restaurant['Items'][0]['restaurant_name']
 
-    return render_template('business_home.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id)
+    data = json.dumps(restaurant['Items'], cls=DecimalEncoder).replace(r"'",r"\'")
+    
+
+    return render_template('business_home.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, data=data)
 
 
-@bp.route('/<rid>/orders', methods=['GET'])
+@bp.route('/<rid>/orders', methods=['GET', 'POST'])
 @business_check_user_login
 def business_orders(restaurant_username, restaurant_id, rid):
+            
+
+    if request.method == 'POST':
+        try:
+            order_id =  request.form['completed']
+            table = dynamodb.Table('order')
+
+            response = table.get_item(Key={'order_id': order_id})
+            item = response['Item']
+            
+            if ( item['order_status']=='completed'):
+                item['order_status']='in-progress'
+                table.put_item(Item=item)
+                        
+            
+            elif ( item['order_status']=='in-progress'):
+                item['order_status']='completed'
+                table.put_item(Item=item)
+
+        except:
+
+            print("Phew")
+        
+    
     restaurant_table=dynamodb.Table('restaurant')
     order_table=dynamodb.Table('order')
 
@@ -54,6 +81,48 @@ def business_orders(restaurant_username, restaurant_id, rid):
     order_data = json.dumps(orders['Items'], cls=DecimalEncoder)
 
     return render_template('business_orders.html', restaurant_name = restaurant_name, order_data = order_data)
+        
+@bp.route('/<restaurant_id>/<order_id>', methods=['GET'])
+def get_order_details( restaurant_id, order_id):
+
+    table=dynamodb.Table('order')
+
+    data = table.query(
+        KeyConditionExpression=Key('order_id').eq(order_id)
+    )
+
+    # 
+    
+   
+
+    # order_data = table.query({
+    #     FilterExpression: "contains(#menu_id, :a)",
+    #     ExpressionAttributeValues: {
+    #     ":a": items,
+    # } 
+    # }
+    # )
+
+    items = data['Items'][0]['oi_id']
+    food_list = []
+    menu_table=dynamodb.Table('menu_item')
+    for each in items:
+        order_data = menu_table.scan(
+            FilterExpression=Attr('menu_item_id').contains(each)
+        
+        )
+        food_list.append(order_data['Items'][0]['item_name'])
+
+
+
+    try:
+        # order_data = json.dumps(data['Items'][0]['oi_id'], cls=DecimalEncoder)
+        food_list = json.dumps(food_list, cls=DecimalEncoder)
+        return (food_list)
+    
+    except:
+        return ("")
+
 
 @bp.route('/<rid>/inventory', methods=['GET'])
 @business_check_user_login

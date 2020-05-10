@@ -8,28 +8,79 @@
     </div>
 </div>
 
+{% if order_data %}
 <div>
-    <form id="business_orders_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+    <div class="container mb-3">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <button class="btn btn-dark btn-lg" onclick="showOrders()">All orders</button>
+            </div>
+
+            <div class="col-3">
+                <button class="btn btn-dark btn-lg" onclick="hideOrders()">Current orders</button>
+            </div>
+
+        </div>
+
+    </div>
+    <form id="business_orders_form{{restaurant_id}}" method="POST">
         <table class="table table-hover table-striped table-dark">
             <tbody id="order">
             </tbody>
         </table>
     </form>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                </div>
+                <div class="modal-body">
+                    <ul class="food-list">
+
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
         var order_data = JSON.parse('{{ order_data |  safe }}');
+
 
         var transform = {
             "<>": "tr",
             'id': '${order_id}',
             "children": [{
                 "<>": "td",
-                'id': '${order_id}',
-                "name": "order_id",
-                "value": '${order_id}'
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    // 'data-container': "body",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    // 'title': "Popover Title",
+                    // 'data-content': "Hello world",
+                    'id': "${restaurant_id}",
+                    "name": "order_detail",
+                    "html": "${order_id}",
+                    "value": "${order_id}",
+                }]
             }, {
                 "<>": "td",
                 'name': 'order_status',
+                'id': 'order_status',
                 "html": "${order_status}",
                 "value": "order_status"
             }, {
@@ -40,21 +91,92 @@
                 "html": "${order_type}"
             }, {
                 "<>": "td",
+                "html": "${table_id}"
+            }, {
+                "<>": "td",
+                'id': 'mark_complete',
                 "children": [{
                     '<>': 'button',
-                    'type': 'button',
-                    'id': 'completed',
+                    'id': '${restaurant_id}',
+                    'name': 'mark_complete',
                     'class': 'completed',
-                    'html': 'Order completed'
+                    'html': 'Complete Order',
+                    'value': '${order_id}'
                 }]
             }]
         };
 
         $('#order').html(json2html.transform(order_data, transform));
 
-        // $('.sub').click(function() {
-        //     if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
-        // });
+
+        // hide complete button
+
+        $(function() { //document ready event
+            $('table tr').each(function() { //loop all tr's
+                var Cell = $(this).find("td[id='order_status']"); //find first td cell
+                if (Cell.text() == 'completed') {
+                    button = $(this).find("button[name='mark_complete']").html('Revert');
+                    // buttom = $(this).find("[name='mark_complete']");
+                }
+            });
+        });
+
+        function hideOrders() {
+            $(function() { //document ready event
+                $('table tr').each(function() { //loop all tr's
+                    var Cell = $(this).find("td[id='order_status']");
+                    if (Cell.text() == 'completed') {
+                        $(this).hide();
+                    }
+                });
+            });
+        }
+
+        function showOrders() {
+            $(function() { //document ready event
+                $('table tr').each(function() { //loop all tr's
+                    var Cell = $(this).find("td[id='order_status']");
+                    if (Cell.text() == 'completed') {
+                        $(this).show();
+                    }
+                });
+            });
+        }
+
+        $('button[name ="order_detail"]').click(function() {
+            var order_id = $(this).attr('value');
+            var restaurant_id = $(this).attr('id');
+            // console.log(restaurant_id);
+            var response = getResponse(restaurant_id, order_id);
+            console.log(response);
+
+            $(".modal-title").html("Order " + order_id);
+        });
+
+        function getResponse(restaurant_id, order_id) {
+            $.ajax({
+                type: "GET",
+                url: '/business/' + restaurant_id + '/' + order_id,
+                // error: function(response) {
+                //     alert('Error: There was a problem processing your request, please refresh the browser and try again');
+                // },
+                success: function(response) {
+
+                    // response.each(function(item, index) {
+                    //     $(".food-list").append('<li>' + item + '</li>');
+                    // });
+
+                    JSON.parse(response).forEach(function(item, idx) {
+                        // console.log("Object " + idx, obj)
+                        $(".food-list").append('<li>' + item + '</li>');
+                    })
+
+
+                }
+
+            });
+        }
     </script>
 </div>
-{% endblock %}
+
+{% endif %} {% endblock %}
