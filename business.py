@@ -47,8 +47,9 @@ def business_orders(restaurant_username, restaurant_id, rid):
             
 
     if request.method == 'POST':
+       
         try:
-            order_id =  request.form['completed']
+            order_id =  request.form['mark_complete']
             table = dynamodb.Table('order')
 
             response = table.get_item(Key={'order_id': order_id})
@@ -91,34 +92,22 @@ def get_order_details( restaurant_id, order_id):
         KeyConditionExpression=Key('order_id').eq(order_id)
     )
 
-    # 
-    
-   
-
-    # order_data = table.query({
-    #     FilterExpression: "contains(#menu_id, :a)",
-    #     ExpressionAttributeValues: {
-    #     ":a": items,
-    # } 
-    # }
-    # )
-
-    items = data['Items'][0]['oi_id']
-    food_list = []
-    menu_table=dynamodb.Table('menu_item')
-    for each in items:
-        order_data = menu_table.scan(
-            FilterExpression=Attr('menu_item_id').contains(each)
-        
-        )
-        food_list.append(order_data['Items'][0]['item_name'])
-
-
 
     try:
-        # order_data = json.dumps(data['Items'][0]['oi_id'], cls=DecimalEncoder)
-        food_list = json.dumps(food_list, cls=DecimalEncoder)
-        return (food_list)
+        items = data['Items'][0]['oi_id']
+        food_list = []
+        menu_table=dynamodb.Table('menu_item')
+        for each in items:
+            order_data = menu_table.scan(
+                FilterExpression=Attr('menu_item_id').contains(each)
+            
+            )
+            food_list.append(order_data['Items'][0]['item_name'])
+
+            # order_data = json.dumps(data['Items'][0]['oi_id'], cls=DecimalEncoder)
+            food_list = json.dumps(food_list, cls=DecimalEncoder)
+            print(food_list)
+            return (food_list)
     
     except:
         return ("")
