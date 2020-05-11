@@ -67,7 +67,7 @@ def customer_dashboard(customer_username, customer_id, cid):
             order_data = order_table.scan(
                 FilterExpression=Key('customer_id').eq(customer_id) & Attr('order_time').between(order_date_time, end_date_time)
             )
-            print(order_data)
+
 
             restaurant_id=""
 
@@ -80,7 +80,7 @@ def customer_dashboard(customer_username, customer_id, cid):
                         )
                 item['restaurant_name']=restaurant_data['Items'][0]['restaurant_name']
         
-            print(order_data)
+
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
@@ -92,7 +92,7 @@ def customer_dashboard(customer_username, customer_id, cid):
             else:
                 order_date_time = "%s, %s" % (order_date, "00:00:00")
 
-            print(order_date_time)
+
 
             order_data = order_table.scan(
                 FilterExpression=Attr('customer_id').eq(customer_id) & Attr('order_time').gte(order_date_time)
@@ -108,8 +108,7 @@ def customer_dashboard(customer_username, customer_id, cid):
                             KeyConditionExpression=Key('restaurant_id').eq(restaurant_id)
                         )
                 item['restaurant_name']=restaurant_data['Items'][0]['restaurant_name']
-        
-            print(order_data)
+
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
@@ -136,7 +135,6 @@ def customer_dashboard(customer_username, customer_id, cid):
                         )
                 item['restaurant_name']=restaurant_data['Items'][0]['restaurant_name']
         
-            print(order_data)
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
@@ -156,7 +154,6 @@ def customer_dashboard(customer_username, customer_id, cid):
                         )
                 item['restaurant_name']=restaurant_data['Items'][0]['restaurant_name']
         
-            print(order_data)
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
     
@@ -175,11 +172,7 @@ def customer_dashboard(customer_username, customer_id, cid):
                         KeyConditionExpression=Key('restaurant_id').eq(restaurant_id)
                     )
             item['restaurant_name']=restaurant_data['Items'][0]['restaurant_name']
-        
-        print(customer_username)
-        print(customer_id)
-        print(customer_data)
-        print(order_data)
+
 
         return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
