@@ -8,6 +8,105 @@
     </div>
 </div>
 {% if restaurant_username %}
+
+<div>
+    <!-- <form id="business_orders_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+        <table class="table table-hover table-striped table-dark">
+            <tbody id="order">
+            </tbody>
+        </table>
+    </form> -->
+
+    <div id="order">
+
+    </div>
+
+    <script type="text/javascript">
+        var data = JSON.parse('{{ data | safe }}');
+
+
+        var transform = {
+                "<>": "div",
+                "class": "container",
+                "children": [{
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_id}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_name}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_city}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_address_line1}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_address_line2}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_state}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_phone_num}'
+                }, {
+                    "<>": "div",
+                    "class": "row",
+                    "html": '${restaurant_postal_code}'
+                }]
+            }
+            // var transform = {
+            //     "<>": "tr",
+            //     'id': '${restaurant_id}',
+            //     "children": [{
+            //         "<>": "td",
+            //         'id': '${restaurant_id}',
+            //         "name": "restaurant_id",
+            //         "value": '${restaurant_id}'
+            //     }, {
+            //         "<>": "td",
+            //         'name': 'restaurant_name',
+            //         "html": "${restaurant_name}",
+            //         "value": "restaurant_name"
+            //     }, {
+            //         "<>": "td",
+            //         "html": "${restaurant_city}"
+            //     }, {
+            //         "<>": "td",
+            //         "html": "${restaurant_address_line1}"
+            //     }, {
+            //         "<>": "td",
+            //         "html": "${restaurant_address_line2}"
+            //     }, {
+            //         "<>": "td",
+            //         "html": "${restaurant_phone}"
+            //     }, {
+            //         "<>": "td",
+            //         "children": [{
+            //             '<>': 'button',
+            //             'type': 'button',
+            //             'id': 'edit',
+            //             'class': 'edit',
+            //             'html': 'edit'
+            //         }]
+            //     }]
+            // };
+
+        $('#order').html(json2html.transform(data, transform));
+
+        // $('.sub').click(function() {
+        //     if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
+        // });
+    </script>
+</div>
+
 <div class="list-group">
 
     <a class="list-group-item  list-group-item-active" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>

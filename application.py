@@ -226,11 +226,11 @@ def business_signup(restaurant_username, restaurant_id):
         hashed_pw = generate_password_hash(request.form['password'])
         restaurant_name = request.form['restaurant_name']
         restaurant_phone_num = request.form['restaurant_phone_num']
-        restaurant_address_1 = request.form['restaurant_address_1']
-        restaurant_address_2 = request.form['restaurant_address_2']
+        restaurant_address_1 = request.form['restaurant_address_line1']
+        restaurant_address_2 = request.form['restaurant_address_line2']
         restaurant_city = request.form['restaurant_city']
         restaurant_state = request.form['restaurant_state']
-        restaurant_zip = request.form['restaurant_zip']
+        restaurant_postal_code = request.form['restaurant_postal_code']
 
         # validate user input
         if not restaurant_username or not hashed_pw:
