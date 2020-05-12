@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block content %}
 <div class="jumbotron rounded=0">
-    <h2 class="text-center"> Order Page for {{ order.restName }} </h2>
+    <h2 class="text-center"> Order Summary for {{ order.username }} </h2>
     <!-- <h2 class="text-center" onload="loadData({{ data}})"> Menu </h2> -->
 
 </div>
@@ -17,7 +17,7 @@
 </div>
 -->
 
-<div>
+<!--<div>
     <table align="center">
         <thead>
             <tr>
@@ -43,6 +43,12 @@
         </tr>
     </table>
 
+</div>-->
+
+<div>
+    {% for key, value in order.items() %}
+        <p><b>{{ key }}: </b>{{ value }}</p>
+    {% endfor %}
 </div>
 
 {% endblock %}

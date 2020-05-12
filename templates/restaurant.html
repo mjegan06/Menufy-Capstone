@@ -1,4 +1,5 @@
 {% extends "base.html" %} {% block content %}
+
 <div class="jumbotron rounded-0">
     <div class="container text-center">
         <div id="jumbo-text">
@@ -10,15 +11,24 @@
 
 <div>
     <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+    <!--<form id="order_form{{restaurant_id}}" action="order.html"></form>-->
         <table class="table table-hover table-striped table-dark">
             <tbody id="menu">
 
             </tbody>
         </table>
         <div class="form-group">
-            <button type="submit" class="btn btn-warning">Proceed to checkout</button>
+            <button type="submit" class="btn btn-warning">Review Order</button>
         </div>
     </form>
+    <!--<table class="table table-hover table-striped table-dark">
+        <tbody id="menu">
+
+        </tbody>
+    </table>
+    <div class="form-group">
+        <button id="reviewButton" type="button" class="btn btn-warning">Review Order</button>
+    </div>-->
 
     <script type="text/javascript">
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
@@ -55,7 +65,7 @@
                     '<>': 'input',
                     'id': '${menu_item_id}',
                     'type': 'text',
-                    'name': 'menu_item',
+                    'name': 'quantity',
                     'value': '0'
                 }, {
                     '<>': 'button',
@@ -76,5 +86,16 @@
             if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         });
     </script>
+    <!--<script>
+        $("form").submit(function(event){
+            event.preventDefault();
+            var values = $(this).serializeArray();
+            console.log(values)
+            console.log(JSON.stringify(values));
+            localStorage['orderData'] = JSON.stringify(values);
+        })
+
+        console.log(localStorage['orderData']);
+    </script>-->
 </div>
 {% endblock %}

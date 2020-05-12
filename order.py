@@ -3,6 +3,7 @@ import sys
 import io
 import csv
 import boto3
+import requests
 from boto3.dynamodb.conditions import Key, Attr
 from flask import Flask, Blueprint, request, make_response, flash, Response, render_template,  session, redirect, url_for
 from flask_session import Session
@@ -33,13 +34,143 @@ def get_order(customer_username, customer_id, restaurant_id):
     orderTable = dynamodb.Table('order') # pylint: disable=no-member
     restTable = dynamodb.Table('restaurant') # pylint: disable=no-member
 
-    # generate order_id
-    order_id = str(uuid.uuid4())
-    
-    menu_items = request.form.getlist('menu_item_id')
+    if request.method == 'POST':
+        menu_items = request.form.getlist('menu_item_id')
+        #print(menu_items)
 
 
-    item_quantity = list(map(int, request.form.getlist('menu_item')))
+        item_quantity = list(map(int, request.form.getlist('quantity')))
+        #print(item_quantity)
+
+        res = dict(zip(menu_items, item_quantity))
+        for key in list(res):
+            if res[key] == 0:
+                del res[key]
+
+        #print(res)
+        orderSubtotal = 0
+        itemDetails = []
+        for key in res:
+            response = menuTable.get_item(
+                Key={'menu_item_id': key}
+            )
+
+            itemDetails.append({
+            'item_id': key,
+            'item_name': response['Item']['item_name'],
+            'quantity': res[key], 
+            'item_subtotal': response['Item']['item_unit_price'] * res[key]
+            })
+            orderSubtotal = orderSubtotal + response['Item']['item_unit_price'] * res[key]
+            
+        
+        #print(itemDetails)
+
+        response = restTable.get_item(
+            Key={'restaurant_id': restaurant_id}
+            )
+        restName = response['Item']['restaurant_name']
+        orderDetails = dict(username = customer_username, orderSubtotal = orderSubtotal, restName = restName)
+        #print(orderDetails)
+        return render_template('order_summary.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, itemDetails=itemDetails)
+
+@bp.route('/<restaurant_id>/customer/', methods=['GET','POST'])
+@check_user_login
+def place_order(customer_username, customer_id, restaurant_id):
+
+    if request.method == "POST":
+        
+        if not customer_id:
+            print("Not logged in")
+            flash("You must be logged in to place an order", "danger")
+            return redirect(url_for('index'))
+
+        oiTable = dynamodb.Table('order_item') # pylint: disable=no-member
+        menuTable = dynamodb.Table('menu_item') # pylint: disable=no-member
+        orderTable = dynamodb.Table('order') # pylint: disable=no-member
+        restTable = dynamodb.Table('restaurant') # pylint: disable=no-member
+
+        
+        # generate order_id
+        order_id = str(uuid.uuid4())
+        
+        menu_items = list(request.form.getlist("item_id"))
+        quantites = request.form.getlist('item_quantity')
+        subtotals = request.form.getlist("item_subtotal")
+
+        sub_order = {}
+
+
+        for i in range(len(menu_items)):
+            sub_order[menu_items[i]] = {'Quantity': int(quantites[i]), "subtotal": int(subtotals[i])}
+
+
+        orderSubtotal = 0
+        orderIdList = []
+        for key in sub_order:
+            orderItemId = str(uuid.uuid4())
+            
+            
+            item = {
+                    'order_id': order_id,
+                    'order_item_id': orderItemId,
+                    'oi_quantity': sub_order[key]['Quantity'],
+                    'oi_unit_price': sub_order[key]['subtotal'],
+                    'item_id': key
+            }
+
+            #update quantites of items ordered in database, subtracting items from database that were ordered
+            response = menuTable.update_item(
+                Key={'menu_item_id': key},
+                UpdateExpression='set item_quantity_available = item_quantity_available - :val',
+                ExpressionAttributeValues = {
+                    ':val': item['oi_quantity']
+                },
+                ReturnValues = 'UPDATED_NEW'
+            )
+            
+            #create new order_item with menu item and price
+            newOrderItem = oiTable.put_item(
+                Item=item
+            )
+            
+            orderSubtotal = orderSubtotal + sub_order[key]['subtotal']
+            orderIdList.append(orderItemId)
+        
+
+        #get the current time and convert it into a string
+        named_tuple = time.localtime() # get struct_time
+        time_string = time.strftime("%Y-%m-%d, %H:%M:%S", named_tuple)
+
+        order = dict()
+
+        order['order_time'] = time_string
+        order['order_id'] = order_id
+        order['order_type'] = request.form['order_type']
+        order['order_fulfilled_time'] = None
+        order['order_status'] = "Submitted"
+        order['customer_id'] = customer_id
+        order['oi_id'] = orderIdList
+        order['restaurant_id'] = restaurant_id
+        order['table_id'] = None
+        order['order_total'] = orderSubtotal
+
+        #print(order)
+
+        createOrder = orderTable.put_item(
+        Item = order
+        )
+
+        response = restTable.get_item(
+            Key={'restaurant_id': restaurant_id}
+        )
+        restName = response['Item']['restaurant_name']
+        orderDetails = dict(username = customer_username, restName = restName, order_time=order['order_time'], subtotal=orderSubtotal)
+        print (orderDetails)
+        return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails)
+
+'''
+    item_quantity = list(map(int, request.form.getlist('quantity')))
 
     #get the current time and convert it into a string
     named_tuple = time.localtime() # get struct_time
@@ -105,7 +236,7 @@ def get_order(customer_username, customer_id, restaurant_id):
     #print(string_to_time)
 
     return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, itemDetails=itemDetails)
-
+    '''
 
 
 @bp.route('/<restaurant_id>/order_history', methods=['GET','POST'])

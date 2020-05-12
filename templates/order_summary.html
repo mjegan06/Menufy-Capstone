@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+<div class="jumbotron rounded=0">
+    <h2 class="text-center"> Order Page for {{ order.restName }} </h2>
+    <!-- <h2 class="text-center" onload="loadData({{ data}})"> Menu </h2> -->
+
+</div>
+
+<div>
+	<form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}/customer/">
+		<table class="table table-hover table-striped table-dark">
+			<thead>
+				<tr>
+					<th> 
+						<td>
+							Order Summary for {{ order.username }}
+						</td>
+					</th>
+				</tr>
+        	</thead>
+			<tbody>
+				<tr>
+            		<td> Menu Item </td>
+            		<td align="right"> Quantity </td>
+            		<td align="right"> Subtotal </td>
+        		</tr>
+        		{%for item in itemDetails %}
+        		<tr>
+					<input type="hidden" id={{item.item_id}} name="item_id" value={{item.item_id}}>
+            		<td> {{item.item_name}} </td>
+            		<td align="right"> <input type="hidden" name="item_quantity" value={{item.quantity}}> {{item.quantity}} </td>
+            		<td align="right"> <input type="hidden" name="item_subtotal" value={{item.item_subtotal}}> ${{item.item_subtotal}} </td>
+        		</tr>
+        		{% endfor %}
+			</tbody>
+
+		</table>
+
+		<div class="form-group">
+			<input type="radio" id="orderType1" name="order_type" value="Carry Out">
+			<label for="orderType1">Carry Out</label>
+			<input type="radio" id="orderType2" name="order_type" value="Dine In" checked>
+			<label for="orderType1">Dine In</label>
+
+            <button type="submit" class="btn btn-warning">Place Order</button>
+        </div>
+	</form>
+	<form method="GET" action="/restaurant/{{restaurant_id}}">
+		<div class="form-group" style="vertical-align: middle;">
+            <button type="submit" class="btn btn-warning">Change Order</button>
+        </div>
+	</form>
+</div>
+
+{% endblock %}
