@@ -105,9 +105,10 @@ def get_order_details( restaurant_id, order_id):
             food_list.append(order_data['Items'][0]['item_name'])
 
             # order_data = json.dumps(data['Items'][0]['oi_id'], cls=DecimalEncoder)
-            food_list = json.dumps(food_list, cls=DecimalEncoder)
-            print(food_list)
-            return (food_list)
+            
+        food_list = json.dumps(food_list, cls=DecimalEncoder)
+        
+        return (food_list)
     
     except:
         return ("")
