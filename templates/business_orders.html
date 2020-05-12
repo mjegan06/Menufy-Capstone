@@ -162,13 +162,15 @@
                 // },
                 success: function(response) {
 
+                    $(".food-items").remove();
+
                     // response.each(function(item, index) {
                     //     $(".food-list").append('<li>' + item + '</li>');
                     // });
 
                     JSON.parse(response).forEach(function(item, idx) {
                         // console.log("Object " + idx, obj)
-                        $(".food-list").append('<li>' + item + '</li>');
+                        $(".food-list").append('<li class="food-items">' + item + '</li>');
                     })
 
 
