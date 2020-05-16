@@ -261,7 +261,7 @@ def business_signup(restaurant_username, restaurant_id):
             'restaurant_address_2': restaurant_address_2,
             'restaurant_city': restaurant_city,
             'restaurant_state': restaurant_state,
-            'restaurant_zip': restaurant_zip
+            'restaurant_postal_code': restaurant_postal_code
         }
 
         # if valid input, insert into users table in the db

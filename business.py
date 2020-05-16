@@ -124,14 +124,21 @@ def business_inventory(restaurant_username, restaurant_id, rid):
     response = menu_table.scan(
         FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
-    menu_id = response['Items'][0]['menu_id']
-
-    # get menu items
-    menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
-    response = menu_item_table.scan(
-        FilterExpression=Attr('menu_id').eq(menu_id)
-    )
     
-    menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+    if not response['Items']:
+        menu_data = None
+        flash("Unable to find a menu associated with your business, please create a menu to access this feature", "danger")
+        return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
 
-    return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
+    else:
+        menu_id = response['Items'][0]['menu_id']
+
+        # get menu items
+        menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+        response = menu_item_table.scan(
+            FilterExpression=Attr('menu_id').eq(menu_id)
+        )
+        
+        menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+        return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
