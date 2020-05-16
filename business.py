@@ -76,7 +76,7 @@ def business_orders(restaurant_username, restaurant_id, rid):
 
     order_data = json.dumps(orders['Items'], cls=DecimalEncoder)
 
-    return render_template('business_orders.html', restaurant_username=restaurant_username, restaurant_name = restaurant_name, order_data = order_data)
+    return render_template('business_orders.html', restaurant_username=restaurant_username, restaurant_id=restaurant_id, restaurant_name = restaurant_name, order_data = order_data)
         
 @bp.route('/<restaurant_id>/<order_id>', methods=['GET'])
 def get_order_details( restaurant_id, order_id):

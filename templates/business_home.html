@@ -17,89 +17,131 @@
         </table>
     </form> -->
 
-    <div id="order">
+    <table class="table table-hover table-striped table-dark" id="account-table">
+    </table>
 
-    </div>
+    <!-- <div id="account">
+
+    </div> -->
 
     <script type="text/javascript">
         var data = JSON.parse('{{ data | safe }}');
-
+        // var transform = {
+        //     "<>": "div",
+        //     "class": "container",
+        //     "children": [{
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_id}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_name}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_city}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_address_line1}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_address_line2}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_state}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_phone_num}'
+        //     }, {
+        //         "<>": "div",
+        //         "class": "row",
+        //         "html": '${restaurant_postal_code}'
+        //     }]
+        // }
+        // $('#account').html(json2html.transform(data, transform));
 
         var transform = {
-                "<>": "div",
-                "class": "container",
+            "<>": "tbody",
+            "children": [{
+                "<>": "tr",
                 "children": [{
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
+                    "html": 'Restaurant ID'
+                }, {
+                    "<>": "td",
                     "html": '${restaurant_id}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'Restaurant Name'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_name}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'City'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_city}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'Address Line 1'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_address_line1}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'Address Line 2'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_address_line2}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'State'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_state}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'Contact Number'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_phone_num}'
+                }]
+            }, {
+                "<>": "tr",
+                "children": [{
+                    "<>": "td",
+                    "html": 'Postal Code'
                 }, {
-                    "<>": "div",
-                    "class": "row",
+                    "<>": "td",
                     "html": '${restaurant_postal_code}'
                 }]
-            }
-            // var transform = {
-            //     "<>": "tr",
-            //     'id': '${restaurant_id}',
-            //     "children": [{
-            //         "<>": "td",
-            //         'id': '${restaurant_id}',
-            //         "name": "restaurant_id",
-            //         "value": '${restaurant_id}'
-            //     }, {
-            //         "<>": "td",
-            //         'name': 'restaurant_name',
-            //         "html": "${restaurant_name}",
-            //         "value": "restaurant_name"
-            //     }, {
-            //         "<>": "td",
-            //         "html": "${restaurant_city}"
-            //     }, {
-            //         "<>": "td",
-            //         "html": "${restaurant_address_line1}"
-            //     }, {
-            //         "<>": "td",
-            //         "html": "${restaurant_address_line2}"
-            //     }, {
-            //         "<>": "td",
-            //         "html": "${restaurant_phone}"
-            //     }, {
-            //         "<>": "td",
-            //         "children": [{
-            //             '<>': 'button',
-            //             'type': 'button',
-            //             'id': 'edit',
-            //             'class': 'edit',
-            //             'html': 'edit'
-            //         }]
-            //     }]
-            // };
-
-        $('#order').html(json2html.transform(data, transform));
+            }]
+        };
+        $('#account-table').html(json2html.transform(data, transform));
 
         // $('.sub').click(function() {
         //     if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
