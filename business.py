@@ -44,21 +44,16 @@ def business_home(restaurant_username, restaurant_id, rid):
 @bp.route('/<rid>/orders', methods=['GET', 'POST'])
 @business_check_user_login
 def business_orders(restaurant_username, restaurant_id, rid):
-            
-
-    if request.method == 'POST':
-       
+    if request.method == 'POST':  
         try:
             order_id =  request.form['mark_complete']
             table = dynamodb.Table('order')
-
             response = table.get_item(Key={'order_id': order_id})
             item = response['Item']
             
             if ( item['order_status']=='completed'):
                 item['order_status']='in-progress'
-                table.put_item(Item=item)
-                        
+                table.put_item(Item=item)               
             
             elif ( item['order_status']=='in-progress'):
                 item['order_status']='completed'
@@ -81,7 +76,7 @@ def business_orders(restaurant_username, restaurant_id, rid):
 
     order_data = json.dumps(orders['Items'], cls=DecimalEncoder)
 
-    return render_template('business_orders.html', restaurant_name = restaurant_name, order_data = order_data)
+    return render_template('business_orders.html', restaurant_username=restaurant_username, restaurant_name = restaurant_name, order_data = order_data)
         
 @bp.route('/<restaurant_id>/<order_id>', methods=['GET'])
 def get_order_details( restaurant_id, order_id):
