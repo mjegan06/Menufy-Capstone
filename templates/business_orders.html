@@ -15,11 +15,9 @@
             <div class="col-3">
                 <button class="btn btn-dark btn-lg" onclick="showOrders()">All orders</button>
             </div>
-
             <div class="col-3">
                 <button class="btn btn-dark btn-lg" onclick="hideOrders()">Current orders</button>
             </div>
-
         </div>
 
     </div>
@@ -42,9 +40,7 @@
           </button>
                 </div>
                 <div class="modal-body">
-                    <ul class="food-list">
-
-                    </ul>
+                    <ul class="food-list"></ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -67,11 +63,8 @@
                     '<>': 'button',
                     'type': 'button',
                     'class': "btn btn-danger",
-                    // 'data-container': "body",
                     'data-toggle': "modal",
                     'data-target': '#exampleModal',
-                    // 'title': "Popover Title",
-                    // 'data-content': "Hello world",
                     'id': "${restaurant_id}",
                     "name": "order_detail",
                     "html": "${order_id}",
@@ -109,14 +102,11 @@
         $('#order').html(json2html.transform(order_data, transform));
 
 
-        // hide complete button
-
         $(function() { //document ready event
             $('table tr').each(function() { //loop all tr's
-                var Cell = $(this).find("td[id='order_status']"); //find first td cell
+                var Cell = $(this).find("td[id='order_status']");
                 if (Cell.text() == 'completed') {
                     button = $(this).find("button[name='mark_complete']").html('Revert');
-                    // buttom = $(this).find("[name='mark_complete']");
                 }
             });
         });
@@ -163,19 +153,11 @@
                 success: function(response) {
 
                     $(".food-items").remove();
-
-                    // response.each(function(item, index) {
-                    //     $(".food-list").append('<li>' + item + '</li>');
-                    // });
-
                     JSON.parse(response).forEach(function(item, idx) {
                         // console.log("Object " + idx, obj)
                         $(".food-list").append('<li class="food-items">' + item + '</li>');
                     })
-
-
                 }
-
             });
         }
     </script>

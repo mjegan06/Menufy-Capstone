@@ -9,7 +9,7 @@
 </div>
 {% if restaurant_username %}
 
-<div>
+<div style="margin-left: 20px;margin-right: 20px;">
     <!-- <form id="business_orders_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
         <table class="table table-hover table-striped table-dark">
             <tbody id="order">
@@ -20,51 +20,35 @@
     <table class="table table-hover table-striped table-dark" id="account-table">
     </table>
 
-    <!-- <div id="account">
-
-    </div> -->
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+                </div>
+                <div class="modal-body">
+                    <form id="business_edit_form{{restaurant_id}}" method="POST">
+                        <div class="form-group">
+                            <label for="example" id="attribute"></label>
+                            <input type="text" class="form-control" id="current-val" aria-describedby="help">
+                            <small id="help" class="form-text text-muted"></small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
         var data = JSON.parse('{{ data | safe }}');
-        // var transform = {
-        //     "<>": "div",
-        //     "class": "container",
-        //     "children": [{
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_id}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_name}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_city}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_address_line1}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_address_line2}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_state}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_phone_num}'
-        //     }, {
-        //         "<>": "div",
-        //         "class": "row",
-        //         "html": '${restaurant_postal_code}'
-        //     }]
-        // }
-        // $('#account').html(json2html.transform(data, transform));
-
         var transform = {
             "<>": "tbody",
             "children": [{
@@ -75,6 +59,8 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_id}'
+                }, {
+                    "<>": "td"
                 }]
             }, {
                 "<>": "tr",
@@ -84,6 +70,19 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_name}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'Restaurant Name',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_name}',
+                    }]
                 }]
             }, {
                 "<>": "tr",
@@ -93,6 +92,19 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_city}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'City',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_city}',
+                    }]
                 }]
             }, {
                 "<>": "tr",
@@ -102,6 +114,19 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_address_line1}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'Address Line 1',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_address_line1}',
+                    }]
                 }]
             }, {
                 "<>": "tr",
@@ -111,6 +136,19 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_address_line2}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'Address Line 2',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_address_line2}',
+                    }]
                 }]
             }, {
                 "<>": "tr",
@@ -120,6 +158,19 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_state}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'State',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_state}',
+                    }]
                 }]
             }, {
                 "<>": "tr",
@@ -129,6 +180,19 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_phone_num}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'Contact Number',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_phone_num}',
+                    }]
                 }]
             }, {
                 "<>": "tr",
@@ -138,23 +202,40 @@
                 }, {
                     "<>": "td",
                     "html": '${restaurant_postal_code}'
+                }, {
+                    "<>": "td",
+                    "children": [{
+                        '<>': 'button',
+                        'type': 'button',
+                        'class': "btn btn-danger",
+                        'data-toggle': "modal",
+                        'data-target': '#exampleModal',
+                        'id': 'Postal Code',
+                        "name": "edit",
+                        "html": "edit",
+                        "value": '${restaurant_postal_code}',
+                    }]
                 }]
             }]
         };
         $('#account-table').html(json2html.transform(data, transform));
 
-        // $('.sub').click(function() {
-        //     if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
-        // });
+        $('button[name ="edit"]').click(function() {
+            var attribute = $(this).attr('id');
+            var value = $(this).attr('value');
+            $(".modal-title").html("Edit Business Information");
+            $("#attribute").html(attribute);
+            $("#current-val").val(value);
+        });
     </script>
 </div>
 
-<div class="list-group">
+<div class="list-group align-items-center" style="padding-bottom: 5vh;">
 
-    <a class="list-group-item  list-group-item-active" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>
+    <a class="list-group-item  list-group-item-active" style="width: 50vh;" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>
 
-    <a class="list-group-item list-group-item-active" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/inventory"> Inventory Levels</a>
+    <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/inventory"> Inventory Levels</a>
 
-
+    <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/menu"> Current Menu</a>
 </div>
 {% endif %} {% endblock %}

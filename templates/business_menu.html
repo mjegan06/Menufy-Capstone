@@ -1,34 +1,25 @@
 {% extends "base.html" %} {% block content %}
-
 <div class="jumbotron rounded-0">
     <div class="container text-center">
         <div id="jumbo-text">
             <h1 class="display-4">Menufy</h1>
-            <p class="lead">Welcome to {{restaurant_name}}</p>
+            <p class="lead">{{restaurant_name}} Inventory Levels</p>
         </div>
     </div>
 </div>
 
+<div class="list-group align-items-center" style="padding-bottom: 5vh;">
+
+    <a class="list-group-item  list-group-item-active" style="width: 50vh;" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Add Menu Item</a>
+</div>
+
 <div>
     <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
-        <!--<form id="order_form{{restaurant_id}}" action="order.html"></form>-->
         <table class="table table-hover table-striped table-dark">
             <tbody id="menu">
-
             </tbody>
         </table>
-        <div class="form-group">
-            <button type="submit" class="btn btn-warning">Review Order</button>
-        </div>
     </form>
-    <!--<table class="table table-hover table-striped table-dark">
-        <tbody id="menu">
-
-        </tbody>
-    </table>
-    <div class="form-group">
-        <button id="reviewButton" type="button" class="btn btn-warning">Review Order</button>
-    </div>-->
 
     <script type="text/javascript">
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
@@ -46,56 +37,42 @@
                 "<>": "td",
                 'name': 'item_name',
                 "html": "${item_name}",
-                "value": "item_name"
+                "value": "${item_name}",
             }, {
                 "<>": "td",
-                "html": "${item_description}"
+                'name': 'item_description',
+                "html": "${item_description}",
+                "value": "${item_description}"
             }, {
                 "<>": "td",
                 "html": "$ ${item_unit_price}"
             }, {
                 "<>": "td",
+                "html": "${item_quantity_available}"
+            }, {
+                "<>": "td",
                 "children": [{
                     '<>': 'button',
                     'type': 'button',
-                    'id': 'sub',
-                    'class': 'sub',
-                    'html': '-'
-                }, {
-                    '<>': 'input',
-                    'id': '${menu_item_id}',
-                    'type': 'text',
-                    'name': 'quantity',
-                    'value': '0'
+                    'id': 'edit',
+                    'class': 'edit',
+                    'html': 'edit'
                 }, {
                     '<>': 'button',
                     'type': 'button',
-                    'id': 'add',
-                    'class': 'add',
-                    'html': '+'
+                    'id': 'delete',
+                    'class': 'delete',
+                    'html': 'delete'
                 }]
             }]
         };
 
         $('#menu').html(json2html.transform(menu_data, transform));
 
-        $('.add').click(function() {
-            $(this).prev().val(+$(this).prev().val() + 1);
-        });
+
         $('.sub').click(function() {
             if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         });
     </script>
-    <!--<script>
-        $("form").submit(function(event){
-            event.preventDefault();
-            var values = $(this).serializeArray();
-            console.log(values)
-            console.log(JSON.stringify(values));
-            localStorage['orderData'] = JSON.stringify(values);
-        })
-
-        console.log(localStorage['orderData']);
-    </script>-->
 </div>
 {% endblock %}

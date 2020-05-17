@@ -82,11 +82,9 @@ def business_orders(restaurant_username, restaurant_id, rid):
 def get_order_details( restaurant_id, order_id):
 
     table=dynamodb.Table('order')
-
     data = table.query(
         KeyConditionExpression=Key('order_id').eq(order_id)
     )
-
 
     try:
         items = data['Items'][0]['oi_id']
@@ -94,8 +92,7 @@ def get_order_details( restaurant_id, order_id):
         menu_table=dynamodb.Table('menu_item')
         for each in items:
             order_data = menu_table.scan(
-                FilterExpression=Attr('menu_item_id').contains(each)
-            
+                FilterExpression=Attr('menu_item_id').contains(each) 
             )
             food_list.append(order_data['Items'][0]['item_name'])
 
@@ -142,3 +139,38 @@ def business_inventory(restaurant_username, restaurant_id, rid):
         menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
 
         return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
+
+
+@bp.route('/<rid>/menu', methods=['GET'])
+@business_check_user_login
+def business_menu(restaurant_username, restaurant_id, rid):
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+    row = table.scan(
+        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+    )
+
+    restaurant_name = row['Items'][0]['restaurant_name']
+
+     # get menu id
+    menu_table=dynamodb.Table('menu') # pylint: disable=no-member
+    response = menu_table.scan(
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+    )
+    
+    if not response['Items']:
+        menu_data = None
+        flash("Unable to find a menu associated with your business, please create a menu to access this feature", "danger")
+        return render_template('business_inventory.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
+
+    else:
+        menu_id = response['Items'][0]['menu_id']
+
+        # get menu items
+        menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+        response = menu_item_table.scan(
+            FilterExpression=Attr('menu_id').eq(menu_id)
+        )
+        
+        menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+        return render_template('business_menu.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
