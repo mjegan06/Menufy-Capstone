@@ -25,14 +25,34 @@ class DecimalEncoder(json.JSONEncoder):
 bp = Blueprint('business', __name__, url_prefix='/business')
 
 
-@bp.route('/<rid>/home', methods=['GET'])
+@bp.route('/<rid>/home', methods=['GET', 'POST'])
 @business_check_user_login
 def business_home(restaurant_username, restaurant_id, rid):
-    table = dynamodb.Table('restaurant') # pylint: disable=no-member
-    restaurant = table.scan(
-        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
-    )
+                
+    if request.method == 'POST': 
+        try:
+            data = request.form.to_dict(flat=False)
+            keyList = list(data.keys())
+            key = keyList[0]
+            input = data[key][0]
+            
 
+            table = dynamodb.Table('restaurant')
+            response = table.get_item(Key={'restaurant_id': restaurant_id})
+            item = response['Item']
+            item[key] = input
+            table.put_item(Item=item)
+            
+
+        except:
+            print("Phew")
+            
+
+    table = dynamodb.Table('restaurant') # pylint: disable=no-member
+
+    restaurant= table.query(
+        KeyConditionExpression=Key('restaurant_id').eq(restaurant_id)
+    )
     restaurant_name = restaurant['Items'][0]['restaurant_name']
 
     data = json.dumps(restaurant['Items'], cls=DecimalEncoder).replace(r"'",r"\'")
