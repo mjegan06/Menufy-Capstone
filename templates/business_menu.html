@@ -14,65 +14,110 @@
 </div>
 
 <div>
-    <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
+    <form id="business_orders_form{{restaurant_id}}" method="POST">
         <table class="table table-hover table-striped table-dark">
             <tbody id="menu">
             </tbody>
         </table>
     </form>
-
-    <script type="text/javascript">
-        var menu_data = JSON.parse('{{ menu_data |  safe }}');
-
-        var transform = {
-            "<>": "tr",
-            'id': '${menu_item_id}',
-            "children": [{
-                "<>": "input",
-                "type": "hidden",
-                'id': '${menu_item_id}',
-                "name": "menu_item_id",
-                "value": '${menu_item_id}'
-            }, {
-                "<>": "td",
-                'name': 'item_name',
-                "html": "${item_name}",
-                "value": "${item_name}",
-            }, {
-                "<>": "td",
-                'name': 'item_description',
-                "html": "${item_description}",
-                "value": "${item_description}"
-            }, {
-                "<>": "td",
-                "html": "$ ${item_unit_price}"
-            }, {
-                "<>": "td",
-                "html": "${item_quantity_available}"
-            }, {
-                "<>": "td",
-                "children": [{
-                    '<>': 'button',
-                    'type': 'button',
-                    'id': 'edit',
-                    'class': 'edit',
-                    'html': 'edit'
-                }, {
-                    '<>': 'button',
-                    'type': 'button',
-                    'id': 'delete',
-                    'class': 'delete',
-                    'html': 'delete'
-                }]
-            }]
-        };
-
-        $('#menu').html(json2html.transform(menu_data, transform));
-
-
-        $('.sub').click(function() {
-            if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
-        });
-    </script>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <form id="business_edit_form" method="POST" action="/business/{{restaurant_id}}/home">
+                    <div class="form-group">
+                        <!-- <input type="text" class="form-control" id="current-val" name="" aria-describedby="help"> -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var menu_data = JSON.parse('{{ menu_data |  safe }}');
+
+    var transform = {
+        "<>": "tr",
+        'id': '${menu_item_id}',
+        "children": [{
+            "<>": "input",
+            "type": "hidden",
+            'id': '${menu_item_id}',
+            "name": "menu_item_id",
+            "value": '${menu_item_id}'
+        }, {
+            "<>": "td",
+            'name': 'item_name',
+            "html": "${item_name}",
+            "value": "${item_name}",
+        }, {
+            "<>": "td",
+            'name': 'item_description',
+            "html": "${item_description}",
+            "value": "${item_description}"
+        }, {
+            "<>": "td",
+            "html": "$ ${item_unit_price}"
+        }, {
+            "<>": "td",
+            "html": "${item_quantity_available}"
+        }, {
+            "<>": "td",
+            "children": [{
+                '<>': 'button',
+                'type': 'button',
+                'class': "btn btn-primary mr-3",
+                'data-toggle': "modal",
+                'data-target': '#exampleModal',
+                'name': 'edit-menu',
+                'value': "${item_name},${item_description},${item_unit_price},${item_quantity_available}",
+                'id': '${menu_item_id}',
+                'html': 'edit'
+            }, {
+                '<>': 'button',
+                'class': "btn btn-danger",
+                'type': 'button',
+                'id': 'delete',
+                'html': 'delete'
+            }]
+        }]
+    };
+
+    $('#menu').html(json2html.transform(menu_data, transform));
+
+
+    $('button[name ="edit-menu"]').click(function() {
+        var menu_item_id = $(this).attr('id');
+        var menu_item_data = $(this).attr('value');
+        var arr = menu_item_data.split(',');
+        // console.log(arr);
+        var response = transformModal(arr);
+        $(".modal-title").html("Edit Menu Item");
+        // $(".modal-body").html(arr);
+    });
+
+    function transformModal(menu_item_data) {
+        $(".food-items").remove();
+        menu_item_data.forEach(function(item, idx) {
+            // console.log("Object " + idx, obj)
+            console.log(item);
+
+            $(".form-group").append('<input type="text" class="form-control value=' + item + '>');
+        })
+    }
+</script>
 {% endblock %}
