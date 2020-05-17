@@ -1,8 +1,11 @@
 {% extends "base.html" %} {% block content %}
-<div class="jumbotron rounded=0">
-    <h2 class="text-center"> Order Summary for {{ order.username }} </h2>
-    <!-- <h2 class="text-center" onload="loadData({{ data}})"> Menu </h2> -->
-
+<div class="jumbotron rounded-0">
+    <div class="container text-center">
+        <div id="jumbo-text">
+            <h1 class="display-4">Menufy</h1>
+            <p class="lead">Order Summary for {{ order.username }}</p>
+        </div>
+    </div>
 </div>
 <!--
 <div>
