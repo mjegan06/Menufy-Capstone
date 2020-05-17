@@ -101,23 +101,47 @@ def business_orders(restaurant_username, restaurant_id, rid):
 @bp.route('/<restaurant_id>/<order_id>', methods=['GET'])
 def get_order_details( restaurant_id, order_id):
 
-    table=dynamodb.Table('order')
-    data = table.query(
+    order_table=dynamodb.Table('order')
+
+    order_data = order_table.query(
         KeyConditionExpression=Key('order_id').eq(order_id)
     )
 
     try:
-        items = data['Items'][0]['oi_id']
-        food_list = []
+        #dynamodb tables
         menu_table=dynamodb.Table('menu_item')
-        for each in items:
-            order_data = menu_table.scan(
-                FilterExpression=Attr('menu_item_id').contains(each) 
-            )
-            food_list.append(order_data['Items'][0]['item_name'])
+        order_item_table=dynamodb.Table('order_item')
 
-            # order_data = json.dumps(data['Items'][0]['oi_id'], cls=DecimalEncoder)
-            
+        #declare variables
+        oi_id = order_data['Items'][0]['oi_id']
+        food_list = []
+
+        for each in oi_id:
+            #query order_items to get the item_id, quantity and unit_price
+            oi_data = order_item_table.query(
+                KeyConditionExpression=Key('order_item_id').eq(each)
+            )
+            #query menu table for the item_name and item_unit price
+            menu_data = menu_table.query(
+                KeyConditionExpression=Key('menu_item_id').eq(oi_data['Items'][0]['item_id'])
+            )
+
+            #To display in order review
+            item_name = menu_data['Items'][0]['item_name']
+            oi_quantity = oi_data['Items'][0]['oi_quantity']
+            item_unit_price = menu_data['Items'][0]['item_unit_price']
+            oi_unit_price = oi_data['Items'][0]['oi_unit_price']
+
+            order_details = {
+                'item_name': item_name,
+                'oi_quantity': oi_quantity,
+                'item_unit_price': item_unit_price,
+                'oi_unit_price': oi_unit_price
+            }
+            food_list.append(order_details)
+
+        order_total = order_data['Items'][0]['order_total']
+        food_list.append({'order_total': order_total})
         food_list = json.dumps(food_list, cls=DecimalEncoder)
         
         return (food_list)
