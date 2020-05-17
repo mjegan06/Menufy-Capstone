@@ -12,49 +12,49 @@
 <div>
     <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
         <!--<form id="order_form{{restaurant_id}}" action="order.html"></form>-->
-        <table class="table table-hover table-striped table-dark">
-            <tbody id="menu">
+        <div class="card-deck" id="menu">
 
-            </tbody>
-        </table>
+        </div>
         <div class="form-group">
             <button type="submit" class="btn btn-warning">Review Order</button>
         </div>
     </form>
-    <!--<table class="table table-hover table-striped table-dark">
-        <tbody id="menu">
-
-        </tbody>
-    </table>
-    <div class="form-group">
-        <button id="reviewButton" type="button" class="btn btn-warning">Review Order</button>
-    </div>-->
 
     <script type="text/javascript">
         var menu_data = JSON.parse('{{ menu_data |  safe }}');
 
         var transform = {
-            "<>": "tr",
+            "<>": "div",
+            "class": "card",
             'id': '${menu_item_id}',
             "children": [{
-                "<>": "input",
-                "type": "hidden",
+                "<>": "div",
+                "class": "card-body",
                 'id': '${menu_item_id}',
-                "name": "menu_item_id",
-                "value": '${menu_item_id}'
+                "children": [{
+                    "<>": "input",
+                    "type": "hidden",
+                    'id': '${menu_item_id}',
+                    "name": "menu_item_id",
+                    "value": '${menu_item_id}'
+                }, {
+                    "<>": "h5",
+                    "class": "card-title",
+                    'name': 'item_name',
+                    "html": "${item_name}",
+                    "value": "item_name"
+                }, {
+                    "<>": "p",
+                    "class": "card-text",
+                    "html": "${item_description}"
+                }, {
+                    "<>": "p",
+                    "class": "card-text",
+                    "html": "Price: $ ${item_unit_price}"
+                }]
             }, {
-                "<>": "td",
-                'name': 'item_name',
-                "html": "${item_name}",
-                "value": "item_name"
-            }, {
-                "<>": "td",
-                "html": "${item_description}"
-            }, {
-                "<>": "td",
-                "html": "$ ${item_unit_price}"
-            }, {
-                "<>": "td",
+                "<>": "div",
+                "class": "card-footer",
                 "children": [{
                     '<>': 'button',
                     'type': 'button',
@@ -73,16 +73,16 @@
                     'id': 'add',
                     'class': 'add',
                     'html': '+'
-                }]
+                }]    
             }]
         };
 
         $('#menu').html(json2html.transform(menu_data, transform));
 
-        $('.add').click(function() {
+        $('.add').click(function () {
             $(this).prev().val(+$(this).prev().val() + 1);
         });
-        $('.sub').click(function() {
+        $('.sub').click(function () {
             if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         });
     </script>
