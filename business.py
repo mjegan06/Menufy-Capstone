@@ -225,44 +225,75 @@ def business_menu(restaurant_username, restaurant_id, rid):
         return render_template('business_menu.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
 
 
-@bp.route('/<menu_item_id>', methods=['GET', 'POST'])
-def get_menu_item_details(menu_item_id):
-    
-    if request.method == 'GET':  
+@bp.route('/<restaurant_id>/add_menu_item', methods=['POST'])
+def add_menu_item(restaurant_id):
 
+    if request.method == 'POST':  
         try:
-
-            #declare variables
-            menu_item_table=dynamodb.Table('menu_item')
-
-            data = menu_item_table.query(
-                KeyConditionExpression=Key('menu_item_id').eq(menu_item_id)
-            )
-            menu_item_data = json.dumps(data['Items'][0], cls=DecimalEncoder)
-            
-            return (menu_item_data)
-        
-        except:
-            return ("")
-
-    elif request.method == 'POST':  
-        
-        try:
-            table = dynamodb.Table('menu_item')
-            response = table.get_item(Key={'menu_item_id': menu_item_id})
-            item = response['Item']
             
             data = request.form.to_dict(flat=False)
+            item = {}
 
             keys = list(data.keys())
             for each in keys:
                 item[each] = data[each][0]
 
+            table=dynamodb.Table('menu_item') # pylint: disable=no-member
+            menu_table=dynamodb.Table('menu') # pylint: disable=no-member
+            response = menu_table.scan(
+                FilterExpression=Attr('restaurant_id').eq(restaurant_id)
+            )
+            menu_id = response['Items'][0]['menu_id']
+            item['menu_id']=menu_id
             table.put_item(Item=item)
-
-            
 
         except:
             return ("")
 
     return ("")
+
+
+@bp.route('/<menu_item_id>', methods=['GET', 'POST'])
+def edit_menu_item(menu_item_id):
+
+    if request.method == 'GET':  
+        try:
+
+           # get menu items
+            menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+            response = menu_item_table.scan(
+                FilterExpression=Attr('menu_item_id').eq(menu_item_id)
+            )
+            
+            # print(response["Items"][0])
+            return (json.dumps(response["Items"][0], cls=DecimalEncoder))
+
+
+        except:
+            return ("")
+
+    elif request.method == 'POST':
+        try:
+            data = request.form.to_dict(flat=False)
+
+           # get menu items
+            menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+            response = menu_item_table.scan(
+                FilterExpression=Attr('menu_item_id').eq(menu_item_id)
+            )
+            item = response["Items"][0]
+
+            keys = list(data.keys())
+            for each in keys:
+                item[each] = data[each][0]
+
+            print(item)
+            menu_item_table.put_item(Item=item)
+    
+        except:
+            return ("")
+
+    return ("")
+
+
+    

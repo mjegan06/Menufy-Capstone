@@ -9,7 +9,7 @@
 </div>
 
 <div class="list-group align-items-center" style="padding-bottom: 5vh;">
-    <button class="btn btn-primary" name="add-item" type="button" data-toggle="modal" data-target='#exampleModal'> Add Menu Item</button>
+    <button class="btn btn-primary" name="add-item" type="button" id="{{restaurant_id}}" data-toggle="modal" data-target='#exampleModal'> Add Menu Item</button>
 </div>
 
 <div>
@@ -21,7 +21,7 @@
     </form>
 </div>
 
-<!-- Modal -->
+<!-- Modal for Edit -->
 <div class="modal fade" id="itemDisplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -37,12 +37,12 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a type="button" onclick="form_submit()" class="btn btn-primary" method="POST">Save changes</a>
+                <a type="button" onclick="edit_menu()" class="btn btn-primary" method="POST">Save changes</a>
                 <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
             <script type="text/javascript">
-                function form_submit() {
+                function edit_menu() {
                     var menu_item_id = $('#menu_edit_form').attr('name');
                     $.ajax({
                         type: "POST",
@@ -51,6 +51,93 @@
                         success: function(response) {
                             var button = document.getElementById('close');
                             button.click();
+                        }
+                    });
+                    return false;
+                }
+            </script>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Create -->
+<div class="modal fade" id="createItemModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body">
+                <form name="menu_add_form" id="menu_add_form" data-toggle="validator" role="form">
+                    <div class="form-group">
+                        <label for="menu_item_id" class="control-label">Item id</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="menu_item_id" name="menu_item_id" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="item_name" class="control-label">Item Name</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="item_name" name="item_name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="item_description" class="control-label">Item Description</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="item_description" name="item_description" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="item_description" class="control-label">Item Quantity Available</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="item_quantity_available" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="item_type" class="control-label">Item Type</label>
+                        <div class="input-group">
+                            <select class="custom-select" id="item_type" name="item_type" required>
+                                <option selected disabled value="">Menu Item Type</option>
+                                <option>Breakfast and Brunch</option>
+                                <option>Non-Alcoholic Drinks</option>
+                                <option>Alcoholic Drinks</option>
+                                <option>Lunch and Dinner</option>
+                                <option>Desserts</option>
+                                <option>Appetizers</option>
+                                <option>Baked Goods</option>
+                              </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="item_description" class="control-label">Unit Price</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="item_unit_price" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" onclick="form_submit()" class="btn btn-primary">Add Item</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- <a type="button" onclick="form_submit()" class="btn btn-primary" method="POST">Add Item</a> -->
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+            <script type="text/javascript">
+                function form_submit() {
+                    var restaurant_id = $('#menu_add_form').attr('name');
+                    console.log(restaurant_id);
+                    $.ajax({
+                        type: "POST",
+                        url: '/business/' + restaurant_id + '/add_menu_item',
+                        data: $('#menu_add_form').serialize(),
+                        success: function(response) {
+                            var button = document.getElementById('close');
+                            button.click();
+                            document.menu_add_form.reset();
                         }
                     });
                     return false;
@@ -112,45 +199,17 @@
     $('#menu').html(json2html.transform(menu_data, transform));
 
     $('button[name ="add-item"]').click(function() {
-        // var menu_item_id = $(this).attr('id');
-        // var menu_item_data = $(this).attr('value');
-        // var arr = menu_item_data.split(',');
-        // $(".modal-title").html("Edit Menu Item");
-        // createMenuItem();
-        // // document.getElementById('menu_edit_form').setAttribute("action", '/business/' + menu_item_id);
-        // document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
-        console.log('hello');
+        var restaurant_id = $(this).attr('id');
+        $(".modal-title").html("Add New Menu Item");
+        createMenuItem(restaurant_id);
+        document.getElementById('menu_add_form').setAttribute("name", restaurant_id);
     });
 
-    function createMenuItem() {
-        var orderModal = $('#itemDisplay');
-        $.ajax({
-            type: "GET",
-            url: '/business/' + menu_item_id,
-            success: function(response) {
-                // console.log(response);
-                form_input = '';
-                $.each(JSON.parse(response), function(attribute, val) {
-                    // console.log(attribute, val);
-                    if (attribute == 'menu_item_id') {
-                        form_input += '<div class="form-group">';
-                        form_input += '<label>' + attribute + '</label>';
-                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
-                        form_input += '</div>';
-                    } else {
-                        form_input += '<div class="form-group">';
-                        form_input += '<label>' + attribute + '</label>';
-                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
-                        form_input += '</div>';
-                    }
-
-                })
-                orderModal.find('#menu_edit_form').html(form_input);
-                // orderModal.find('.order_result_total').html(order_total);
-                orderModal.modal('show');
-            }
-        });
-        return false;
+    function createMenuItem(restaurant_id) {
+        // console.log(restaurant_id);
+        var createModal = $('#createItemModel');
+        form_input = '';
+        createModal.modal('show');
     }
 
 
@@ -170,7 +229,7 @@
             type: "GET",
             url: '/business/' + menu_item_id,
             success: function(response) {
-                // console.log(response);
+                console.log(response);
                 form_input = '';
                 $.each(JSON.parse(response), function(attribute, val) {
                     // console.log(attribute, val);
