@@ -1,0 +1,24 @@
+<p>
+	Hello {{order.username}}
+</p>
+
+<p>
+	Below are the details of your recent order from {{order.restName}}
+</p>
+
+<p>
+	Order Placed: {{ order.order_time}}
+	<br>
+	Order Confirmation: {{ order.confirmation}}
+	<br>
+	Order Subtotal: ${{ order.subtotal}}
+	<br>
+	Tax: ${{order.tax}}
+	<br>
+	Order Total: ${{order.total}}
+	<br>
+	Please call {{ order.restName}} at {{order.restPhone}} with any questions or concerns for your order.
+</p>
+<p>
+    Check the status of your order <a href={{confirmation_url}}> here </a>
+</p>

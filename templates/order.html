@@ -49,9 +49,31 @@
 </div>-->
 
 <div>
-    {% for key, value in order.items() %}
-        <p><b>{{ key }}: </b>{{ value }}</p>
-    {% endfor %}
+    <p>
+        <h2>
+            Thank you for your order from {{ order.restName}}
+        </h2>
+    </p>
+    <p>
+	Below are the details of your recent order
+    </p>
+
+    <p>
+        Order Placed: {{ order.order_time}}
+        <br>
+        Order Confirmation: {{ order.confirmation}}
+        <br>
+        Order Subtotal: ${{ order.subtotal}}
+        <br>
+        Tax: ${{order.tax}}
+        <br>
+        Order Total: ${{order.total}}
+        <br>
+        Please call {{ order.restName}} at {{order.restPhone}} with any questions or concerns for your order.
+    </p>
+    <p>
+        Check the status of your order <a href={{confirmation_url}}> here </a>
+    </p>
 </div>
 
 {% endblock %}

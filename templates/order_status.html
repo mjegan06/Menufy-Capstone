@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+<div class="jumbotron rounded-0">
+    <div class="container text-center">
+        <div id="jumbo-text">
+            <h1 class="display-4">Menufy</h1>
+            <p class="lead">Order Status Page </p>
+        </div>
+    </div>
+</div>
+
+
+<div>
+	<p>
+		<h2>Hello {{order.username}}</h2>
+	</p>
+
+	<p>
+		<h6>Below is the status of your recent order from {{order.restName}}</h6>
+	</p>
+
+	<p>
+		Order Placed: {{ order.order_time}}
+		<br>
+		Order Status: {{ order.status}}
+		<br>
+		Order Total: ${{order.total}}
+		<br>
+		Please call {{ order.restName}} at {{order.restPhone}} with any questions or concerns for your order.
+	</p>
+</div>
+{% endblock %}
