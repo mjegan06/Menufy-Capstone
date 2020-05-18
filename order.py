@@ -11,7 +11,12 @@ from utils import *
 import time
 import json
 import decimal
+import random
+import string
 import uuid
+from flask_mail import Mail, Message
+#import application
+from flask import current_app
 
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 # table = dynamodb.Table('restaurant') # pylint: disable=no-member
@@ -24,6 +29,8 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(o)
 
 bp = Blueprint('order', __name__, url_prefix='/order')
+
+tax_api_key = '2ua9Sp7sTDhfCgM4'
 
 
 @bp.route('/<restaurant_id>', methods=['GET','POST'])
@@ -89,6 +96,9 @@ def place_order(customer_username, customer_id, restaurant_id):
         menuTable = dynamodb.Table('menu_item') # pylint: disable=no-member
         orderTable = dynamodb.Table('order') # pylint: disable=no-member
         restTable = dynamodb.Table('restaurant') # pylint: disable=no-member
+        custTable = dynamodb.Table('customer') # pylint: disable=no-member
+
+
 
         
         # generate order_id
@@ -142,10 +152,44 @@ def place_order(customer_username, customer_id, restaurant_id):
         named_tuple = time.localtime() # get struct_time
         time_string = time.strftime("%Y-%m-%d, %H:%M:%S", named_tuple)
 
+        confirmation = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(8)])
         order = dict()
+
+        #restrieve restaurant name, phone number, and zip code
+        response = restTable.get_item(
+            Key={'restaurant_id': restaurant_id}
+        )
+        restName = response['Item']['restaurant_name']
+        restPhone = response['Item']['restaurant_phone_num']
+        restZip = response['Item']['restaurant_postal_code']
+
+        #retrieve customer email
+        response = custTable.get_item(
+            Key={'customer_id': customer_id}
+        )
+        custEmail = response['Item']['customer_email']
+
+        #calculate sales tax for restaurant using zip-tax.com api
+        tax_url = 'https://api.zip-tax.com/request/v40?key=' + tax_api_key + '&postalcode=' + str(restZip)
+
+        tax_request = requests.get(tax_url)
+        tax_request_content = json.loads(tax_request.content)
+        salesTax = tax_request_content['results'][0]['taxSales']
+        print(salesTax)
+
+        #calculate tax for the order
+        orderTax = round(decimal.Decimal(str(salesTax * orderSubtotal)), 2)
+        print(orderTax)
+
+        #calculate order total (subtotal + order tax)
+        orderTotal = decimal.Decimal(str(orderTax + orderSubtotal))
+        print(orderTotal)        
+
+
 
         order['order_time'] = time_string
         order['order_id'] = order_id
+        order['confirmation'] = confirmation
         order['order_type'] = request.form['order_type']
         order['order_fulfilled_time'] = None
         order['order_status'] = "Submitted"
@@ -153,7 +197,9 @@ def place_order(customer_username, customer_id, restaurant_id):
         order['oi_id'] = orderIdList
         order['restaurant_id'] = restaurant_id
         order['table_id'] = None
-        order['order_total'] = orderSubtotal
+        order['subtotal'] = orderSubtotal
+        order['tax'] = orderTax
+        order['order_total'] = orderTotal
 
         #print(order)
 
@@ -161,83 +207,87 @@ def place_order(customer_username, customer_id, restaurant_id):
         Item = order
         )
 
-        response = restTable.get_item(
-            Key={'restaurant_id': restaurant_id}
-        )
-        restName = response['Item']['restaurant_name']
-        orderDetails = dict(username = customer_username, restName = restName, order_time=order['order_time'], subtotal=orderSubtotal)
+        
+        orderDetails = dict(
+            username = customer_username, 
+            restName = restName, 
+            order_time = order['order_time'],
+            subtotal = orderSubtotal,
+            tax =  orderTax,
+            total=orderTotal, 
+            confirmation=order['confirmation'],
+            restPhone=restPhone)
         print (orderDetails)
-        return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails)
 
-'''
-    item_quantity = list(map(int, request.form.getlist('quantity')))
+        confirmation_url = request.url_root + 'order/?confirmation=' + confirmation
+        print(confirmation_url)
+        
+        
+        from application import mail as mail
+        try:
+            msg = Message("Order Confirmation Email",
+                sender = "menufy.capstone@gmail.com",
+                recipients= [custEmail])
+            msg.body = 'Hello ' + str(customer_username) + '\nBelow are the details of your recent order from ' + str(restName) + '\n' + 'Order Placed: ' + str(order['order_time']) + '\n' + 'Order Confirmation: ' + str(order['confirmation']) + '\n' + 'Order Subtotal: ' + str(order['order_total']) + '\n' + 'Please call ' + str(restName) + ' at ' + str(restPhone) + ' with any questions or concerns for your order.\n'
+            msg.html = render_template('order_confirmation_email.html', order=orderDetails, confirmation_url=confirmation_url)
+            mail.send(msg)
+        except Exception as e:
+            return str(e)
+        return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, confirmation_url=confirmation_url)
 
-    #get the current time and convert it into a string
-    named_tuple = time.localtime() # get struct_time
-    time_string = time.strftime("%Y-%m-%d, %H:%M:%S", named_tuple)
 
-    res = dict(zip(menu_items, item_quantity))
-    for key in list(res):
-        if res[key] == 0:
-            del res[key]
+@bp.route('/', methods=['GET', 'POST'])
+@check_user_login
+def order_status(customer_username, customer_id):
+    confirmation = request.args.get('confirmation')
+    if not confirmation:
+        return "NO CONFIRMATION"
+    print(confirmation)
+    if request.method == 'GET':
+        if not customer_id:
+                print("Not logged in")
+                flash("You must be logged in to check the status of an order", "danger")
+                #return redirect(url_for('index'))
+                return "NOT OK IT IS HERE"
 
-    orderSubtotal = 0
-    orderIdList = []
-    itemDetails = []
-    for key in res:
-        orderItemId = str(uuid.uuid4())
-        response = menuTable.get_item(
-            Key={'menu_item_id': key}
-        )
-        #create new order_item with menu item and price
-        newOrderItem = oiTable.put_item(
-            Item={
-                'order_id': order_id,
-                'order_item_id': orderItemId,
-                'oi_quantity': res[key],
-                'oi_unit_price': response['Item']['item_unit_price'] * res[key],
-                'item_id': key
-            }
-        )
-        itemDetails.append({
-            'item_name': response['Item']['item_name'],
-            'quantity': res[key], 
-            'item_subtotal': response['Item']['item_unit_price'] * res[key]
-        })
-        orderSubtotal = orderSubtotal + response['Item']['item_unit_price'] * res[key]
-        orderIdList.append(orderItemId)
-
-    response = restTable.get_item(
-            Key={'restaurant_id': restaurant_id}
-        )
-    restName = response['Item']['restaurant_name']
-    orderDetails = dict(username = customer_username, orderSubtotal = orderSubtotal, restName = restName)
+        orderTable = dynamodb.Table('order') # pylint: disable=no-member
+        restTable = dynamodb.Table('restaurant')
+        
         
 
-    order = dict()
 
-    order['order_time'] = time_string
-    order['order_id'] = order_id
-    order['order_type'] = None
-    order['order_fulfilled_time'] = None
-    order['order_status'] = None
-    order['customer_id'] = customer_id
-    order['oi_id'] = orderIdList
-    order['restaurant_id'] = restaurant_id
-    order['table_id'] = None
-    order['order_total'] = orderSubtotal
+        row = orderTable.scan(
+            FilterExpression=Attr('confirmation').eq(confirmation)
+        )
+        if row['Count'] == 0:
+            print("Not working")
 
-    createOrder = orderTable.put_item(
-        Item = order
-    )
+        #restrieve restaurant name, phone number, and zip code
+        response = restTable.get_item(
+            Key={'restaurant_id': row['Items'][0]['restaurant_id']}
+        )
+        restName = response['Item']['restaurant_name']
+        restPhone = response['Item']['restaurant_phone_num']
+        
+        print(row['Items'][0])
+        orderDetails = dict(
+            username = customer_username, 
+            restName = restName, 
+            order_time = row['Items'][0]['order_time'],
+            status = row['Items'][0]['order_status'],
+            total = row['Items'][0]['order_total'],
+            restPhone=restPhone
+        )
+        #return 'OK'
+        return render_template('order_status.html', customer_username=customer_username, customer_id=customer_id, order=orderDetails)
+    else:
+        return 'NOT OK'
 
-    #convert the string back into time
-    #string_to_time = time.strptime(time_string, "%m/%d/%Y, %H:%M:%S")
-    #print(string_to_time)
+    return "OK I'm here"
 
-    return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, itemDetails=itemDetails)
-    '''
 
+
+    
 
 @bp.route('/<restaurant_id>/order_history', methods=['GET','POST'])
 @check_user_login
