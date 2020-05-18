@@ -66,17 +66,21 @@ def business_home(restaurant_username, restaurant_id, rid):
 def business_orders(restaurant_username, restaurant_id, rid):
     if request.method == 'POST':  
         try:
-            order_id =  request.form['mark_complete']
+            order_id =  request.form['change-status']
             table = dynamodb.Table('order')
             response = table.get_item(Key={'order_id': order_id})
             item = response['Item']
             
-            if ( item['order_status']=='completed'):
-                item['order_status']='in-progress'
+            if ( item['order_status']=='Completed'):
+                item['order_status']='In-progress'
                 table.put_item(Item=item)               
             
-            elif ( item['order_status']=='in-progress'):
-                item['order_status']='completed'
+            elif ( item['order_status']=='In-progress'):
+                item['order_status']='Completed'
+                table.put_item(Item=item)
+
+            elif ( item['order_status']=='Submitted'):
+                item['order_status']='In-progress'
                 table.put_item(Item=item)
 
         except:
@@ -155,7 +159,7 @@ def get_order_details( restaurant_id, order_id):
 def business_inventory(restaurant_username, restaurant_id, rid):
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     row = table.scan(
-        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
 
     restaurant_name = row['Items'][0]['restaurant_name']
@@ -188,9 +192,10 @@ def business_inventory(restaurant_username, restaurant_id, rid):
 @bp.route('/<rid>/menu', methods=['GET'])
 @business_check_user_login
 def business_menu(restaurant_username, restaurant_id, rid):
+            
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
     row = table.scan(
-        FilterExpression=Attr('restaurant_username').eq(restaurant_username)
+        FilterExpression=Attr('restaurant_id').eq(restaurant_id)
     )
 
     restaurant_name = row['Items'][0]['restaurant_name']
@@ -218,3 +223,46 @@ def business_menu(restaurant_username, restaurant_id, rid):
         menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
 
         return render_template('business_menu.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
+
+
+@bp.route('/<menu_item_id>', methods=['GET', 'POST'])
+def get_menu_item_details(menu_item_id):
+    
+    if request.method == 'GET':  
+
+        try:
+
+            #declare variables
+            menu_item_table=dynamodb.Table('menu_item')
+
+            data = menu_item_table.query(
+                KeyConditionExpression=Key('menu_item_id').eq(menu_item_id)
+            )
+            menu_item_data = json.dumps(data['Items'][0], cls=DecimalEncoder)
+            
+            return (menu_item_data)
+        
+        except:
+            return ("")
+
+    elif request.method == 'POST':  
+        
+        try:
+            table = dynamodb.Table('menu_item')
+            response = table.get_item(Key={'menu_item_id': menu_item_id})
+            item = response['Item']
+            
+            data = request.form.to_dict(flat=False)
+
+            keys = list(data.keys())
+            for each in keys:
+                item[each] = data[each][0]
+
+            table.put_item(Item=item)
+
+            
+
+        except:
+            return ("")
+
+    return ("")

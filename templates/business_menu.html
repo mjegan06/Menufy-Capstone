@@ -9,8 +9,7 @@
 </div>
 
 <div class="list-group align-items-center" style="padding-bottom: 5vh;">
-
-    <a class="list-group-item  list-group-item-active" style="width: 50vh;" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Add Menu Item</a>
+    <button class="btn btn-primary" name="add-item" type="button" data-toggle="modal" data-target='#exampleModal'> Add Menu Item</button>
 </div>
 
 <div>
@@ -23,7 +22,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="itemDisplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -33,16 +32,30 @@
           </button>
             </div>
             <div class="modal-body">
-                <form id="business_edit_form" method="POST" action="/business/{{restaurant_id}}/home">
-                    <div class="form-group">
-                        <!-- <input type="text" class="form-control" id="current-val" name="" aria-describedby="help"> -->
-                    </div>
+                <form id="menu_edit_form" method="POST">
+
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a type="button" onclick="form_submit()" class="btn btn-primary" method="POST">Save changes</a>
+                <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
+            <script type="text/javascript">
+                function form_submit() {
+                    var menu_item_id = $('#menu_edit_form').attr('name');
+                    $.ajax({
+                        type: "POST",
+                        url: '/business/' + menu_item_id,
+                        data: $('#menu_edit_form').serialize(),
+                        success: function(response) {
+                            var button = document.getElementById('close');
+                            button.click();
+                        }
+                    });
+                    return false;
+                }
+            </script>
         </div>
     </div>
 </div>
@@ -82,7 +95,6 @@
                 'type': 'button',
                 'class': "btn btn-primary mr-3",
                 'data-toggle': "modal",
-                'data-target': '#exampleModal',
                 'name': 'edit-menu',
                 'value': "${item_name},${item_description},${item_unit_price},${item_quantity_available}",
                 'id': '${menu_item_id}',
@@ -99,25 +111,88 @@
 
     $('#menu').html(json2html.transform(menu_data, transform));
 
+    $('button[name ="add-item"]').click(function() {
+        // var menu_item_id = $(this).attr('id');
+        // var menu_item_data = $(this).attr('value');
+        // var arr = menu_item_data.split(',');
+        // $(".modal-title").html("Edit Menu Item");
+        // createMenuItem();
+        // // document.getElementById('menu_edit_form').setAttribute("action", '/business/' + menu_item_id);
+        // document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
+        console.log('hello');
+    });
+
+    function createMenuItem() {
+        var orderModal = $('#itemDisplay');
+        $.ajax({
+            type: "GET",
+            url: '/business/' + menu_item_id,
+            success: function(response) {
+                // console.log(response);
+                form_input = '';
+                $.each(JSON.parse(response), function(attribute, val) {
+                    // console.log(attribute, val);
+                    if (attribute == 'menu_item_id') {
+                        form_input += '<div class="form-group">';
+                        form_input += '<label>' + attribute + '</label>';
+                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
+                        form_input += '</div>';
+                    } else {
+                        form_input += '<div class="form-group">';
+                        form_input += '<label>' + attribute + '</label>';
+                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
+                        form_input += '</div>';
+                    }
+
+                })
+                orderModal.find('#menu_edit_form').html(form_input);
+                // orderModal.find('.order_result_total').html(order_total);
+                orderModal.modal('show');
+            }
+        });
+        return false;
+    }
+
 
     $('button[name ="edit-menu"]').click(function() {
         var menu_item_id = $(this).attr('id');
         var menu_item_data = $(this).attr('value');
         var arr = menu_item_data.split(',');
-        // console.log(arr);
-        var response = transformModal(arr);
         $(".modal-title").html("Edit Menu Item");
-        // $(".modal-body").html(arr);
+        var response = getMenuItem(menu_item_id);
+        // document.getElementById('menu_edit_form').setAttribute("action", '/business/' + menu_item_id);
+        document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
     });
 
-    function transformModal(menu_item_data) {
-        $(".food-items").remove();
-        menu_item_data.forEach(function(item, idx) {
-            // console.log("Object " + idx, obj)
-            console.log(item);
+    function getMenuItem(menu_item_id) {
+        var orderModal = $('#itemDisplay');
+        $.ajax({
+            type: "GET",
+            url: '/business/' + menu_item_id,
+            success: function(response) {
+                // console.log(response);
+                form_input = '';
+                $.each(JSON.parse(response), function(attribute, val) {
+                    // console.log(attribute, val);
+                    if (attribute == 'menu_item_id') {
+                        form_input += '<div class="form-group">';
+                        form_input += '<label>' + attribute + '</label>';
+                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
+                        form_input += '</div>';
+                    } else {
+                        form_input += '<div class="form-group">';
+                        form_input += '<label>' + attribute + '</label>';
+                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
+                        form_input += '</div>';
+                    }
 
-            $(".form-group").append('<input type="text" class="form-control value=' + item + '>');
-        })
+                })
+                orderModal.find('#menu_edit_form').html(form_input);
+                // orderModal.find('.order_result_total').html(order_total);
+                orderModal.modal('show');
+            }
+        });
+        return false;
     }
 </script>
 {% endblock %}

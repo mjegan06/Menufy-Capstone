@@ -50,22 +50,22 @@
           </button>
                 </div>
                 <div class="modal-body">
-                  <table class="table table-hover">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Item Name</th>
-                        <th scope="col">Item Price</th>
-                        <th scope="col">Quantity Ordered</th>
-                        <th scope="col">Order Price</th>
-                    </tr>
-                    </thead>
-                    <tbody class="order_result_info">
-                    
-                    </tbody>
-                    <tfoot class="order_result_total">
-                    
-                    </tfoot>
-                </table>  
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Item Name</th>
+                                <th scope="col">Item Price</th>
+                                <th scope="col">Quantity Ordered</th>
+                                <th scope="col">Order Price</th>
+                            </tr>
+                        </thead>
+                        <tbody class="order_result_info">
+
+                        </tbody>
+                        <tfoot class="order_result_total">
+
+                        </tfoot>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -73,7 +73,7 @@
                 </div>
             </div>
         </div>
-      </div>
+    </div>
 
     <script type="text/javascript">
         var order_data = JSON.parse('{{ order_data |  safe }}');
@@ -116,7 +116,7 @@
                 "children": [{
                     '<>': 'button',
                     'id': '${restaurant_id}',
-                    'name': 'mark_complete',
+                    'name': 'change-status',
                     'class': 'completed',
                     'html': 'Complete Order',
                     'value': '${order_id}'
@@ -130,8 +130,12 @@
         $(function() { //document ready event
             $('table tr').each(function() { //loop all tr's
                 var Cell = $(this).find("td[id='order_status']");
-                if (Cell.text() == 'completed') {
-                    button = $(this).find("button[name='mark_complete']").html('Revert');
+                if (Cell.text() == 'Completed') {
+                    button = $(this).find("button[name='change-status']").html('Revert');
+                } else if (Cell.text() == 'Submitted') {
+                    button = $(this).find("button[name='change-status']").html('Work on order');
+                } else if (Cell.text() == 'In-progress') {
+                    button = $(this).find("button[name='change-status']").html('Order completed');
                 }
             });
         });
@@ -140,7 +144,7 @@
             $(function() { //document ready event
                 $('table tr').each(function() { //loop all tr's
                     var Cell = $(this).find("td[id='order_status']");
-                    if (Cell.text() == 'completed') {
+                    if (Cell.text() == 'Completed') {
                         $(this).hide();
                     }
                 });
@@ -151,7 +155,7 @@
             $(function() { //document ready event
                 $('table tr').each(function() { //loop all tr's
                     var Cell = $(this).find("td[id='order_status']");
-                    if (Cell.text() == 'completed') {
+                    if (Cell.text() == 'Completed') {
                         $(this).show();
                     }
                 });
@@ -170,21 +174,21 @@
             $.ajax({
                 type: "GET",
                 url: '/business/' + restaurant_id + '/' + order_id,
-                success: function (response) {
-                  food_items='';
-                  order_total='';
-                  $.each(JSON.parse(response), function (item, idx) {
-                      if(idx.item_name){
-                        food_items += '<tr><td scope="row">'+idx.item_name+'</td><td scope="row">'+idx.item_unit_price+'</td><td scope="row">'+idx.oi_quantity+'</td><td scope="row">'+idx.oi_unit_price+'</td></tr>';
-                      }else{
-                        order_total='<tr><th>Total Cost</th><td></td><td></td><td>'+idx.order_total+'</td>';
-                      }
+                success: function(response) {
+                    food_items = '';
+                    order_total = '';
+                    $.each(JSON.parse(response), function(item, idx) {
+                        if (idx.item_name) {
+                            food_items += '<tr><td scope="row">' + idx.item_name + '</td><td scope="row">' + idx.item_unit_price + '</td><td scope="row">' + idx.oi_quantity + '</td><td scope="row">' + idx.oi_unit_price + '</td></tr>';
+                        } else {
+                            order_total = '<tr><th>Total Cost</th><td></td><td></td><td>' + idx.order_total + '</td>';
+                        }
                     })
-                  console.log(food_items)
-                  orderModal.find('.modal-title').html("Order Details");
-                  orderModal.find('.order_result_info').html(food_items);
-                  orderModal.find('.order_result_total').html(order_total);
-                  orderModal.modal('show');
+                    console.log(food_items)
+                    orderModal.find('.modal-title').html("Order Details");
+                    orderModal.find('.order_result_info').html(food_items);
+                    orderModal.find('.order_result_total').html(order_total);
+                    orderModal.modal('show');
                 }
             });
             return false;
