@@ -179,9 +179,9 @@
                     order_total = '';
                     $.each(JSON.parse(response), function(item, idx) {
                         if (idx.item_name) {
-                            food_items += '<tr><td scope="row">' + idx.item_name + '</td><td scope="row">' + idx.item_unit_price + '</td><td scope="row">' + idx.oi_quantity + '</td><td scope="row">' + idx.oi_unit_price + '</td></tr>';
+                            food_items += '<tr><td scope="row">' + idx.item_name + '</td><td scope="row">$' + idx.item_unit_price + '</td><td scope="row">' + idx.oi_quantity + '</td><td scope="row">$' + idx.oi_unit_price + '</td></tr>';
                         } else {
-                            order_total = '<tr><th>Total Cost</th><td></td><td></td><td>' + idx.order_total + '</td>';
+                            order_total = '<tr><th>Total Cost (w/ taxes)</th><td></td><td></td><td>$' + idx.order_total + '</td>';
                         }
                     })
                     console.log(food_items)
