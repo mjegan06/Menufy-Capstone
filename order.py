@@ -231,6 +231,8 @@ def place_order(customer_username, customer_id, restaurant_id):
             msg.body = 'Hello ' + str(customer_username) + '\nBelow are the details of your recent order from ' + str(restName) + '\n' + 'Order Placed: ' + str(order['order_time']) + '\n' + 'Order Confirmation: ' + str(order['confirmation']) + '\n' + 'Order Subtotal: ' + str(order['order_total']) + '\n' + 'Please call ' + str(restName) + ' at ' + str(restPhone) + ' with any questions or concerns for your order.\n'
             msg.html = render_template('order_confirmation_email.html', order=orderDetails, confirmation_url=confirmation_url)
             mail.send(msg)
+            confirmationMessage = "Order was successful. Confirmation email sent to " + custEmail
+            flash(confirmationMessage, "success")
         except Exception as e:
             return str(e)
         return render_template('order.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, confirmation_url=confirmation_url)
