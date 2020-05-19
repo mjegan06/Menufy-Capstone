@@ -68,7 +68,8 @@ def get_order(customer_username, customer_id, restaurant_id):
             'quantity': res[key], 
             'item_subtotal': response['Item']['item_unit_price'] * res[key]
             })
-            orderSubtotal = orderSubtotal + response['Item']['item_unit_price'] * res[key]
+            
+            orderSubtotal = orderSubtotal + int(response['Item']['item_unit_price']) * int(res[key])
             
         
         #print(itemDetails)
@@ -217,7 +218,6 @@ def place_order(customer_username, customer_id, restaurant_id):
             total=orderTotal, 
             confirmation=order['confirmation'],
             restPhone=restPhone)
-        print (orderDetails)
 
         confirmation_url = request.url_root + 'order/?confirmation=' + confirmation
         print(confirmation_url)
@@ -242,13 +242,13 @@ def order_status(customer_username, customer_id):
     confirmation = request.args.get('confirmation')
     if not confirmation:
         return "NO CONFIRMATION"
-    print(confirmation)
+        
     if request.method == 'GET':
         if not customer_id:
                 print("Not logged in")
                 flash("You must be logged in to check the status of an order", "danger")
                 #return redirect(url_for('index'))
-                return "NOT OK IT IS HERE"
+                return render_template('login.html')
 
         orderTable = dynamodb.Table('order') # pylint: disable=no-member
         restTable = dynamodb.Table('restaurant')
@@ -269,7 +269,7 @@ def order_status(customer_username, customer_id):
         restName = response['Item']['restaurant_name']
         restPhone = response['Item']['restaurant_phone_num']
         
-        print(row['Items'][0])
+        
         orderDetails = dict(
             username = customer_username, 
             restName = restName, 
