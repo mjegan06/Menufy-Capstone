@@ -227,3 +227,69 @@ def get_order_details( restaurant_id, order_id):
     except:
         return ("")
 
+@bp.route('/<cid>/edit', methods=['GET','POST'])
+@check_user_login
+def edit_customer(customer_username, customer_id, cid):
+
+    if cid != customer_id:
+        error = "Unable to look at another customer's dashboard, please sign in if you haven't done so already"
+        flash(u'Unable to access dashboard, please login to your account', 'error')
+        return redirect(url_for('login'))
+
+    customer_table=dynamodb.Table('customer')
+    restaurant_table=dynamodb.Table('restaurant')
+    order_table=dynamodb.Table('order')
+
+    customer_data = customer_table.query(
+        KeyConditionExpression=Key('customer_id').eq(customer_id)
+    )
+    customer_data['Items'][0]['password'] = None
+
+    if request.method == 'POST':
+        # get user input
+        customer_email = request.form['customer_email']
+        customer_fname = request.form['customer_fname']
+        customer_lname = request.form['customer_lname']
+        customer_phone_num = request.form['customer_phone_num']
+        customer_address_1 = request.form['customer_address_1']
+        customer_address_2 = request.form['customer_address_2']
+        customer_city = request.form['customer_city']
+        customer_state = request.form['customer_state']
+        customer_zip = request.form['customer_zip']
+
+        # New customer input info
+        item = {
+            'customer_id': customer_id,
+            'customer_username': customer_username,
+            'customer_email': customer_email,
+            'customer_fname': customer_fname,
+            'customer_lname': customer_lname,
+            'customer_phone_num': customer_phone_num,
+            'customer_address_1': customer_address_1,
+            'customer_address_2': customer_address_2,
+            'customer_city': customer_city,
+            'customer_state': customer_state,
+            'customer_zip': customer_zip
+        }
+
+        #update quantites of items ordered in database, subtracting items from database that were ordered
+        response = customer_table.update_item(
+            Key={'customer_id': customer_id},
+            UpdateExpression="set customer_email=:e, customer_fname=:fn, customer_lname=:ln, customer_phone_num=:pn, customer_address_1=:ad1, customer_address_2=:ad2, customer_city=:c, customer_state=:s, customer_zip=:z", 
+            ExpressionAttributeValues = {
+                ':e': item['customer_email'],
+                ':fn': item['customer_fname'],
+                ':ln': item['customer_lname'],
+                ':pn': item['customer_phone_num'],
+                ':ad1': item['customer_address_1'],
+                ':ad2': item['customer_address_2'],
+                ':c': item['customer_city'],
+                ':s': item['customer_state'],
+                ':z': item['customer_zip']
+            },
+            ReturnValues = 'UPDATED_NEW'
+        )
+        return redirect('/customer/'+customer_id+'/dashboard')
+        
+    return render_template('customer_edit.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data)
+

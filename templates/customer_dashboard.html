@@ -13,28 +13,32 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <b>First Name: </b>{{ c.customer_fname }}
+                <b>First Name: </b><br>{{ c.customer_fname }}
             </div>
             <div class="col">
-                <b>Last Name: </b>{{ c.customer_lname }}
+                <b>Last Name: </b><br>{{ c.customer_lname }}
             </div>
             <div class="col">
-                <b>Phone Number: </b>{{ c.customer_phone_num }}
+                <b>Phone Number: </b><br>{{ c.customer_phone_num }}
             </div>
             <div class="col">
-              <b>Email: </b>{{ c.customer_email }}
+              <b>Email: </b><br>{{ c.customer_email }}
           </div>
         <div>
 
         </div class="row">
             <div class="col">
-            <b>Address: </b>{{ c.customer_address_1 }}
-            {{ c.customer_address_2 }}
-            {{ c.customer_city }}
-            {{ c.customer_state }}
-            {{ c.customer_zip }}
+            <b>Address: </b>
+              <br>{{ c.customer_address_1 }}
+              {% if c.customer_address_2 %}
+              <br>{{ c.customer_address_2 }}
+              {% endif %}
+              <br>{{ c.customer_city }}, {{ c.customer_state }}
+              <br>{{ c.customer_zip }}
             </div>
         </div>
+        <br>
+        <a class="btn btn-primary" role="button" href="/customer/{{customer_id}}/edit">Edit Contact Information</a>
     </div>
     {% endfor %}
     <br><br>
@@ -112,7 +116,6 @@
       </table>
   </div>
 </div>
-
 
 
 <!-- Modal -->

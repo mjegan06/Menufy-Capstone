@@ -114,7 +114,7 @@ def signup(customer_username, customer_id):
     if request.method == 'POST':
         # get user input
         customer_username = request.form['username']
-        customer_email = request.form['email']
+        customer_email = request.form['customer_email']
         hashed_pw = generate_password_hash(request.form['password'])
         customer_fname = request.form['customer_fname']
         customer_lname = request.form['customer_lname']

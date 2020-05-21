@@ -1,7 +1,3 @@
-//set the counter to 0 and change the background every 15 seconds
-let counter = 0;
-let inst = setInterval(changeBackground, 15000);
-
 //Using the DOM, change the background. When it reaches the end, repeart the array.
 function randombg() {
   let listOfPhotos = [
