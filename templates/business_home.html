@@ -9,7 +9,7 @@
 </div>
 {% if restaurant_username %}
 
-<div style="margin-left: 20px;margin-right: 20px;">
+<div class="col-lg-8 container backdrop">
     <!-- <form id="business_orders_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
         <table class="table table-hover table-striped table-dark">
             <tbody id="order">
@@ -20,251 +20,249 @@
     <table class="table table-hover table-striped table-dark" id="account-table">
     </table>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-                </div>
-                <div class="modal-body">
-                    <form id="business_edit_form" method="POST" action="/business/{{restaurant_id}}/home">
-                        <div class="form-group">
-                            <label for="example" id="attribute"></label>
-                            <input type="text" class="form-control" id="current-val" name="" aria-describedby="help">
-                            <small id="help" class="form-text text-muted"></small>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <a type="button" onclick="form_submit()" class="btn btn-primary" method="POST">Save changes</a>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-                <script type="text/javascript">
-                    function form_submit() {
-                        document.getElementById("business_edit_form").submit();
-                    }
-                </script>
-            </div>
-        </div>
+    <div class="list-group align-items-center">
+        <a class="list-group-item  list-group-item-active" style="width: 50vh;" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>
+    
+        <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/inventory"> Inventory Levels</a>
+    
+        <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/menu"> Current Menu</a>
     </div>
 
-    <script type="text/javascript">
-        var data = JSON.parse('{{ data | safe }}');
-        var transform = {
-            "<>": "tbody",
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header modBar">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+            </div>
+            <div class="modal-body modBar">
+                <form id="business_edit_form" method="POST" action="/business/{{restaurant_id}}/home">
+                    <div class="form-group">
+                        <label for="example" id="attribute"></label>
+                        <input type="text" class="form-control" id="current-val" name="" aria-describedby="help">
+                        <small id="help" class="form-text text-muted"></small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a type="button" onclick="form_submit()" class="btn btn-outline-primary" method="POST">Save changes</a>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+            </div>
+            <script type="text/javascript">
+                function form_submit() {
+                    document.getElementById("business_edit_form").submit();
+                }
+            </script>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var data = JSON.parse('{{ data | safe }}');
+    var transform = {
+        "<>": "tbody",
+        "children": [{
+            "<>": "tr",
             "children": [{
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'Restaurant ID'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_id}'
-                }, {
-                    "<>": "td"
-                }]
+                "<>": "td",
+                "html": 'Restaurant ID'
             }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'Restaurant Username'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_username}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'Restaurant Username',
-                        "name": "restaurant_username",
-                        "html": "edit",
-                        "value": '${restaurant_username}',
-                    }]
-                }]
+                "<>": "td",
+                "html": '${restaurant_id}'
             }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'Restaurant Name'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_name}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'Restaurant Name',
-                        "name": "restaurant_name",
-                        "html": "edit",
-                        "value": '${restaurant_name}',
-                    }]
-                }]
+                "<>": "td"
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Restaurant Username'
             }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'City'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_city}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'City',
-                        "name": "restaurant_city",
-                        "html": "edit",
-                        "value": '${restaurant_city}',
-                    }]
-                }]
+                "<>": "td",
+                "html": '${restaurant_username}'
             }, {
-                "<>": "tr",
+                "<>": "td",
                 "children": [{
-                    "<>": "td",
-                    "html": 'Address Line 1'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_address_line1}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'Address Line 1',
-                        "name": "restaurant_address_line1",
-                        "html": "edit",
-                        "value": '${restaurant_address_line1}',
-                    }]
-                }]
-            }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'Address Line 2'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_address_line2}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'Address Line 2',
-                        "name": "restaurant_address_line2",
-                        "html": "edit",
-                        "value": '${restaurant_address_line2}',
-                    }]
-                }]
-            }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'State'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_state}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'State',
-                        "name": "restaurant_state",
-                        "html": "edit",
-                        "value": '${restaurant_state}',
-                    }]
-                }]
-            }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'Contact Number'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_phone_num}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'Contact Number',
-                        "name": "restaurant_phone_num",
-                        "html": "edit",
-                        "value": '${restaurant_phone_num}',
-                    }]
-                }]
-            }, {
-                "<>": "tr",
-                "children": [{
-                    "<>": "td",
-                    "html": 'Postal Code'
-                }, {
-                    "<>": "td",
-                    "html": '${restaurant_postal_code}'
-                }, {
-                    "<>": "td",
-                    "children": [{
-                        '<>': 'button',
-                        'type': 'button',
-                        'class': "btn btn-danger",
-                        'data-toggle': "modal",
-                        'data-target': '#exampleModal',
-                        'id': 'Postal Code',
-                        "name": "restaurant_postal_code",
-                        "html": "edit",
-                        "value": '${restaurant_postal_code}',
-                    }]
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Restaurant Username',
+                    "name": "restaurant_username",
+                    "html": "edit",
+                    "value": '${restaurant_username}',
                 }]
             }]
-        };
-        $('#account-table').html(json2html.transform(data, transform));
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Restaurant Name'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_name}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Restaurant Name',
+                    "name": "restaurant_name",
+                    "html": "edit",
+                    "value": '${restaurant_name}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'City'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_city}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'City',
+                    "name": "restaurant_city",
+                    "html": "edit",
+                    "value": '${restaurant_city}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Address Line 1'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_address_line1}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Address Line 1',
+                    "name": "restaurant_address_line1",
+                    "html": "edit",
+                    "value": '${restaurant_address_line1}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Address Line 2'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_address_line2}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Address Line 2',
+                    "name": "restaurant_address_line2",
+                    "html": "edit",
+                    "value": '${restaurant_address_line2}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'State'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_state}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'State',
+                    "name": "restaurant_state",
+                    "html": "edit",
+                    "value": '${restaurant_state}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Contact Number'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_phone_num}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Contact Number',
+                    "name": "restaurant_phone_num",
+                    "html": "edit",
+                    "value": '${restaurant_phone_num}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Postal Code'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_postal_code}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Postal Code',
+                    "name": "restaurant_postal_code",
+                    "html": "edit",
+                    "value": '${restaurant_postal_code}',
+                }]
+            }]
+        }]
+    };
+    $('#account-table').html(json2html.transform(data, transform));
 
-        $('button[data-toggle ="modal"]').click(function() {
-            var attribute = $(this).attr('id');
-            var value = $(this).attr('value');
-            var name = $(this).attr('name');
-            $(".modal-title").html("Edit Business Information");
-            $("#attribute").html(attribute);
-            $("#current-val").val(value);
-            document.getElementById('current-val').setAttribute("name", name);
-        });
-    </script>
-</div>
-
-<div class="list-group align-items-center" style="padding-bottom: 5vh;">
-
-    <a class="list-group-item  list-group-item-active" style="width: 50vh;" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>
-
-    <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/inventory"> Inventory Levels</a>
-
-    <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/menu"> Current Menu</a>
-</div>
+    $('button[data-toggle ="modal"]').click(function() {
+        var attribute = $(this).attr('id');
+        var value = $(this).attr('value');
+        var name = $(this).attr('name');
+        $(".modal-title").html("Edit Business Information");
+        $("#attribute").html(attribute);
+        $("#current-val").val(value);
+        document.getElementById('current-val').setAttribute("name", name);
+    });
+</script>
 {% endif %} {% endblock %}

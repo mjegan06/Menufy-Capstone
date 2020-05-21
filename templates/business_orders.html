@@ -9,7 +9,7 @@
 </div>
 
 {% if order_data %}
-<div>
+<div class="col-lg-10 container backdrop">
     <div class="container mb-3">
         <div class="row justify-content-center">
             <div class="col-3">
@@ -37,43 +37,6 @@
             </tbody>
         </table>
     </form>
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="orderDisplay" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="orderModalLabel"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-hover">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">Item Name</th>
-                                <th scope="col">Item Price</th>
-                                <th scope="col">Quantity Ordered</th>
-                                <th scope="col">Order Price</th>
-                            </tr>
-                        </thead>
-                        <tbody class="order_result_info">
-
-                        </tbody>
-                        <tfoot class="order_result_total">
-
-                        </tfoot>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script type="text/javascript">
         var order_data = JSON.parse('{{ order_data |  safe }}');
@@ -194,6 +157,41 @@
             return false;
         }
     </script>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="orderDisplay" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Item Name</th>
+                            <th scope="col">Item Price</th>
+                            <th scope="col">Quantity Ordered</th>
+                            <th scope="col">Order Price</th>
+                        </tr>
+                    </thead>
+                    <tbody class="order_result_info">
+
+                    </tbody>
+                    <tfoot class="order_result_total">
+
+                    </tfoot>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endif %} {% endblock %}

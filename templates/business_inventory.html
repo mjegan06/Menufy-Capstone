@@ -8,9 +8,16 @@
     </div>
 </div>
 
-<div>
+<div class="col-lg-7 container backdrop">
     <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
         <table class="table table-hover table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Item Cost</th>
+                    <th scope="col">Quantity In Stock</th>
+                </tr>
+            </thead>
             <tbody id="menu">
             </tbody>
         </table>
@@ -45,7 +52,7 @@
                     '<>': 'button',
                     'type': 'button',
                     'id': 'reorder',
-                    'class': 'reorder',
+                    'class': 'reorder btn btn-primary',
                     'html': 'Reorder'
                 }]
             }]

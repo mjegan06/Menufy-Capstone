@@ -8,13 +8,22 @@
     </div>
 </div>
 
-<div class="list-group align-items-center" style="padding-bottom: 5vh;">
-    <button class="btn btn-primary" name="add-item" type="button" id="{{restaurant_id}}" data-toggle="modal" data-target='#exampleModal'> Add Menu Item</button>
-</div>
-
-<div>
+<div class="col-lg-8 container backdrop">
+    <div class="list-group align-items-center">
+        <button class="btn btn-primary" name="add-item" type="button" id="{{restaurant_id}}" data-toggle="modal" data-target='#exampleModal'> Add Menu Item</button>
+    </div>
+    <br>
     <form id="business_orders_form{{restaurant_id}}" method="POST">
         <table class="table table-hover table-striped table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Item Description</th>
+                    <th scope="col">Item Cost</th>
+                    <th scope="col">Quantity In Stock</th>
+
+                </tr>
+            </thead>
             <tbody id="menu">
             </tbody>
         </table>
