@@ -8,9 +8,9 @@
     </div>
 </div>
 
-<div class="col-lg-8 container backdrop">
+<div class="col-lg-10 container backdrop">
     <div class="list-group align-items-center">
-        <button class="btn btn-primary" name="add-item" type="button" id="{{restaurant_id}}" data-toggle="modal" data-target='#exampleModal'> Add Menu Item</button>
+        <button class="btn btn-primary" name="add-item" type="button" id="{{restaurant_id}}" data-toggle="modal" data-target='#exampleModal'>Add Menu Item</button>
     </div>
     <br>
     <form id="business_orders_form{{restaurant_id}}" method="POST">
@@ -21,7 +21,6 @@
                     <th scope="col">Item Description</th>
                     <th scope="col">Item Cost</th>
                     <th scope="col">Quantity In Stock</th>
-
                 </tr>
             </thead>
             <tbody id="menu">
@@ -46,9 +45,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <a type="button" onclick="edit_menu()" class="btn btn-primary" method="POST">Save changes</a>
+                <!-- <a type="button" onclick="edit_menu()" class="btn btn-primary">Save changes</a> -->
                 <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
             <script type="text/javascript">
                 function edit_menu() {
@@ -60,6 +58,7 @@
                         success: function(response) {
                             var button = document.getElementById('close');
                             button.click();
+                            document.menu_add_form.reset();
                         }
                     });
                     return false;
@@ -100,16 +99,16 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="item_description" class="control-label">Item Quantity Available</label>
+                        <label for="item_quantity_available" class="control-label">Item Quantity Available</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="item_quantity_available" required>
+                            <input type="text" class="form-control" id="item_quantity_available" name="item_quantity_available" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="item_type" class="control-label">Item Type</label>
                         <div class="input-group">
                             <select class="custom-select" id="item_type" name="item_type" required>
-                                <option selected disabled value="">Menu Item Type</option>
+                                <option id="item_type_select" selected disabled value="">Menu Item Type</option>
                                 <option>Breakfast and Brunch</option>
                                 <option>Non-Alcoholic Drinks</option>
                                 <option>Alcoholic Drinks</option>
@@ -121,13 +120,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="item_description" class="control-label">Unit Price</label>
+                        <label for="item_unit_price" class="control-label">Unit Price</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="item_unit_price" required>
+                            <input type="text" class="form-control" id="item_unit_price" name="item_unit_price" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" onclick="form_submit()" class="btn btn-primary">Add Item</button>
+                        <button type="submit" id='save_button' onclick="form_submit()" class="btn btn-primary"></button>
                     </div>
                 </form>
             </div>
@@ -138,10 +137,24 @@
             <script type="text/javascript">
                 function form_submit() {
                     var restaurant_id = $('#menu_add_form').attr('name');
-                    console.log(restaurant_id);
                     $.ajax({
                         type: "POST",
                         url: '/business/' + restaurant_id + '/add_menu_item',
+                        data: $('#menu_add_form').serialize(),
+                        success: function(response) {
+                            var button = document.getElementById('close');
+                            button.click();
+                            document.menu_add_form.reset();
+                        }
+                    });
+                    return false;
+                }
+
+                function edit_menu() {
+                    var menu_item_id = $('#menu_add_form').attr('name');
+                    $.ajax({
+                        type: "POST",
+                        url: '/business/' + menu_item_id,
                         data: $('#menu_add_form').serialize(),
                         success: function(response) {
                             var button = document.getElementById('close');
@@ -199,7 +212,8 @@
                 '<>': 'button',
                 'class': "btn btn-danger",
                 'type': 'button',
-                'id': 'delete',
+                'name': 'delete',
+                'id': '${menu_item_id}',
                 'html': 'delete'
             }]
         }]
@@ -212,6 +226,11 @@
         $(".modal-title").html("Add New Menu Item");
         createMenuItem(restaurant_id);
         document.getElementById('menu_add_form').setAttribute("name", restaurant_id);
+
+        button = document.getElementById('save_button');
+        button.setAttribute("onclick", "form_submit()");
+        button.innerHTML = "Add Item";
+        orderModal.modal('show');
     });
 
     function createMenuItem(restaurant_id) {
@@ -221,46 +240,95 @@
         createModal.modal('show');
     }
 
-
     $('button[name ="edit-menu"]').click(function() {
         var menu_item_id = $(this).attr('id');
         var menu_item_data = $(this).attr('value');
         var arr = menu_item_data.split(',');
         $(".modal-title").html("Edit Menu Item");
         var response = getMenuItem(menu_item_id);
-        // document.getElementById('menu_edit_form').setAttribute("action", '/business/' + menu_item_id);
         document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
     });
 
+    // function getMenuItem(menu_item_id) {
+    //     var orderModal = $('#itemDisplay');
+    //     $.ajax({
+    //         type: "GET",
+    //         url: '/business/' + menu_item_id,
+    //         success: function(response) {
+    //             console.log(response);
+    //             form_input = '';
+    //             $.each(JSON.parse(response), function(attribute, val) {
+    //                 // console.log(attribute, val);
+    //                 if (attribute == 'menu_item_id') {
+    //                     form_input += '<div class="form-group">';
+    //                     form_input += '<label>' + attribute + '</label>';
+    //                     form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
+    //                     form_input += '</div>';
+    //                 } else {
+    //                     form_input += '<div class="form-group">';
+    //                     form_input += '<label>' + attribute + '</label>';
+    //                     form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
+    //                     form_input += '</div>';
+    //                 }
+
+    //             })
+    //             orderModal.find('#menu_edit_form').html(form_input);
+    //             orderModal.modal('show');
+    //         }
+    //     });
+    //     return false;
+    // }
+
     function getMenuItem(menu_item_id) {
-        var orderModal = $('#itemDisplay');
+        var orderModal = $('#createItemModel');
+        var edit_form = $('#menu_add_form');
+        form = document.getElementById('menu_add_form');
+        form.setAttribute("name", menu_item_id);
+
         $.ajax({
             type: "GET",
             url: '/business/' + menu_item_id,
             success: function(response) {
                 console.log(response);
-                form_input = '';
+
                 $.each(JSON.parse(response), function(attribute, val) {
                     // console.log(attribute, val);
                     if (attribute == 'menu_item_id') {
-                        form_input += '<div class="form-group">';
-                        form_input += '<label>' + attribute + '</label>';
-                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
-                        form_input += '</div>';
-                    } else {
-                        form_input += '<div class="form-group">';
-                        form_input += '<label>' + attribute + '</label>';
-                        form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
-                        form_input += '</div>';
+                        edit_form.find('#menu_item_id').val(val);
+                    } else if (attribute == 'item_name') {
+                        edit_form.find('#item_name').val(val);
+                    } else if (attribute == 'item_description') {
+                        edit_form.find('#item_description').val(val);
+                    } else if (attribute == 'item_quantity_available') {
+                        edit_form.find('#item_quantity_available').val(val);
+                    } else if (attribute == 'item_type') {
+                        edit_form.find('#item_type_select').val(val);
+                    } else if (attribute == 'item_unit_price') {
+                        edit_form.find('#item_unit_price').val(val);
                     }
-
                 })
-                orderModal.find('#menu_edit_form').html(form_input);
-                // orderModal.find('.order_result_total').html(order_total);
+
+                button = document.getElementById('save_button');
+                button.setAttribute("onclick", "edit_menu()");
+                button.innerHTML = "Save Changes";
                 orderModal.modal('show');
             }
         });
         return false;
     }
+
+    $('button[name ="delete"]').click(function() {
+        var menu_item_id = $(this).attr('id');
+        $.ajax({
+            type: "POST",
+            url: '/business/delete/' + menu_item_id,
+            data: $('#menu_edit_form').serialize(),
+            success: function(response) {
+                location.reload();
+            }
+        });
+        return false;
+
+    });
 </script>
 {% endblock %}

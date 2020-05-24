@@ -275,6 +275,7 @@ def edit_menu_item(menu_item_id):
     elif request.method == 'POST':
         try:
             data = request.form.to_dict(flat=False)
+            print(data)
 
            # get menu items
             menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
@@ -287,12 +288,35 @@ def edit_menu_item(menu_item_id):
             for each in keys:
                 item[each] = data[each][0]
 
-            print(item)
+            # print(item)
             menu_item_table.put_item(Item=item)
     
         except:
             return ("")
 
+    return ("")
+
+@bp.route('/delete/<menu_item_id>', methods=['POST'])
+def delete_menu_item(menu_item_id):
+            
+    if request.method == 'POST':
+        try:
+            # get menu items
+            print(menu_item_id)
+            menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+            response = menu_item_table.scan(
+                FilterExpression=Attr('menu_item_id').eq(menu_item_id)
+            )
+            item = response["Items"][0]
+            key = item['menu_item_id']
+
+            menu_item_table.delete_item(Key={
+            'menu_item_id': key
+        })
+    
+        except:
+            return ("")
+            
     return ("")
 
 
