@@ -22,9 +22,9 @@
 
     <div class="list-group align-items-center">
         <a class="list-group-item  list-group-item-active" style="width: 50vh;" id="get-orders" method="GET" href="/business/{{restaurant_id}}/orders"> Current Orders</a>
-    
+
         <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/inventory"> Inventory Levels</a>
-    
+
         <a class="list-group-item list-group-item-active" style="width: 50vh;" id="get-inventory" method="GET" href="/business/{{restaurant_id}}/menu"> Current Menu</a>
     </div>
 
@@ -84,18 +84,7 @@
                 "<>": "td",
                 "html": '${restaurant_username}'
             }, {
-                "<>": "td",
-                "children": [{
-                    '<>': 'button',
-                    'type': 'button',
-                    'class': "btn btn-danger",
-                    'data-toggle': "modal",
-                    'data-target': '#exampleModal',
-                    'id': 'Restaurant Username',
-                    "name": "restaurant_username",
-                    "html": "edit",
-                    "value": '${restaurant_username}',
-                }]
+                "<>": "td"
             }]
         }, {
             "<>": "tr",
