@@ -33,11 +33,26 @@
             		<td align="right"> <input type="hidden" name="item_subtotal" value={{item.item_subtotal}}> ${{item.item_subtotal}} </td>
         		</tr>
         		{% endfor %}
+				<tr>
+					<td>
+						<input type="radio" id="orderType1" name="order_type" value="Carry Out">
+						<label for="orderType1">Carry Out</label>
+					</td>
+					<td>
+						<input type="radio" id="orderType2" name="order_type" value="Dine In" checked>
+						<label for="orderType2">Dine In</label>
+					</td>
+					<td align="right">
+						<button type="submit" class="btn btn-warning" style="margin: 5px;">Place Order</button>
+						<span> </span>
+						<button type="button" class="btn btn-warning" style="margin: 5px;" onclick="window.location.href='/restaurant/{{restaurant_id}}'"> Edit Order</button>						
+					</td>
+				</tr>
 			</tbody>
 
 		</table>
 
-		<div class="form-group">
+		<!--<div class="form-group">
 			<input type="radio" id="orderType1" name="order_type" value="Carry Out">
 			<label for="orderType1">Carry Out</label>
 			<input type="radio" id="orderType2" name="order_type" value="Dine In" checked>
@@ -49,7 +64,7 @@
 	<form method="GET" action="/restaurant/{{restaurant_id}}">
 		<div class="form-group" style="vertical-align: middle;">
             <button type="submit" class="btn btn-warning">Change Order</button>
-        </div>
+        </div>-->
 	</form>
 </div>
 

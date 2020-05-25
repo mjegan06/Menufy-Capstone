@@ -12,74 +12,40 @@
 <div class="container">
     <div class="row">
         <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
-            <!--<form id="order_form{{restaurant_id}}" action="order.html"></form>-->
-            <div class="card-columns" id="menu">
-                
+        
+            {% for category, list in new_menu.items() %}
+            <div class="card-columns" id={{category}}>
+                <div class="card" id={{category}}>
+                    <div class="card-body" id={{category}}>
+                        <h5 class="card-title">{{category}}</h5>
+                    </div>
+                </div>
             </div>
+            <div class="card-columns" id={{category}}>
+                {% for item in list %}
+                    <div class="card" id={{item.menu_item_id}}>
+                        <div class="card-body" id={{item.menu_item_id}}>
+                            <input type="hidden" id={{item.menu_item_id}} name="menu_item_id" value={{item.menu_item_id}}>
+                            <h5 class="card-title" name={{item.item_name}} value={{item.item_name}}>{{item.item_name}}</h5>
+                            <p class="card-text">{{item.item_description}}</p>
+                            <p class="card-text">Price: $ {{item.item_unit_price}}</p>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" id="sub" class="sub">-</button>
+                            <input id={{item.menu_item_id}} type="text" name="quantity" value="0">
+                            <button type="button" id="add" class="add">+</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
             <div class="form-group">
                 <button type="submit" class="btn btn-warning">Review Order</button>
             </div>
         </form>
     </div>
 
-    <script type="text/javascript">
-        var menu_data = JSON.parse('{{ menu_data |  safe }}');
-
-        var transform = {
-            "<>": "div",
-            "class": "card",
-            'id': '${menu_item_id}',
-            "children": [{
-                "<>": "div",
-                "class": "card-body",
-                'id': '${menu_item_id}',
-                "children": [{
-                    "<>": "input",
-                    "type": "hidden",
-                    'id': '${menu_item_id}',
-                    "name": "menu_item_id",
-                    "value": '${menu_item_id}'
-                }, {
-                    "<>": "h5",
-                    "class": "card-title",
-                    'name': 'item_name',
-                    "html": "${item_name}",
-                    "value": "item_name"
-                }, {
-                    "<>": "p",
-                    "class": "card-text",
-                    "html": "${item_description}"
-                }, {
-                    "<>": "p",
-                    "class": "card-text",
-                    "html": "Price: $ ${item_unit_price}"
-                }]
-            }, {
-                "<>": "div",
-                "class": "card-footer",
-                "children": [{
-                    '<>': 'button',
-                    'type': 'button',
-                    'id': 'sub',
-                    'class': 'sub',
-                    'html': '-'
-                }, {
-                    '<>': 'input',
-                    'id': '${menu_item_id}',
-                    'type': 'text',
-                    'name': 'quantity',
-                    'value': '0'
-                }, {
-                    '<>': 'button',
-                    'type': 'button',
-                    'id': 'add',
-                    'class': 'add',
-                    'html': '+'
-                }]    
-            }]
-        };
-
-        $('#menu').html(json2html.transform(menu_data, transform));
+    <script type="text/javascript">    
 
         $('.add').click(function () {
             $(this).prev().val(+$(this).prev().val() + 1);
@@ -88,16 +54,8 @@
             if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
         });
     </script>
-    <!--<script>
-        $("form").submit(function(event){
-            event.preventDefault();
-            var values = $(this).serializeArray();
-            console.log(values)
-            console.log(JSON.stringify(values));
-            localStorage['orderData'] = JSON.stringify(values);
-        })
-
-        console.log(localStorage['orderData']);
-    </script>-->
+    
 </div>
+
+
 {% endblock %}
