@@ -271,8 +271,8 @@ def business_signup(restaurant_username, restaurant_id):
             'password': hashed_pw,
             'restaurant_name': restaurant_name,
             'restaurant_phone_num': restaurant_phone_num,
-            'restaurant_address_1': restaurant_address_1,
-            'restaurant_address_2': restaurant_address_2,
+            'restaurant_address_line1': restaurant_address_1,
+            'restaurant_address_line2': restaurant_address_2,
             'restaurant_city': restaurant_city,
             'restaurant_state': restaurant_state,
             'restaurant_postal_code': restaurant_postal_code
@@ -282,6 +282,22 @@ def business_signup(restaurant_username, restaurant_id):
         table.put_item(
             Item=item
         )
+
+        menu_table = dynamodb.Table('menu') # pylint: disable=no-member
+
+        # generate random UUID for restaurant_id
+        new_menu_id_inital = uuid.uuid4()
+        new_menu_id = str(new_restaurant_id_inital)
+
+        item = {
+            'restaurant_id': new_restaurant_id,
+            'menu_id': new_menu_id
+        }
+
+        menu_table.put_item(
+            Item=item
+        )
+
 
         flash("Successfully signed up! Please log in to continue", "success")
         return redirect(url_for('business_login'))
