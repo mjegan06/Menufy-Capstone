@@ -265,7 +265,6 @@ def edit_menu_item(menu_item_id):
                 FilterExpression=Attr('menu_item_id').eq(menu_item_id)
             )
             
-            # print(response["Items"][0])
             return (json.dumps(response["Items"][0], cls=DecimalEncoder))
 
 
@@ -275,7 +274,6 @@ def edit_menu_item(menu_item_id):
     elif request.method == 'POST':
         try:
             data = request.form.to_dict(flat=False)
-            print(data)
 
            # get menu items
             menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
@@ -288,7 +286,6 @@ def edit_menu_item(menu_item_id):
             for each in keys:
                 item[each] = data[each][0]
 
-            # print(item)
             menu_item_table.put_item(Item=item)
     
         except:
@@ -302,7 +299,6 @@ def delete_menu_item(menu_item_id):
     if request.method == 'POST':
         try:
             # get menu items
-            print(menu_item_id)
             menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
             response = menu_item_table.scan(
                 FilterExpression=Attr('menu_item_id').eq(menu_item_id)

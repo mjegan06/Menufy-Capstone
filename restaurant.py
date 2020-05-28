@@ -27,7 +27,6 @@ bp = Blueprint('restaurant', __name__, url_prefix='/restaurant')
 @bp.route('', methods=['GET'])
 def get_all_restaurants():
     response = table.scan()
-    print("Number of items in restaurant table: ", response['Count'])
 
     return (json.dumps(response['Items'], cls=DecimalEncoder))
 
@@ -83,20 +82,7 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
     data_menu = []
     menu_object = {}
     for x in response['Items']:
-        print(x['item_type'])
 
-        '''response = menu_item_table.scan(
-        FilterExpression=Attr('item_type').eq(x['item_type'])
-        )
-        print(response['Items'])'''
-        '''menu_object = {}
-        menu_object[x['item_type']] = {
-            'menu_item_id': x['menu_item_id'],
-            'item_name': x['item_name'],
-            'item_description': x['item_description'],
-            'item_unit_price': x['item_unit_price']
-        }
-        data_menu.append(menu_object)'''
         #menu_object = {}
         if x['item_type'] not in menu_object:
             menu_object[x['item_type']] = [{
@@ -114,9 +100,7 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
             'item_unit_price': str(x['item_unit_price'])
             }
             )
-    print(menu_object)
-    print(json.dumps(menu_object))
-    print(data_menu)
+
 
     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
     
@@ -128,15 +112,7 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
 
         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data, new_menu=menu_object)
 
-    if request.method == 'POST':
-        menu_item_id = request.form['menu_item_id']
-        # return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
 
-    # response = table.get_item(
-    # 	Key={'restaurant_id': restaurant_id}
-    # )
-
-    # return (json.dumps(response['Item'], cls=DecimalEncoder), 200, {'Content-Type': 'application/json'})
 
 @bp.route('/<restaurant_id>', methods=['DELETE'])
 def delete_restaurant(restaurant_id):
