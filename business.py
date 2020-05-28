@@ -9,6 +9,8 @@ from flask_session import Session
 from utils import *
 import time
 import json
+import random
+import string
 import decimal
 import uuid
 
@@ -234,9 +236,13 @@ def add_menu_item(restaurant_id):
             data = request.form.to_dict(flat=False)
             item = {}
 
+            menu_item_id = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(8)])
+
             keys = list(data.keys())
             for each in keys:
                 item[each] = data[each][0]
+
+            item['menu_item_id'] = menu_item_id
 
             table=dynamodb.Table('menu_item') # pylint: disable=no-member
             menu_table=dynamodb.Table('menu') # pylint: disable=no-member
