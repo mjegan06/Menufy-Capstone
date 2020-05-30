@@ -234,12 +234,20 @@ def add_menu_item(restaurant_id):
         try:
             
             data = request.form.to_dict(flat=False)
+            print(data)
             item = {}
 
             menu_item_id = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(8)])
 
             keys = list(data.keys())
             for each in keys:
+                if data[each][0] == '':
+                    return ("",400)
+                if each == 'item_unit_price' or each == 'item_quantity_available':
+                    if(float(data[each][0]) < 0):
+                        return ("",400)                
+                if each == 'item_unit_price':
+                    print(data[each][0])
                 item[each] = data[each][0]
 
             item['menu_item_id'] = menu_item_id
@@ -281,15 +289,25 @@ def edit_menu_item(menu_item_id):
         try:
             data = request.form.to_dict(flat=False)
 
+            print(data)
            # get menu items
             menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
             response = menu_item_table.scan(
                 FilterExpression=Attr('menu_item_id').eq(menu_item_id)
             )
             item = response["Items"][0]
+            print(item)
 
             keys = list(data.keys())
+            # print(keys)
             for each in keys:
+                if data[each][0] == '':
+                    return ("",400)
+                if each == 'item_unit_price' or each == 'item_quantity_available':
+                    if(float(data[each][0]) < 0):
+                        return ("",400) 
+                if each == 'item_unit_price':
+                    print("hello")
                 item[each] = data[each][0]
 
             menu_item_table.put_item(Item=item)
