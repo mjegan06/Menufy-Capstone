@@ -37,7 +37,10 @@ def business_home(restaurant_username, restaurant_id, rid):
             data = request.form.to_dict(flat=False)
             keyList = list(data.keys())
             key = keyList[0]
+            
             input = data[key][0]
+            if input == '':
+                return ("",400)
             
 
             table = dynamodb.Table('restaurant')
