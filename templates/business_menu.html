@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div class="col-lg-10 container backdrop">
+<div class="col-lg-11 container backdrop">
     <div class="list-group align-items-center">
         <button class="btn btn-primary" name="add-item" type="button" id="{{restaurant_id}}" data-toggle="modal" data-target='#exampleModal'>Add Menu Item</button>
     </div>
@@ -21,6 +21,7 @@
                     <th scope="col">Item Description</th>
                     <th scope="col">Item Cost</th>
                     <th scope="col">Quantity In Stock</th>
+                    <th scope="col">Item Type</th>
                 </tr>
             </thead>
             <tbody id="menu">
@@ -81,12 +82,6 @@
             <div class="modal-body">
                 <form name="menu_add_form" id="menu_add_form" data-toggle="validator" role="form">
                     <div class="form-group">
-                        <label for="menu_item_id" class="control-label">Item id</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="menu_item_id" name="menu_item_id" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="item_name" class="control-label">Item Name</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="item_name" name="item_name" required>
@@ -101,7 +96,7 @@
                     <div class="form-group">
                         <label for="item_quantity_available" class="control-label">Item Quantity Available</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="item_quantity_available" name="item_quantity_available" required>
+                            <input type="number" min="0" class="form-control" id="item_quantity_available" name="item_quantity_available" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -122,7 +117,7 @@
                     <div class="form-group">
                         <label for="item_unit_price" class="control-label">Unit Price</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="item_unit_price" name="item_unit_price" required>
+                            <input type="number" min="0" step=".01" class="form-control" id="item_unit_price" name="item_unit_price" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -199,6 +194,9 @@
             "html": "${item_quantity_available}"
         }, {
             "<>": "td",
+            "html": "${item_type}"
+        }, {
+            "<>": "td",
             "children": [{
                 '<>': 'button',
                 'type': 'button',
@@ -248,36 +246,6 @@
         var response = getMenuItem(menu_item_id);
         document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
     });
-
-    // function getMenuItem(menu_item_id) {
-    //     var orderModal = $('#itemDisplay');
-    //     $.ajax({
-    //         type: "GET",
-    //         url: '/business/' + menu_item_id,
-    //         success: function(response) {
-    //             console.log(response);
-    //             form_input = '';
-    //             $.each(JSON.parse(response), function(attribute, val) {
-    //                 // console.log(attribute, val);
-    //                 if (attribute == 'menu_item_id') {
-    //                     form_input += '<div class="form-group">';
-    //                     form_input += '<label>' + attribute + '</label>';
-    //                     form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
-    //                     form_input += '</div>';
-    //                 } else {
-    //                     form_input += '<div class="form-group">';
-    //                     form_input += '<label>' + attribute + '</label>';
-    //                     form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
-    //                     form_input += '</div>';
-    //                 }
-
-    //             })
-    //             orderModal.find('#menu_edit_form').html(form_input);
-    //             orderModal.modal('show');
-    //         }
-    //     });
-    //     return false;
-    // }
 
     function getMenuItem(menu_item_id) {
         var orderModal = $('#createItemModel');

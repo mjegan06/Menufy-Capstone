@@ -9,8 +9,11 @@ from flask_session import Session
 from utils import *
 import time
 import json
+import random
+import string
 import decimal
 import uuid
+from flask_mail import Mail, Message
 
 dynamodb = boto3.resource('dynamodb', region_name='us-west-2')
 table = dynamodb.Table('restaurant') # pylint: disable=no-member
@@ -34,7 +37,10 @@ def business_home(restaurant_username, restaurant_id, rid):
             data = request.form.to_dict(flat=False)
             keyList = list(data.keys())
             key = keyList[0]
+            
             input = data[key][0]
+            if input == '':
+                return ("",400)
             
 
             table = dynamodb.Table('restaurant')
@@ -45,7 +51,7 @@ def business_home(restaurant_username, restaurant_id, rid):
             
 
         except:
-            print("Phew")
+            print("error")
             
 
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
@@ -102,8 +108,9 @@ def business_orders(restaurant_username, restaurant_id, rid):
 
     return render_template('business_orders.html', restaurant_username=restaurant_username, restaurant_id=restaurant_id, restaurant_name = restaurant_name, order_data = order_data)
         
-@bp.route('/<restaurant_id>/<order_id>', methods=['GET'])
-def get_order_details( restaurant_id, order_id):
+@bp.route('/<rid>/<order_id>', methods=['GET'])
+@business_check_user_login
+def get_order_details(restaurant_username, restaurant_id, rid, order_id):
 
     order_table=dynamodb.Table('order')
 
@@ -219,14 +226,15 @@ def business_menu(restaurant_username, restaurant_id, rid):
         response = menu_item_table.scan(
             FilterExpression=Attr('menu_id').eq(menu_id)
         )
-        
-        menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+        menu_data = json.dumps(response['Items'], cls=DecimalEncoder).replace(r"'",r"\'")
 
         return render_template('business_menu.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
 
 
-@bp.route('/<restaurant_id>/add_menu_item', methods=['POST'])
-def add_menu_item(restaurant_id):
+@bp.route('/<rid>/add_menu_item', methods=['POST'])
+@business_check_user_login
+def add_menu_item(restaurant_username, restaurant_id, rid):
 
     if request.method == 'POST':  
         try:
@@ -234,9 +242,18 @@ def add_menu_item(restaurant_id):
             data = request.form.to_dict(flat=False)
             item = {}
 
+            menu_item_id = "".join([random.choice(string.ascii_uppercase + string.digits) for n in range(8)])
+
             keys = list(data.keys())
             for each in keys:
+                if data[each][0] == '':
+                    return ("",400)
+                if each == 'item_unit_price' or each == 'item_quantity_available':
+                    if(float(data[each][0]) < 0):
+                        return ("",400)                
                 item[each] = data[each][0]
+
+            item['menu_item_id'] = menu_item_id
 
             table=dynamodb.Table('menu_item') # pylint: disable=no-member
             menu_table=dynamodb.Table('menu') # pylint: disable=no-member
@@ -254,7 +271,8 @@ def add_menu_item(restaurant_id):
 
 
 @bp.route('/<menu_item_id>', methods=['GET', 'POST'])
-def edit_menu_item(menu_item_id):
+@business_check_user_login
+def edit_menu_item(restaurant_username, restaurant_id, menu_item_id):
 
     if request.method == 'GET':  
         try:
@@ -265,7 +283,6 @@ def edit_menu_item(menu_item_id):
                 FilterExpression=Attr('menu_item_id').eq(menu_item_id)
             )
             
-            # print(response["Items"][0])
             return (json.dumps(response["Items"][0], cls=DecimalEncoder))
 
 
@@ -275,8 +292,8 @@ def edit_menu_item(menu_item_id):
     elif request.method == 'POST':
         try:
             data = request.form.to_dict(flat=False)
-            print(data)
 
+            print(data)
            # get menu items
             menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
             response = menu_item_table.scan(
@@ -285,10 +302,15 @@ def edit_menu_item(menu_item_id):
             item = response["Items"][0]
 
             keys = list(data.keys())
+            # print(keys)
             for each in keys:
+                if data[each][0] == '':
+                    return ("",400)
+                if each == 'item_unit_price' or each == 'item_quantity_available':
+                    if(float(data[each][0]) < 0):
+                        return ("",400) 
                 item[each] = data[each][0]
 
-            # print(item)
             menu_item_table.put_item(Item=item)
     
         except:
@@ -297,12 +319,12 @@ def edit_menu_item(menu_item_id):
     return ("")
 
 @bp.route('/delete/<menu_item_id>', methods=['POST'])
-def delete_menu_item(menu_item_id):
+@business_check_user_login
+def delete_menu_item(restaurant_username, restaurant_id, menu_item_id):
             
     if request.method == 'POST':
         try:
             # get menu items
-            print(menu_item_id)
             menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
             response = menu_item_table.scan(
                 FilterExpression=Attr('menu_item_id').eq(menu_item_id)
@@ -320,4 +342,33 @@ def delete_menu_item(menu_item_id):
     return ("")
 
 
+@bp.route('/reorder/<menu_item_id>', methods=['POST'])
+@business_check_user_login
+def reorder_item(restaurant_username, restaurant_id, menu_item_id):
+            
+    if request.method == 'POST':
+
+        try:
+            from application import mail as mail
+            menu_item_table=dynamodb.Table('menu_item') # pylint: disable=no-member
+            response = menu_item_table.scan(
+                FilterExpression=Attr('menu_item_id').eq(menu_item_id)
+            )
+            menu_item = response["Items"][0]
+
+            table = dynamodb.Table('restaurant')
+            response= table.get_item(Key={'restaurant_id': restaurant_id})
+            restaurant = response["Item"]
+
+            msg = Message(str(restaurant['restaurant_name']) + ": Restock Inventory Request",
+                sender = "tays@oregonstate.edu",
+                recipients= ["tays@oregonstate.edu"])
+            msg.body = 'Hello Procurement Team, \n\n Please fulfill the following order for ' + str(restaurant['restaurant_name']) + '\n\n' + 'We are running low on ' + str(menu_item['item_name']) +' and would like to replenish our stock with the default stock order in our contract. \n\n' +'Please call us if you have any issues fulfilling this order at ' + str(restaurant['restaurant_phone_num']) + '.\n\n\n' + 'Sincerely, \n ' + str(restaurant['restaurant_name']) + '\n' + str(restaurant['restaurant_address_line1']) + '\n' + str(restaurant['restaurant_address_line2']) + '\n' + str(restaurant['restaurant_city']) + '\n' + str(restaurant['restaurant_postal_code']) + '\n' + str(restaurant['restaurant_state'])
+            mail.send(msg)
+            confirmationMessage = "Order was successful. Confirmation email sent to vendor"
+            flash(confirmationMessage, "success")
+            return ("")
+        except Exception as e:
+            flash("Order did not went through. Try again.", "warning")
+            return str(e)
     

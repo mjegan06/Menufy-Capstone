@@ -43,18 +43,15 @@ def get_order(customer_username, customer_id, restaurant_id):
 
     if request.method == 'POST':
         menu_items = request.form.getlist('menu_item_id')
-        #print(menu_items)
 
 
         item_quantity = list(map(int, request.form.getlist('quantity')))
-        #print(item_quantity)
 
         res = dict(zip(menu_items, item_quantity))
         for key in list(res):
             if res[key] == 0:
                 del res[key]
 
-        #print(res)
         orderSubtotal = 0
         itemDetails = []
         for key in res:
@@ -73,14 +70,12 @@ def get_order(customer_username, customer_id, restaurant_id):
             orderSubtotal = orderSubtotal + int(response['Item']['item_unit_price']) * int(res[key])
             
         
-        #print(itemDetails)
 
         response = restTable.get_item(
             Key={'restaurant_id': restaurant_id}
             )
         restName = response['Item']['restaurant_name']
         orderDetails = dict(username = customer_username, orderSubtotal = orderSubtotal, restName = restName)
-        #print(orderDetails)
         return render_template('order_summary.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, order=orderDetails, itemDetails=itemDetails)
 
 @bp.route('/<restaurant_id>/customer/', methods=['GET','POST'])
@@ -177,15 +172,12 @@ def place_order(customer_username, customer_id, restaurant_id):
         tax_request = requests.get(tax_url)
         tax_request_content = json.loads(tax_request.content)
         salesTax = tax_request_content['results'][0]['taxSales']
-        print(salesTax)
 
         #calculate tax for the order
         orderTax = round(decimal.Decimal(str(salesTax * orderSubtotal)), 2)
-        print(orderTax)
 
         #calculate order total (subtotal + order tax)
-        orderTotal = decimal.Decimal(str(orderTax + orderSubtotal))
-        print(orderTotal)        
+        orderTotal = decimal.Decimal(str(orderTax + orderSubtotal))      
 
 
 
@@ -203,8 +195,6 @@ def place_order(customer_username, customer_id, restaurant_id):
         order['tax'] = orderTax
         order['order_total'] = orderTotal
 
-        #print(order)
-
         createOrder = orderTable.put_item(
         Item = order
         )
@@ -221,7 +211,6 @@ def place_order(customer_username, customer_id, restaurant_id):
             restPhone=restPhone)
 
         confirmation_url = request.url_root + 'order/?confirmation=' + confirmation
-        print(confirmation_url)
         
         
         from application import mail as mail
@@ -248,7 +237,6 @@ def order_status(customer_username, customer_id):
         
     if request.method == 'GET':
         if not customer_id:
-                print("Not logged in")
                 flash("You must be logged in to check the status of an order", "danger")
                 #return redirect(url_for('index'))
                 return render_template('login.html')

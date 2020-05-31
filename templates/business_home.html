@@ -40,21 +40,36 @@
           </button>
             </div>
             <div class="modal-body modBar">
-                <form id="business_edit_form" method="POST" action="/business/{{restaurant_id}}/home">
+                <!-- <form id="business_edit_form" method="POST" action="/business/{{restaurant_id}}/home"> -->
+                <form name="menu_add_form" id="business_edit_form" data-toggle="validator" role="form">
                     <div class="form-group">
-                        <label for="example" id="attribute"></label>
-                        <input type="text" class="form-control" id="current-val" name="" aria-describedby="help">
-                        <small id="help" class="form-text text-muted"></small>
+                        <label for="current-val" id="attribute" class="control-label"></label>
+                        <div>
+                            <input type="text" class="form-control" id="current-val" name="" aria-describedby="help" required>
+                            <!-- <small id="help" class="form-text text-muted"></small> -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" id='save_button' onclick="form_submit()" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <a type="button" onclick="form_submit()" class="btn btn-outline-primary" method="POST">Save changes</a>
                 <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
             </div>
             <script type="text/javascript">
                 function form_submit() {
-                    document.getElementById("business_edit_form").submit();
+                    var restaurant_id = '{{restaurant_id}}';
+                    $.ajax({
+                        type: "POST",
+                        url: '/business/' + restaurant_id + '/home',
+                        data: $('#business_edit_form').serialize(),
+                        success: function(response) {
+                            var button = document.getElementById('close');
+                            button.click();
+                        }
+                    });
+                    return false;
                 }
             </script>
         </div>
@@ -106,6 +121,28 @@
                     "name": "restaurant_name",
                     "html": "edit",
                     "value": '${restaurant_name}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
+                "html": 'Restaurant Email'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_email}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Restaurant Email',
+                    "name": "restaurant_email",
+                    "html": "edit",
+                    "value": '${restaurant_email}',
                 }]
             }]
         }, {
