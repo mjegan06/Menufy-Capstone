@@ -126,3 +126,8 @@ input {
     background-color: #343a40 !important;
     color: #fff;
 }
+
+.card {
+    border-width:5px;
+    border-color: whitesmoke;
+}

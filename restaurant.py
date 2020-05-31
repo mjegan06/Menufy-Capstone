@@ -80,24 +80,10 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
     response = menu_item_table.scan(
         FilterExpression=Attr('menu_id').eq(menu_id)
     )
-    data_menu = []
+    
     menu_object = {}
     for x in response['Items']:
-        print(x['item_type'])
 
-        '''response = menu_item_table.scan(
-        FilterExpression=Attr('item_type').eq(x['item_type'])
-        )
-        print(response['Items'])'''
-        '''menu_object = {}
-        menu_object[x['item_type']] = {
-            'menu_item_id': x['menu_item_id'],
-            'item_name': x['item_name'],
-            'item_description': x['item_description'],
-            'item_unit_price': x['item_unit_price']
-        }
-        data_menu.append(menu_object)'''
-        #menu_object = {}
         if x['item_type'] not in menu_object:
             menu_object[x['item_type']] = [{
             'menu_item_id': x['menu_item_id'],
@@ -115,8 +101,6 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
             }
             )
     print(menu_object)
-    print(json.dumps(menu_object))
-    print(data_menu)
 
     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
     

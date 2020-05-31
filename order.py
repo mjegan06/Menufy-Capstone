@@ -66,7 +66,8 @@ def get_order(customer_username, customer_id, restaurant_id):
             'item_id': key,
             'item_name': response['Item']['item_name'],
             'quantity': res[key], 
-            'item_subtotal': response['Item']['item_unit_price'] * res[key]
+            'item_subtotal': response['Item']['item_unit_price'] * res[key],
+            'item_unit_price': response['Item']['item_unit_price']
             })
             
             orderSubtotal = orderSubtotal + int(response['Item']['item_unit_price']) * int(res[key])
@@ -114,7 +115,7 @@ def place_order(customer_username, customer_id, restaurant_id):
 
         for i in range(len(menu_items)):
             sub_order[menu_items[i]] = {'Quantity': int(quantites[i]), "subtotal": int(subtotals[i])}
-
+        print(sub_order)
 
         orderSubtotal = 0
         orderIdList = []
