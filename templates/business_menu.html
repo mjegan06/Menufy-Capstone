@@ -247,36 +247,6 @@
         document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
     });
 
-    // function getMenuItem(menu_item_id) {
-    //     var orderModal = $('#itemDisplay');
-    //     $.ajax({
-    //         type: "GET",
-    //         url: '/business/' + menu_item_id,
-    //         success: function(response) {
-    //             console.log(response);
-    //             form_input = '';
-    //             $.each(JSON.parse(response), function(attribute, val) {
-    //                 // console.log(attribute, val);
-    //                 if (attribute == 'menu_item_id') {
-    //                     form_input += '<div class="form-group">';
-    //                     form_input += '<label>' + attribute + '</label>';
-    //                     form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '" disabled>';
-    //                     form_input += '</div>';
-    //                 } else {
-    //                     form_input += '<div class="form-group">';
-    //                     form_input += '<label>' + attribute + '</label>';
-    //                     form_input += '<input type="text" class="form-control" name="' + attribute + '"value="' + val + '">';
-    //                     form_input += '</div>';
-    //                 }
-
-    //             })
-    //             orderModal.find('#menu_edit_form').html(form_input);
-    //             orderModal.modal('show');
-    //         }
-    //     });
-    //     return false;
-    // }
-
     function getMenuItem(menu_item_id) {
         var orderModal = $('#createItemModel');
         var edit_form = $('#menu_add_form');

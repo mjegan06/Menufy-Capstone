@@ -51,7 +51,8 @@
                 "children": [{
                     '<>': 'button',
                     'type': 'button',
-                    'id': 'reorder',
+                    'id': '${menu_item_id}',
+                    'name': 'reorder',
                     'class': 'reorder btn btn-primary',
                     'html': 'Reorder'
                 }]
@@ -60,9 +61,23 @@
 
         $('#menu').html(json2html.transform(menu_data, transform));
 
-
-        $('.sub').click(function() {
-            if ($(this).next().val() > 0) $(this).next().val(+$(this).next().val() - 1);
+        $('button[name ="reorder"]').click(function() {
+            var menu_item_id = $(this).attr('id');
+            $.ajax({
+                type: "POST",
+                url: '/business/reorder/' + menu_item_id,
+                // data: $('#menu_edit_form').serialize(),
+                success: function(response) {
+                    location.reload();
+                }
+            });
+            return false;
+            // var menu_item_id = $(this).attr('id');
+            // var menu_item_data = $(this).attr('value');
+            // var arr = menu_item_data.split(',');
+            // $(".modal-title").html("Edit Menu Item");
+            // var response = getMenuItem(menu_item_id);
+            // document.getElementById('menu_edit_form').setAttribute("name", menu_item_id);
         });
     </script>
 </div>
