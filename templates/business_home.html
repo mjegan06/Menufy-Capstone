@@ -127,6 +127,28 @@
             "<>": "tr",
             "children": [{
                 "<>": "td",
+                "html": 'Restaurant Email'
+            }, {
+                "<>": "td",
+                "html": '${restaurant_email}'
+            }, {
+                "<>": "td",
+                "children": [{
+                    '<>': 'button',
+                    'type': 'button',
+                    'class': "btn btn-danger",
+                    'data-toggle': "modal",
+                    'data-target': '#exampleModal',
+                    'id': 'Restaurant Email',
+                    "name": "restaurant_email",
+                    "html": "edit",
+                    "value": '${restaurant_email}',
+                }]
+            }]
+        }, {
+            "<>": "tr",
+            "children": [{
+                "<>": "td",
                 "html": 'City'
             }, {
                 "<>": "td",

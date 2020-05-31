@@ -51,7 +51,7 @@ def business_home(restaurant_username, restaurant_id, rid):
             
 
         except:
-            print("Phew")
+            print("error")
             
 
     table = dynamodb.Table('restaurant') # pylint: disable=no-member
@@ -226,8 +226,8 @@ def business_menu(restaurant_username, restaurant_id, rid):
         response = menu_item_table.scan(
             FilterExpression=Attr('menu_id').eq(menu_id)
         )
-        
-        menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
+
+        menu_data = json.dumps(response['Items'], cls=DecimalEncoder).replace(r"'",r"\'")
 
         return render_template('business_menu.html', restaurant_name = restaurant_name, restaurant_username=restaurant_username, restaurant_id=restaurant_id, menu_data=menu_data)
 

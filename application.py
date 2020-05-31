@@ -238,6 +238,7 @@ def business_signup(restaurant_username, restaurant_id):
         # get user input
         restaurant_username = request.form['username']
         hashed_pw = generate_password_hash(request.form['password'])
+        restaurant_email = request.form['restaurant_email']
         restaurant_name = request.form['restaurant_name']
         restaurant_phone_num = request.form['restaurant_phone_num']
         restaurant_address_1 = request.form['restaurant_address_line1']
@@ -269,6 +270,7 @@ def business_signup(restaurant_username, restaurant_id):
             'restaurant_id': new_restaurant_id,
             'restaurant_username': restaurant_username,
             'password': hashed_pw,
+            'restaurant_email': restaurant_email,
             'restaurant_name': restaurant_name,
             'restaurant_phone_num': restaurant_phone_num,
             'restaurant_address_line1': restaurant_address_1,
