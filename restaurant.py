@@ -100,11 +100,6 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
             'item_unit_price': str(x['item_unit_price'])
             }
             )
-<<<<<<< HEAD
-    print(menu_object)
-=======
-
->>>>>>> 9ae20f789a84682e3902d8404073ed86c0903ded
 
     menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
     

@@ -8,32 +8,36 @@
     </div>
 </div>
 
-<div>
-    <p>
-        <h2>
-            Thank you for your order from {{ order.restName}}
-        </h2>
-    </p>
-    <p>
-	Below are the details of your recent order
-    </p>
+<div class="jumbotron rounded-0">
+    <div class="container text-center">
+        <div id="jumbo-text">
+            <p class="lead" class="display-4">
+                Thank you for your order from {{ order.restName}}
+            </p>
+            <p class="lead">
+                Below are the details of your recent order
+            </p>
+            <p>
+            Order Placed: {{ order.order_time}}
+            <br>
+            Order Confirmation: {{ order.confirmation}}
+            <br>
+            Order Subtotal: ${{ order.subtotal}}
+            <br>
+            Tax: ${{order.tax}}
+            <br>
+            Order Total: ${{order.total}}
+            <br>
+            Please call {{ order.restName}} at {{order.restPhone}} with any questions or concerns for your order.
+            </p>
+            <p>
+                Check the status of your order <a href={{confirmation_url}}> here </a>
+            </p>
+        </div>
+    </div>
+    
 
-    <p>
-        Order Placed: {{ order.order_time}}
-        <br>
-        Order Confirmation: {{ order.confirmation}}
-        <br>
-        Order Subtotal: ${{ order.subtotal}}
-        <br>
-        Tax: ${{order.tax}}
-        <br>
-        Order Total: ${{order.total}}
-        <br>
-        Please call {{ order.restName}} at {{order.restPhone}} with any questions or concerns for your order.
-    </p>
-    <p>
-        Check the status of your order <a href={{confirmation_url}}> here </a>
-    </p>
+    
 </div>
 
 {% endblock %}

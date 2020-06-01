@@ -63,12 +63,11 @@ def get_order(customer_username, customer_id, restaurant_id):
             'item_id': key,
             'item_name': response['Item']['item_name'],
             'quantity': res[key], 
-            'item_subtotal': response['Item']['item_unit_price'] * res[key],
+            'item_subtotal': float(response['Item']['item_unit_price']) * res[key],
             'item_unit_price': response['Item']['item_unit_price']
             })
             
-            orderSubtotal = orderSubtotal + int(response['Item']['item_unit_price']) * int(res[key])
-            
+            orderSubtotal = float(orderSubtotal + float(response['Item']['item_unit_price']) * float(res[key]))
         
 
         response = restTable.get_item(
@@ -85,7 +84,7 @@ def place_order(customer_username, customer_id, restaurant_id):
     if request.method == "POST":
         
         if not customer_id:
-            print("Not logged in")
+            
             flash("You must be logged in to place an order", "danger")
             return redirect(url_for('index'))
 
@@ -101,7 +100,7 @@ def place_order(customer_username, customer_id, restaurant_id):
         # generate order_id
         order_id = str(uuid.uuid4())
         
-        menu_items = list(request.form.getlist("item_id"))
+        menu_items = list(request.form.getlist("menu_item_id"))
         quantites = request.form.getlist('item_quantity')
         subtotals = request.form.getlist("item_subtotal")
 
@@ -109,11 +108,25 @@ def place_order(customer_username, customer_id, restaurant_id):
 
 
         for i in range(len(menu_items)):
-            sub_order[menu_items[i]] = {'Quantity': int(quantites[i]), "subtotal": int(subtotals[i])}
-        print(sub_order)
+            
+            sub_order[menu_items[i]] = {'Quantity': int(quantites[i]), "subtotal": float(subtotals[i])}
+            
 
         orderSubtotal = 0
         orderIdList = []
+
+        for key in sub_order:
+            response = menuTable.get_item(
+                Key={'menu_item_id': key}
+            )
+            quantAvailable = int(response['Item']['item_quantity_available'])
+            quantRemaining = quantAvailable - sub_order[key]['Quantity']
+            if quantRemaining < 0:
+                unavailableItem = "We are so sorry, the " + response['Item']['item_name'] + " is unavailable!"
+                flash(unavailableItem, "danger")
+                redirectUrl = 'restaurant.get_restaurant'
+                return redirect(url_for(redirectUrl, restaurant_id = restaurant_id))
+
         for key in sub_order:
             orderItemId = str(uuid.uuid4())
             
@@ -122,16 +135,25 @@ def place_order(customer_username, customer_id, restaurant_id):
                     'order_id': order_id,
                     'order_item_id': orderItemId,
                     'oi_quantity': sub_order[key]['Quantity'],
-                    'oi_unit_price': sub_order[key]['subtotal'],
+                    'oi_unit_price': str(sub_order[key]['subtotal']),
                     'item_id': key
             }
+
+
+            response = menuTable.get_item(
+                Key={'menu_item_id': key}
+            )
+            quantAvailable = response['Item']['item_quantity_available']
+            
+
+            quantRemaining = str(int(quantAvailable) - int(item['oi_quantity']))
 
             #update quantites of items ordered in database, subtracting items from database that were ordered
             response = menuTable.update_item(
                 Key={'menu_item_id': key},
-                UpdateExpression='set item_quantity_available = item_quantity_available - :val',
+                UpdateExpression='set item_quantity_available = :val',
                 ExpressionAttributeValues = {
-                    ':val': item['oi_quantity']
+                    ':val': quantRemaining
                 },
                 ReturnValues = 'UPDATED_NEW'
             )
@@ -171,13 +193,17 @@ def place_order(customer_username, customer_id, restaurant_id):
 
         tax_request = requests.get(tax_url)
         tax_request_content = json.loads(tax_request.content)
+        
         salesTax = tax_request_content['results'][0]['taxSales']
+        
 
         #calculate tax for the order
-        orderTax = round(decimal.Decimal(str(salesTax * orderSubtotal)), 2)
+        orderTax = round((salesTax * orderSubtotal), 2)
+        print(orderTax)
 
         #calculate order total (subtotal + order tax)
-        orderTotal = decimal.Decimal(str(orderTax + orderSubtotal))      
+        orderTotal = str(round(orderTax + orderSubtotal, 2))
+        print(orderTotal)     
 
 
 
@@ -191,8 +217,8 @@ def place_order(customer_username, customer_id, restaurant_id):
         order['oi_id'] = orderIdList
         order['restaurant_id'] = restaurant_id
         order['table_id'] = None
-        order['subtotal'] = orderSubtotal
-        order['tax'] = orderTax
+        order['subtotal'] = str(orderSubtotal)
+        order['tax'] = str(orderTax)
         order['order_total'] = orderTotal
 
         createOrder = orderTable.put_item(
