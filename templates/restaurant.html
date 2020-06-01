@@ -14,17 +14,17 @@
         <form id="order_form{{restaurant_id}}" method="POST" action="/order/{{restaurant_id}}">
         
             {% for category, list in new_menu.items() %}
-            <div class="card-columns" id={{category}}>
-                <div class="card" id={{category}} style="border-width:5px; border-color: whitesmoke;">
-                    <div class="card-body" id={{category}}>
+            <div class="card-columns" >
+                <div class="card" style="border-width:5px; border-color: grey;">
+                    <div class="card-body">
                         <h5 class="card-title">{{category}}</h5>
                     </div>
                 </div>
             </div>
-            <div class="card-columns" id={{category}}>
+            <div class="card-columns" >
                 {% for item in list %}
-                    <div class="card" id={{item.menu_item_id}} style="border-width:5px; border-color: whitesmoke;">
-                        <div class="card-body" id={{item.menu_item_id}}>
+                    <div class="card"  style="border-width:5px; border-color: grey;">
+                        <div class="card-body" >
                             <input type="hidden" id={{item.menu_item_id}} name="menu_item_id" value={{item.menu_item_id}}>
                             <h5 class="card-title" name={{item.item_name}} value={{item.item_name}}>{{item.item_name}}</h5>
                             <p class="card-text">{{item.item_description}}</p>

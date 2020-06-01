@@ -32,7 +32,7 @@
             		<td> <input type="hidden"  name="menu_item_id" value={{item.item_id}}> {{item.item_name}} <input type="hidden" id={{item.item_unit_price}} name="item_unit_price" value={{item.item_unit_price}}></td>
             		<td align="right"> <input type="text" name="item_quantity" class="item_quantity" value={{item.quantity}} readonly></td>
 					<td></td>
-            		<td align="right"> <input id={{item.item_id}} type="text" name="item_subtotal" value={{item.item_subtotal}}></td>
+            		<td align="right"> <input id={{item.item_id}} type="text" name="item_subtotal" value={{item.item_subtotal}} readonly></td>
         		</tr>
         		{% endfor %}
 				<tr>
