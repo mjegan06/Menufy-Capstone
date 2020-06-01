@@ -29,10 +29,10 @@
         		{%for item in itemDetails %}
         		<tr>
 					
-            		<td> <input type="hidden" id={{item.item_id}} name="menu_item_id" value={{item.item_id}}> {{item.item_name}} <input type="hidden" id={{item.item_unit_price}} name="item_unit_price" value={{item.item_unit_price}}></td>
+            		<td> <input type="hidden"  name="menu_item_id" value={{item.item_id}}> {{item.item_name}} <input type="hidden" id={{item.item_unit_price}} name="item_unit_price" value={{item.item_unit_price}}></td>
             		<td align="right"> <input type="text" name="item_quantity" class="item_quantity" value={{item.quantity}} readonly></td>
 					<td></td>
-            		<td align="right"> <input type="hidden" name="item_subtotal" value={{item.item_subtotal}}> ${{item.item_subtotal}} </td>
+            		<td align="right"> <input id={{item.item_id}} type="text" name="item_subtotal" value={{item.item_subtotal}}></td>
         		</tr>
         		{% endfor %}
 				<tr>
@@ -51,7 +51,8 @@
 						<button type="submit" class="btn btn-warning" style="margin: 5px;">Place Order</button>
 						<span> </span>
 						<!--<button type="button" class="btn btn-warning" style="margin: 5px;" onclick="window.location.href='/restaurant/{{restaurant_id}}'"> Edit Order</button>-->
-						<button type="button" class="btn btn-warning" style="margin: 5px;" onclick="submitEditedQuants()"> Edit Order</button>
+						<button type="button" class="btn btn-warning" style="margin: 5px;" onclick="updateEditedQuants()"> Update Order</button>
+						<button type="button" class="btn btn-warning" style="margin: 5px;" onclick="add_items()"> Add Items</button>
 					</td>
 				</tr>
 			</tbody>
@@ -72,34 +73,26 @@
             <button type="submit" class="btn btn-warning">Change Order</button>
         </div>-->
 	</form>
+	<form id="add_items" method="GET" action="/restaurant/{{restaurant_id}}"></form>
 	<script type="text/javascript">    
 		function editQuantity(){
 			var vars = document.getElementsByName('item_quantity');
-			console.log(vars);
-			console.log(vars.length);
-			console.log(vars[0]);
-			console.log(vars[0]['value']);
 			for (i = 0; i < vars.length; i++){
 				vars[i].removeAttribute('readonly');
 			}
 		}
 
-		function submitEditedQuants(){
-			var vars = document.getElementsByName('item_quantity');
-			var restName = document.getElementsByName('restaurant_name');
-			console.log("Here");
-			console.log(restName[0]['id']);
-			console.log(vars);
-			console.log(vars.length)
-			console.log(vars[0]);
-			var formElement = document.querySelector("form");
-			console.log(formElement);
-			var request = new XMLHttpRequest();
-			console.log(formElement);
-			console.log("Message");
-			var url = '/order/' + restName[0]['id']
-			request.open("POST", url);
-			request.send(new FormData(formElement));
+		function updateEditedQuants(){
+			var quants = document.getElementsByName('item_quantity');
+			var prices = document.getElementsByName('item_unit_price');
+			var subtotals = document.getElementsByName('item_subtotal');
+			for (i = 0; i < quants.length; i++){
+				document.getElementById(subtotals[i]['id']).value = (quants[i]['value'] * prices[i]['value']);
+			}
+		}
+
+		function add_items(){
+			document.getElementById('add_items').submit();
 		}
 
 		//$('.edit_quantity').click( function(){

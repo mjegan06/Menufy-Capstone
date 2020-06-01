@@ -43,9 +43,19 @@ def get_order(customer_username, customer_id, restaurant_id):
 
     if request.method == 'POST':
         menu_items = request.form.getlist('menu_item_id')
+        
 
 
         item_quantity = list(map(int, request.form.getlist('quantity')))
+        
+        sumQuants = 0
+        for i in range(len(item_quantity)):
+            
+            sumQuants += item_quantity[i]
+            
+        if sumQuants == 0:
+            return redirect(url_for('restaurant.get_restaurant', restaurant_id = restaurant_id))
+
 
         res = dict(zip(menu_items, item_quantity))
         for key in list(res):
@@ -199,11 +209,9 @@ def place_order(customer_username, customer_id, restaurant_id):
 
         #calculate tax for the order
         orderTax = round((salesTax * orderSubtotal), 2)
-        print(orderTax)
 
         #calculate order total (subtotal + order tax)
         orderTotal = str(round(orderTax + orderSubtotal, 2))
-        print(orderTotal)     
 
 
 
