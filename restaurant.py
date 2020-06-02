@@ -24,12 +24,14 @@ class DecimalEncoder(json.JSONEncoder):
 
 bp = Blueprint('restaurant', __name__, url_prefix='/restaurant')
 
+# get a list of all restaurants
 @bp.route('', methods=['GET'])
 def get_all_restaurants():
     response = table.scan()
 
     return (json.dumps(response['Items'], cls=DecimalEncoder))
 
+# create a restaurant
 @bp.route('', methods=['POST'])
 def create_restaurant():
 
@@ -56,7 +58,7 @@ def create_restaurant():
     return(new_restaurant_id, 201, {'Content-Type': 'application/json'})
 
 
-
+# Get restaurant information
 @bp.route('/<restaurant_id>', methods=['GET','POST'])
 @check_user_login
 def get_restaurant(customer_username, customer_id, restaurant_id):
@@ -82,8 +84,7 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
     
     menu_object = {}
     for x in response['Items']:
-
-
+        # for displaying by item_type, if the item_type isn't in the dict, then create a new item_type to display
         if x['item_type'] not in menu_object:
             menu_object[x['item_type']] = [{
             'menu_item_id': x['menu_item_id'],
@@ -105,14 +106,12 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
     
     new_menu = json.dumps(menu_object)
 
-    
-
     if request.method == 'GET':
 
         return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data, new_menu=menu_object)
 
 
-
+# Delete a restaurant
 @bp.route('/<restaurant_id>', methods=['DELETE'])
 def delete_restaurant(restaurant_id):
     response = table.delete_item(

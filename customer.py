@@ -26,30 +26,35 @@ bp = Blueprint('customer', __name__, url_prefix='/customer')
 
 ###################################################################
 
+# display customer dashboard
 @bp.route('/<cid>/dashboard', methods=['GET','POST'])
 @check_user_login
 def customer_dashboard(customer_username, customer_id, cid):
-
+    #if the user tries to access someone elses dashboard
     if cid != customer_id:
         error = "Unable to look at another customer's dashboard, please sign in if you haven't done so already"
         flash(u'Unable to access dashboard, please login to your account', 'error')
         return redirect(url_for('login'))
 
+    #Tables to be used
     customer_table=dynamodb.Table('customer')
     restaurant_table=dynamodb.Table('restaurant')
     order_table=dynamodb.Table('order')
 
+    #Query the customers data and remove the password before passing to client side
     customer_data = customer_table.query(
         KeyConditionExpression=Key('customer_id').eq(customer_id)
     )
     customer_data['Items'][0]['password'] = None
 
+    # Search filter for the start time and end time
     if request.method == 'POST':
         order_date = request.form['order_date'] if request.form['order_date'] else None
         order_time = request.form['order_time'] if request.form['order_time'] else None
         end_date = request.form['end_date'] if request.form['end_date'] else None
         end_time = request.form['end_time'] if request.form['end_time'] else None
 
+        # If the user inputs an order_date and end_date
         if order_date and end_date:
             order_date_time=""
             end_date_time=""
@@ -64,13 +69,14 @@ def customer_dashboard(customer_username, customer_id, cid):
             else:
                 end_date_time = "%s, %s" % (end_date, "00:00:00")
 
+            # Scan the order table for a complete list of orders that are between the end_date_time and order_date_time
             order_data = order_table.scan(
                 FilterExpression=Key('customer_id').eq(customer_id) & Attr('order_time').between(order_date_time, end_date_time)
             )
 
-
             restaurant_id=""
 
+            # Get the name of the restaurant for every order that is pulled in the order_data
             for item in order_data['Items']:
                 for key, value in item.items():
                     if key == "restaurant_id":
@@ -84,6 +90,7 @@ def customer_dashboard(customer_username, customer_id, cid):
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
+        # If the user inputs an order_date and not an end_date
         elif order_date and not end_date:
             order_date_time=""
 
@@ -93,13 +100,14 @@ def customer_dashboard(customer_username, customer_id, cid):
                 order_date_time = "%s, %s" % (order_date, "00:00:00")
 
 
-
+            # Scan the order table for a complete list of orders that are after the order_date_time
             order_data = order_table.scan(
                 FilterExpression=Attr('customer_id').eq(customer_id) & Attr('order_time').gte(order_date_time)
             )
 
             restaurant_id=""
 
+            # Get the name of the restaurant for every order that is pulled in the order_data
             for item in order_data['Items']:
                 for key, value in item.items():
                     if key == "restaurant_id":
@@ -112,6 +120,7 @@ def customer_dashboard(customer_username, customer_id, cid):
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
+        # If the user inputs not an order_date and an end_date
         elif not order_date and end_date:
             end_date_time=""
             
@@ -120,12 +129,14 @@ def customer_dashboard(customer_username, customer_id, cid):
             else:
                 end_date_time = "%s, %s" % (end_date, "00:00:00")
 
+            # Scan the order table for a complete list of orders that are before the end_date_time
             order_data = order_table.scan(
                 FilterExpression=Attr('customer_id').eq(customer_id) & Attr('order_time').lte(end_date_time)
             )
 
             restaurant_id=""
 
+            # Get the name of the restaurant for every order that is pulled in the order_data
             for item in order_data['Items']:
                 for key, value in item.items():
                     if key == "restaurant_id":
@@ -138,13 +149,16 @@ def customer_dashboard(customer_username, customer_id, cid):
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
+        # if there is no order_date or end_date
         else:
+            # Scan the order table for a complete list of orders for a customer
             order_data = order_table.scan(
                 FilterExpression=Attr('customer_id').eq(customer_id)
             )
 
             restaurant_id=""
 
+            # Get the name of the restaurant for every order that is pulled in the order_data
             for item in order_data['Items']:
                 for key, value in item.items():
                     if key == "restaurant_id":
@@ -157,13 +171,16 @@ def customer_dashboard(customer_username, customer_id, cid):
 
             return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
     
+    # if there is no order_date or end_date
     else:
+        # Scan the order table for a complete list of orders for a customer
         order_data = order_table.scan(
             FilterExpression=Attr('customer_id').eq(customer_id)
         )
 
         restaurant_id=""
 
+        # Get the name of the restaurant for every order that is pulled in the order_data
         for item in order_data['Items']:
             for key, value in item.items():
                 if key == "restaurant_id":
@@ -176,6 +193,7 @@ def customer_dashboard(customer_username, customer_id, cid):
 
         return render_template('customer_dashboard.html', customer_username=customer_username, customer_id=customer_id, customer_info=customer_data, orders=order_data)
 
+# get the order details when user clicks on an order detail display in dashboard
 @bp.route('/<restaurant_id>/<order_id>', methods=['GET'])
 def get_order_details( restaurant_id, order_id):
 
@@ -227,10 +245,12 @@ def get_order_details( restaurant_id, order_id):
     except:
         return ("")
 
+# edit the customers information
 @bp.route('/<cid>/edit', methods=['GET','POST'])
 @check_user_login
 def edit_customer(customer_username, customer_id, cid):
 
+    #if the user tries to access someone elses customers info
     if cid != customer_id:
         error = "Unable to look at another customer's dashboard, please sign in if you haven't done so already"
         flash(u'Unable to access dashboard, please login to your account', 'error')
