@@ -36,18 +36,21 @@ tax_api_key = '2ua9Sp7sTDhfCgM4'
 @bp.route('/<restaurant_id>', methods=['GET','POST'])
 @check_user_login
 def get_order(customer_username, customer_id, restaurant_id):
+
+    #retrieve tables from database
     oiTable = dynamodb.Table('order_item') # pylint: disable=no-member
     menuTable = dynamodb.Table('menu_item') # pylint: disable=no-member
     orderTable = dynamodb.Table('order') # pylint: disable=no-member
     restTable = dynamodb.Table('restaurant') # pylint: disable=no-member
 
     if request.method == 'POST':
+        #get list of menu item ids
         menu_items = request.form.getlist('menu_item_id')
         
-
-
+        #change strings to ints for list of quantities
         item_quantity = list(map(int, request.form.getlist('quantity')))
         
+        #if user attempts to review order with zero items, redirects user to restaurant menu page
         sumQuants = 0
         for i in range(len(item_quantity)):
             
@@ -56,7 +59,8 @@ def get_order(customer_username, customer_id, restaurant_id):
         if sumQuants == 0:
             return redirect(url_for('restaurant.get_restaurant', restaurant_id = restaurant_id))
 
-
+        #make a dictionary pairing the menu item ids with the quantity ordered for that id
+        #if quantity is zero, that menu item is removed
         res = dict(zip(menu_items, item_quantity))
         for key in list(res):
             if res[key] == 0:
@@ -196,6 +200,12 @@ def place_order(customer_username, customer_id, restaurant_id):
         response = custTable.get_item(
             Key={'customer_id': customer_id}
         )
+        print(response['Item'])
+        
+        if 'customer_email' not in response['Item']:
+            flash('Your profile has no email address.  Please update your information and try again', 'danger')
+            return redirect(url_for('index'))
+
         custEmail = response['Item']['customer_email']
 
         #calculate sales tax for restaurant using zip-tax.com api
@@ -273,10 +283,12 @@ def order_status(customer_username, customer_id):
         if not customer_id:
                 flash("You must be logged in to check the status of an order", "danger")
                 #return redirect(url_for('index'))
-                return render_template('login.html')
+                return redirect(url_for('index')) #render_template('login.html')
 
         orderTable = dynamodb.Table('order') # pylint: disable=no-member
         restTable = dynamodb.Table('restaurant')
+
+        
         
         
 
@@ -285,7 +297,12 @@ def order_status(customer_username, customer_id):
             FilterExpression=Attr('confirmation').eq(confirmation)
         )
         if row['Count'] == 0:
-            print("Not working")
+            flash("The confirmation provided does not exist", "danger")
+            return redirect(url_for('index'))
+
+        if row['Items'][0]['customer_id'] is not customer_id:
+            flash('Sorry, you are not the owner of that order.  Permission Denied', 'danger')
+            return redirect(url_for('index')) 
 
         #restrieve restaurant name, phone number, and zip code
         response = restTable.get_item(
