@@ -200,7 +200,6 @@ def place_order(customer_username, customer_id, restaurant_id):
         response = custTable.get_item(
             Key={'customer_id': customer_id}
         )
-        print(response['Item'])
         
         if 'customer_email' not in response['Item']:
             flash('Your profile has no email address.  Please update your information and try again', 'danger')
@@ -299,8 +298,8 @@ def order_status(customer_username, customer_id):
         if row['Count'] == 0:
             flash("The confirmation provided does not exist", "danger")
             return redirect(url_for('index'))
-
-        if row['Items'][0]['customer_id'] is not customer_id:
+            
+        if row['Items'][0]['customer_id'] != customer_id:
             flash('Sorry, you are not the owner of that order.  Permission Denied', 'danger')
             return redirect(url_for('index')) 
 
@@ -423,34 +422,6 @@ def get_order_history(customer_username, customer_id, restaurant_id):
 
 
 
-    # # get restaurant name
-    # restaurant_table=dynamodb.Table('restaurant') 
-    # restaurant_data = restaurant_table.scan(
-    #     FilterExpression=Attr('restaurant_id').eq(restaurant_id)
-    # )
-    # restaurant_name = restaurant_data['Items'][0]['restaurant_name']
-
-    # # get menu id
-    # menu_table=dynamodb.Table('menu') 
-    # response = menu_table.scan(
-    #     FilterExpression=Attr('restaurant_id').eq(restaurant_id)
-    # )
-    # menu_id = response['Items'][0]['menu_id']
-
-    # # get menu items
-    # menu_item_table=dynamodb.Table('menu_item')
-    # response = menu_item_table.scan(
-    #     FilterExpression=Attr('menu_id').eq(menu_id)
-    # )
-    
-    # menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
-
-    # if request.method == 'GET':
-
-    #     return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data)
-
-    # if request.method == 'POST':
-    #     menu_item_id = request.form['menu_item_id']
 
 
 
