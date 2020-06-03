@@ -24,39 +24,6 @@ class DecimalEncoder(json.JSONEncoder):
 
 bp = Blueprint('restaurant', __name__, url_prefix='/restaurant')
 
-# get a list of all restaurants
-@bp.route('', methods=['GET'])
-def get_all_restaurants():
-    response = table.scan()
-
-    return (json.dumps(response['Items'], cls=DecimalEncoder))
-
-# create a restaurant
-@bp.route('', methods=['POST'])
-def create_restaurant():
-
-    content = request.get_json()
-
-    # generate random UUID for restaurant_id
-    new_restaurant_id = str(uuid.uuid4())
-
-    response = table.put_item(
-            Item={
-                'restaurant_id': new_restaurant_id,
-                'restaurant_name': content['restaurant_name'],
-                'restaurant_latitude': content['restaurant_latitude'],
-                'restaurant_longitude': content['restaurant_longitude'],
-                'phone_num': content['phone_num'],
-                'address_line1': content['address_line1'],
-                'address_line2': content['address_line2'],
-                'city': content['city'],
-                'state': content['state'],
-                'postal_code': content['postal_code']
-            }
-        )
-
-    return(new_restaurant_id, 201, {'Content-Type': 'application/json'})
-
 
 # Get restaurant information
 @bp.route('/<restaurant_id>', methods=['GET','POST'])
@@ -102,22 +69,11 @@ def get_restaurant(customer_username, customer_id, restaurant_id):
             }
             )
 
-    menu_data = json.dumps(response['Items'], cls=DecimalEncoder)
-    
-    new_menu = json.dumps(menu_object)
 
     if request.method == 'GET':
 
-        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name,menu_data=menu_data, new_menu=menu_object)
+        return render_template('restaurant.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, restaurant_name=restaurant_name, new_menu=menu_object)
 
 
-# Delete a restaurant
-@bp.route('/<restaurant_id>', methods=['DELETE'])
-def delete_restaurant(restaurant_id):
-    response = table.delete_item(
-        Key={'restaurant_id': restaurant_id}
-    )
-
-    return ("", 204)
 
 
