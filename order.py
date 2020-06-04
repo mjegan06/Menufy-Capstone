@@ -332,11 +332,12 @@ def order_status(customer_username, customer_id):
         )
         
         return render_template('order_status.html', customer_username=customer_username, customer_id=customer_id, order=orderDetails)
+<<<<<<< HEAD
 
 
 
     
-'''
+
 @bp.route('/<restaurant_id>/order_history', methods=['GET','POST'])
 @check_user_login
 def get_order_history(customer_username, customer_id, restaurant_id):
@@ -425,10 +426,12 @@ def get_order_history(customer_username, customer_id, restaurant_id):
     order = None
 
     return render_template('order_history.html', customer_username=customer_username, customer_id=customer_id, restaurant_id=restaurant_id, orders=order)
-'''
 
 
 
 
 
 
+
+=======
+>>>>>>> 40e6f5938dcc81f5c5f098a7cc9cad8a4b10d588
