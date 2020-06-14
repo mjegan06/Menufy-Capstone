@@ -1,7 +1,7 @@
 # CapstoneProject
 
 Contributors:
-  Serena Tays
+  Serena Tay
   Alexander Drath
   Matthew Egan
   
@@ -9,6 +9,8 @@ Contributors:
   menufy-test-2.eba-tabwfhzk.us-west-2.elasticbeanstalk.com
 
 Contributions:
+
+
   Alexander Drath: 
     Customer account creation; 
     Customer order history; 
@@ -18,9 +20,13 @@ Contributions:
   Matthew Egan: 
     Displaying restaurant menus by category; 
     Customer ordering from menu
+    Order creation for restaurant
     
     
-   Serena Tays:
+   Serena Tay:
     Business/Restaurant account creation/editing;
     Restaurant menu creation/editing
     Restaurant order/inventory tracking
+    
+
+Project demonstration in readme.pdf
