@@ -7,6 +7,8 @@ Contributors:
   
  URL for application:
   menufy-test-2.eba-tabwfhzk.us-west-2.elasticbeanstalk.com
+  
+
 
 Contributions:
 
@@ -30,3 +32,5 @@ Contributions:
     
 
 Project demonstration in readme.pdf
+
+Project tasks assigned and completed by using JIRA
