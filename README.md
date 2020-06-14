@@ -13,9 +13,13 @@ Contributions:
     Customer account creation; 
     Customer order history; 
     Styling with CSS/Bootstrap
+    
+    
   Matthew Egan: 
     Displaying restaurant menus by category; 
     Customer ordering from menu
+    
+    
    Serena Tays:
     Business/Restaurant account creation/editing;
     Restaurant menu creation/editing
