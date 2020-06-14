@@ -19,13 +19,13 @@ Contributions:
     
   Matthew Egan: 
     Displaying restaurant menus by category; 
-    Customer ordering from menu
+    Customer ordering from menu;
     Order creation for restaurant
     
     
    Serena Tay:
     Business/Restaurant account creation/editing;
-    Restaurant menu creation/editing
+    Restaurant menu creation/editing;
     Restaurant order/inventory tracking
     
 
