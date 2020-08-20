@@ -224,6 +224,7 @@ def place_order(customer_username, customer_id, restaurant_id):
         #get customer email address
         custEmail = response['Item']['customer_email']
 
+        '''
         #calculate sales tax for restaurant using zip-tax.com api
         tax_url = 'https://api.zip-tax.com/request/v40?key=' + tax_api_key + '&postalcode=' + str(restZip)
 
@@ -231,6 +232,8 @@ def place_order(customer_username, customer_id, restaurant_id):
         tax_request_content = json.loads(tax_request.content)
         
         salesTax = tax_request_content['results'][0]['taxSales']
+        '''
+        salesTax = 0.08
         
 
         #calculate tax for the order
